@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Entrar — Cartão Mestre</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="../design-system/assets/resource_3fa48481346f.js"></script>
+    <link rel="stylesheet" href="../design-system/assets/css2_0b2072b66163.css" />
+    <style>
+      body {
+        font-family:
+          "Plus Jakarta Sans",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      :root {
+        --glass-bg: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
+        color-scheme: dark;
+      }
+
+      .cm-glass {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+          var(--glass-shadow),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      }
+
+      .cm-glass-modal {
+        background: rgba(24, 24, 27, 0.94);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+          var(--glass-shadow),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      }
+
+      .cm-input {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        transition: border-color 150ms ease, background 150ms ease;
+      }
+      .cm-input:focus {
+        outline: none;
+        border-color: rgba(96, 165, 250, 0.55);
+        background: rgba(255, 255, 255, 0.09);
+      }
+
+      /* -------------------------------------------------- fundo ambiente (aurora) */
+      .cm-aurora {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .cm-aurora__blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.28;
+        will-change: transform;
+      }
+      .cm-aurora__blob--1 {
+        width: 42rem;
+        height: 42rem;
+        top: -14rem;
+        left: -10rem;
+        background: radial-gradient(circle at 30% 30%, #2563eb, transparent 70%);
+        animation: cm-drift-1 34s ease-in-out infinite;
+      }
+      .cm-aurora__blob--2 {
+        width: 38rem;
+        height: 38rem;
+        top: 8rem;
+        right: -12rem;
+        background: radial-gradient(circle at 70% 40%, #db2777, transparent 70%);
+        animation: cm-drift-2 40s ease-in-out infinite;
+      }
+      .cm-aurora__blob--3 {
+        width: 34rem;
+        height: 34rem;
+        bottom: -16rem;
+        left: 22rem;
+        background: radial-gradient(circle at 50% 50%, #059669, transparent 70%);
+        animation: cm-drift-3 46s ease-in-out infinite;
+      }
+      @keyframes cm-drift-1 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(4rem, 3rem) scale(1.08); }
+      }
+      @keyframes cm-drift-2 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-3rem, 4rem) scale(1.05); }
+      }
+      @keyframes cm-drift-3 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(3rem, -3rem) scale(1.1); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-aurora__blob { animation: none; }
+      }
+
+      @keyframes cm-shake {
+        10%, 90% { transform: translateX(-1px); }
+        20%, 80% { transform: translateX(2px); }
+        30%, 50%, 70% { transform: translateX(-4px); }
+        40%, 60% { transform: translateX(4px); }
+      }
+      .cm-shake { animation: cm-shake 400ms; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-neutral-950 text-white antialiased">
+    <div class="cm-aurora" aria-hidden="true">
+      <div class="cm-aurora__blob cm-aurora__blob--1"></div>
+      <div class="cm-aurora__blob cm-aurora__blob--2"></div>
+      <div class="cm-aurora__blob cm-aurora__blob--3"></div>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center relative z-10 px-4">
+      <form
+        id="login-form"
+        class="cm-glass-modal rounded-3xl p-8 w-full max-w-sm flex flex-col gap-5"
+        autocomplete="on"
+      >
+        <div class="flex flex-col items-center gap-3 text-center">
+          <div
+            class="w-12 h-12 rounded-2xl cm-glass flex items-center justify-center text-xl shadow-[0_0_0_1px_rgba(96,165,250,0.15),0_10px_30px_-12px_rgba(96,165,250,0.4)]"
+          >
+            💳
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight text-white">Cartão Mestre</h1>
+            <p class="text-xs text-white/40 mt-0.5">Entre para acessar o dashboard</p>
+          </div>
+        </div>
+
+        <div id="login-error" class="hidden rounded-xl bg-red-950/60 border border-red-800 text-red-200 text-xs px-3 py-2"></div>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-xs text-white/50">Usuário</span>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            required
+            class="cm-input rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-white/30"
+            placeholder="usuario"
+          />
+        </label>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-xs text-white/50">Senha</span>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            class="cm-input rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-white/30"
+            placeholder="••••••••"
+          />
+        </label>
+
+        <button
+          id="submit-btn"
+          type="submit"
+          class="mt-1 rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors duration-150 text-sm font-semibold py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Entrar
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("login-form");
+      const errorBox = document.getElementById("login-error");
+      const submitBtn = document.getElementById("submit-btn");
+
+      function nextUrl() {
+        const params = new URLSearchParams(location.search);
+        const next = params.get("next");
+        return next && next.startsWith("/") ? next : "/cartaomestre/";
+      }
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove("hidden");
+        form.classList.remove("cm-shake");
+        void form.offsetWidth; // reinicia a animação se já tiver rodado
+        form.classList.add("cm-shake");
+      }
+
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        errorBox.classList.add("hidden");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Entrando…";
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+
+        try {
+          const res = await fetch("/auth/login", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+          if (res.ok) {
+            location.href = nextUrl();
+            return;
+          }
+          const data = await res.json().catch(() => ({}));
+          showError(data.error || "Usuário ou senha inválidos.");
+        } catch (err) {
+          showError("Não foi possível conectar. Tente novamente.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Entrar";
+        }
+      });
+    </script>
+  </body>
+</html>

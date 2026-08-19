@@ -1,0 +1,17 @@
+[Unit]
+Description=Cartao Mestre - auth de sessao (cookie) para o dashboard
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/cartao-mestre-auth/server.py
+Restart=always
+RestartSec=2
+User=ubuntu
+Group=ubuntu
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/etc/cartao-mestre
+
+[Install]
+WantedBy=multi-user.target

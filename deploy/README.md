@@ -16,13 +16,14 @@ config do túnel vive na nuvem e é lida via API/dashboard).
 Internet → Cloudflare (eltonmarques.com) → cloudflared (túnel) → nginx local na VPS
 ```
 
-Duas instâncias de Nginx rodando só em `127.0.0.1` (nunca expostas
-externamente por conta própria — só alcançáveis via túnel):
+Três serviços rodando só em `127.0.0.1` (nunca expostos externamente por
+conta própria — só alcançáveis via túnel):
 
-| Vhost | Porta | Serve | Auth |
+| Serviço | Porta | Serve | Auth |
 |---|---|---|---|
-| `deploy/nginx/cartao-mestre.conf` | `127.0.0.1:8080` | `/cartaomestre/` (app), `/design-system/` (assets do template), `/dados/` (CSVs) | `/cartaomestre/` e `/dados/` com Basic Auth; `/design-system/` público (só CSS/fonte, sem dado sensível — precisa ser público pro hub carregar) |
-| `deploy/nginx/hub.conf` | `127.0.0.1:8081` | `deploy/hub/index.html` — página de entrada em `eltonmarques.com/` com links pros projetos da VPS | Público |
+| `deploy/nginx/cartao-mestre.conf` (nginx) | `127.0.0.1:8080` | `/cartaomestre/` (app), `/design-system/` (assets do template), `/dados/` (CSVs), `/login/` (tela de login), `/auth/` (proxy pro serviço de sessão) | `/cartaomestre/` e `/dados/` exigem sessão válida (cookie); `/design-system/` e `/login/` públicos |
+| `deploy/auth-service/server.py` (systemd `cartao-mestre-auth`) | `127.0.0.1:8082` | `/login`, `/logout`, `/verify` — API de sessão por cookie | — (é o próprio serviço de auth) |
+| `deploy/nginx/hub.conf` (nginx) | `127.0.0.1:8081` | `deploy/hub/index.html` — página de entrada em `eltonmarques.com/` com links pros projetos da VPS | Público |
 
 Roteamento no túnel (Cloudflare Tunnel → *Public Hostname* / ingress rules,
 uma entrada por `path` sob o mesmo hostname `eltonmarques.com`, avaliadas
@@ -33,6 +34,8 @@ eltonmarques.com/leitor         → http://localhost:8000   (outro projeto, leit
 eltonmarques.com/cartaomestre   → http://localhost:8080
 eltonmarques.com/design-system  → http://localhost:8080
 eltonmarques.com/dados          → http://localhost:8080
+eltonmarques.com/login          → http://localhost:8080
+eltonmarques.com/auth           → http://localhost:8080
 eltonmarques.com/ (catch-all)   → http://localhost:8081    (hub)
 eltonmarques.com/* (default)    → http_status:404
 ```
@@ -43,16 +46,55 @@ correspondente pra versionar) — pra reaplicar/alterar, use a API
 painel Zero Trust → Networks → Tunnels → `leitor-matriculas` → Public
 Hostnames.
 
+## Login: sessão por cookie, não Basic Auth
+
+O dashboard **não** usa mais o HTTP Basic Auth nativo do navegador (a
+caixinha sem estilo) — foi trocado por uma tela de login própria
+(`deploy/login/index.html`, mesmo visual do dashboard: aurora, vidro,
+Plus Jakarta Sans) + um serviço de sessão minimalista em Python puro
+(stdlib, sem dependências) rodando como `cartao-mestre-auth.service`.
+
+Como funciona:
+
+1. Requisição a `/cartaomestre/` ou `/dados/` → nginx faz uma
+   sub-requisição interna (`auth_request`) pro serviço de auth
+   (`GET /verify`), que checa o cookie `cm_session` (assinado por HMAC,
+   validade de 12h).
+2. Sem cookie válido → nginx responde `302` pra
+   `/login/?next=<url original>` (não é 401 com `WWW-Authenticate`, então
+   o navegador nunca mostra a caixinha nativa).
+3. `deploy/login/index.html` faz `fetch()` pra `POST /auth/login` com
+   usuário/senha em JSON; sucesso seta o cookie e redireciona pro `next`.
+
+Usuários ficam em `/etc/cartao-mestre/users.txt` na VPS (fora do git —
+`usuario:salt_hex:sha256_hex`, nunca senha em texto puro). Gerencie com:
+
+```bash
+ssh -i "$KEY" "$VPS" "python3 /opt/cartao-mestre-auth/manage_users.py add '<usuario>' '<senha>'"
+ssh -i "$KEY" "$VPS" "python3 /opt/cartao-mestre-auth/manage_users.py del '<usuario>'"
+ssh -i "$KEY" "$VPS" "python3 /opt/cartao-mestre-auth/manage_users.py list"
+```
+
+Todo usuário logado tem o mesmo nível de acesso (só visualização/filtros —
+o app não tem modo de edição) — não existe hoje uma distinção de papéis
+por usuário.
+
+A chave de assinatura dos cookies fica em `/etc/cartao-mestre/secret.key`
+(gerada automaticamente na primeira execução do serviço; fora do git).
+Trocar essa chave invalida todas as sessões ativas.
+
 ## Por que caminhos relativos exigem essa estrutura
 
 O app (`app/index.html`) referencia `../design-system/...` e os módulos JS
 fazem fetch em `../dados/csv/...` — caminhos relativos à posição da
 página. Servido em `eltonmarques.com/cartaomestre/`, isso resolve pra
 `eltonmarques.com/design-system/...` e `eltonmarques.com/dados/...` — por
-isso essas três pastas (`app/`, `design-system/`, `dados/csv/`) viram três
+isso essas pastas (`app/`, `design-system/`, `dados/csv/`) viram
 `location`s irmãs no mesmo vhost, refletindo o mesmo layout de pastas do
-repo. O hub (servido em `eltonmarques.com/` — raiz) referencia
-`design-system/assets/...` sem `../`, pelo mesmo motivo.
+repo. O hub (servido em `eltonmarques.com/` — raiz) e o login (servido em
+`eltonmarques.com/login/`) seguem o mesmo raciocínio: `design-system/` sem
+`../` no hub (raiz), `../design-system/` no login (um nível abaixo, como
+o app).
 
 ## Estrutura na VPS
 
@@ -64,6 +106,19 @@ repo. O hub (servido em `eltonmarques.com/` — raiz) referencia
 
 /var/www/hub/
 └── index.html      ← deploy/hub/index.html deste repo
+
+/var/www/login/
+└── index.html      ← deploy/login/index.html deste repo
+
+/opt/cartao-mestre-auth/
+├── server.py         ← deploy/auth-service/server.py deste repo
+└── manage_users.py   ← deploy/auth-service/manage_users.py deste repo
+
+/etc/cartao-mestre/     (fora do git)
+├── users.txt         ← usuários do login
+└── secret.key         ← chave de assinatura dos cookies de sessão
+
+/etc/systemd/system/cartao-mestre-auth.service  ← deploy/systemd/cartao-mestre-auth.service deste repo
 ```
 
 ## Deploy inicial / atualização manual
@@ -74,23 +129,25 @@ Não há CI/CD — é cópia manual via `scp`. A partir da raiz do repo:
 KEY=~/caminho/para/sua/chave.key
 VPS=ubuntu@<ip-da-vps>
 
+# app + assets + dados
 scp -i "$KEY" -r app design-system dados "$VPS":/var/www/cartao-mestre/
+
+# hub e login
 scp -i "$KEY" deploy/hub/index.html "$VPS":/var/www/hub/index.html
+scp -i "$KEY" deploy/login/index.html "$VPS":/var/www/login/index.html
+
+# nginx
 scp -i "$KEY" deploy/nginx/cartao-mestre.conf "$VPS":/tmp/ && \
   ssh -i "$KEY" "$VPS" 'sudo mv /tmp/cartao-mestre.conf /etc/nginx/sites-available/ && sudo nginx -t && sudo systemctl restart nginx'
+
+# serviço de auth (só se mudou server.py/manage_users.py)
+scp -i "$KEY" deploy/auth-service/server.py "$VPS":/opt/cartao-mestre-auth/server.py
+scp -i "$KEY" deploy/auth-service/manage_users.py "$VPS":/opt/cartao-mestre-auth/manage_users.py
+ssh -i "$KEY" "$VPS" 'sudo systemctl restart cartao-mestre-auth'
 ```
 
 `dados/csv/` na VPS precisa ser mantido em dia manualmente (novo mês →
 `scp` do CSV novo, ver `dados/csv/README.md` no que muda em `data.js`).
-
-## Basic Auth do dashboard
-
-Usuário/senha ficam em `/etc/nginx/.htpasswd-cartaomestre` na VPS (fora do
-git — nunca versionar hash de senha real). Para (re)criar:
-
-```bash
-ssh -i "$KEY" "$VPS" "sudo htpasswd -bc /etc/nginx/.htpasswd-cartaomestre '<usuario>' '<senha>'"
-```
 
 ## Segredos — nunca versionados
 
@@ -98,4 +155,4 @@ ssh -i "$KEY" "$VPS" "sudo htpasswd -bc /etc/nginx/.htpasswd-cartaomestre '<usua
 - Token de API da Cloudflare (usado só pontualmente pra configurar as
   rotas do túnel; pode ser revogado depois de configurado — a rota fica
   salva no lado da Cloudflare, não depende do token continuar válido).
-- Hash do `.htpasswd`.
+- `/etc/cartao-mestre/users.txt` e `/etc/cartao-mestre/secret.key`.
