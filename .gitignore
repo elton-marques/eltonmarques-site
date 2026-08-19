@@ -5,6 +5,10 @@ dados/csv/*.csv
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
 
+# Instruções locais do Claude Code pra este projeto — mantido só localmente,
+# nunca publicado no GitHub (a pedido, por precaução).
+CLAUDE.md
+
 # OS junk
 .DS_Store
 Thumbs.db
