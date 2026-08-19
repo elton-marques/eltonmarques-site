@@ -2,9 +2,9 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>eltonmarques.com</title>
+    <title>Elton Marques</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta name="description" content="Projetos e ferramentas internas hospedados em eltonmarques.com." />
+    <meta name="description" content="Elton Marques — desenvolvedor de software. Projetos e ferramentas." />
     <!-- Mesmo runtime Tailwind + fonte self-hosted usados no dashboard do
      Cartão Mestre, pra manter a mesma linguagem visual entre os projetos
      hospedados nesta VPS. -->
@@ -135,7 +135,17 @@
         pointer-events: none;
       }
 
-      /* entrada suave dos cards, escalonada via style="animation-delay" */
+      .cm-social {
+        color: rgba(255, 255, 255, 0.45);
+        transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+      }
+      .cm-social:hover {
+        color: rgba(255, 255, 255, 0.9);
+        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.09);
+      }
+
+      /* entrada suave dos blocos, escalonada via style="animation-delay" */
       @keyframes cm-rise-in {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -157,29 +167,50 @@
 
     <div class="min-h-screen flex items-center justify-center relative z-10 px-4 py-16">
       <div class="w-full max-w-3xl">
-        <div class="cm-rise-in flex flex-col items-center text-center gap-4 mb-12" style="animation-delay: 0ms">
+        <div class="cm-rise-in flex flex-col items-center text-center gap-4 mb-14" style="animation-delay: 0ms">
           <div
-            class="w-12 h-12 rounded-2xl cm-glass flex items-center justify-center text-xl shadow-[0_0_0_1px_rgba(96,165,250,0.15),0_10px_30px_-12px_rgba(96,165,250,0.4)]"
+            class="w-16 h-16 rounded-2xl cm-glass flex items-center justify-center text-lg font-bold tracking-wide shadow-[0_0_0_1px_rgba(96,165,250,0.15),0_10px_30px_-12px_rgba(96,165,250,0.4)]"
           >
-            🗂️
+            EM
           </div>
           <div>
-            <p class="text-xs uppercase tracking-[0.2em] text-white/35 mb-2">eltonmarques.com</p>
             <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-              Projetos hospedados aqui
+              Elton Marques
             </h1>
+            <p class="text-sm text-white/45 mt-1.5">Desenvolvedor de software</p>
           </div>
-          <p class="text-sm text-white/50 max-w-md">
-            Ferramentas internas do dia a dia do cartão mestre — do registro
-            das liberações ao controle de uso.
-          </p>
+
+          <div class="flex items-center gap-2 mt-1">
+            <a
+              href="mailto:contato@eltonmarques.com"
+              class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+              aria-label="E-mail"
+              title="contato@eltonmarques.com"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>
+            </a>
+            <a
+              href="https://github.com/eltoncastor"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+              aria-label="GitHub"
+              title="github.com/eltoncastor"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.11 3.06.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.25 5.69.42.36.78 1.07.78 2.16 0 1.56-.01 2.81-.01 3.19 0 .31.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"></path></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="cm-rise-in mb-4" style="animation-delay: 60ms">
+          <p class="text-xs uppercase tracking-[0.2em] text-white/35">Projetos</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a
             href="/cartaomestre/"
             class="cm-card cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3 no-underline"
-            style="animation-delay: 90ms"
+            style="animation-delay: 110ms"
           >
             <div class="cm-card__glow" style="background: radial-gradient(circle, #2563eb, transparent 70%)"></div>
             <div class="flex items-center justify-between">
@@ -241,8 +272,8 @@
           </a>
         </div>
 
-        <p class="cm-rise-in text-center text-xs text-white/25 mt-12" style="animation-delay: 240ms">
-          eltonmarques.com · Elton Marques
+        <p class="cm-rise-in text-center text-xs text-white/25 mt-14" style="animation-delay: 240ms">
+          eltonmarques.com
         </p>
       </div>
     </div>
