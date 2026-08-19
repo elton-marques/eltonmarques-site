@@ -158,6 +158,24 @@ ssh -i "$KEY" "$VPS" 'sudo systemctl restart cartao-mestre-auth'
 `dados/csv/` na VPS precisa ser mantido em dia manualmente (novo mês →
 `scp` do CSV novo, ver `dados/csv/README.md` no que muda em `data.js`).
 
+## Cache do Cloudflare — cuidado em deploys de HTML/JS/CSS
+
+`/cartaomestre/`, `/login/` e `/dados/` mandam `Cache-Control: no-store`
+(nginx) — sem isso, o Cloudflare aplicava cache de borda por extensão em
+`.js`/`.css` (~4h de TTL por padrão, mesmo sem o nginx mandar nenhum
+`Cache-Control`), e um deploy novo podia ficar "invisível" por até 4h pra
+quem já tinha a versão antiga cacheada na borda — foi exatamente o que
+aconteceu logo depois do primeiro deploy da tela de exportação/menu de
+conta (19/08/2026).
+
+Isso evita cache NOVO daqui pra frente, mas não limpa o que já estiver
+cacheado no momento do deploy. Se um deploy de `app/` ou `login/` não
+aparecer pra ninguém depois de alguns minutos, purgue a borda: painel
+Cloudflare → domínio → **Caching → Configuration → Purge Everything** (ou
+"Custom Purge" só com `/cartaomestre/*` e `/login/*`). `/design-system/`
+não manda `no-store` de propósito — são assets versionados só por hash de
+nome de arquivo (fontes/Tailwind runtime), cache longo ali é desejado.
+
 ## Segredos — nunca versionados
 
 - Chave SSH privada da VPS.
