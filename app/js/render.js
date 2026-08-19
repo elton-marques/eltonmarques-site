@@ -24,6 +24,18 @@ function el(tag, className, children) {
   return node;
 }
 
+/** Ícone SVG inline (traço, sem preenchimento — mesmo estilo Lucide usado nos
+ * outros ícones do projeto, ex.: os campos de usuário/senha do login). `paths`
+ * é o miolo do `<svg>` (um ou mais `<path>`/`<circle>`/etc.), sempre uma
+ * constante fixa no código-fonte, nunca dado dinâmico — por isso o innerHTML
+ * aqui é seguro. Usado no lugar de emoji nos menus que precisam de um visual
+ * mais discreto/profissional (ex.: menu de conta). */
+function iconEl(paths, size = 15) {
+  const wrap = document.createElement('span');
+  wrap.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+  return wrap.firstChild;
+}
+
 function cardHeader(title, subtitle) {
   const wrap = el('div', 'mb-5');
   wrap.appendChild(el('h3', 'text-lg font-semibold text-white', title));
@@ -1315,19 +1327,27 @@ function renderExportMenu(container, { isOpen, onToggle, onExportCSV, onExportEx
 
 // -------------------------------------------------------------- Menu de conta
 
-/** Botão "👤 <usuário> ▾" no canto superior direito do header — mesmo padrão
- * visual/estrutural de renderMoreOptions (botão compacto + painel cm-glass-modal
- * abaixo). `username` vem de GET /auth/verify (ver fetchUsername em main.js);
- * fica null em dev local sem o serviço de auth, e o botão cai pra um rótulo
- * genérico "Conta" — as ações continuam funcionando (POST /auth/logout +
- * redirect), só a etiqueta de "logado como" não aparece. */
+// Ícones (traço Lucide, sem preenchimento — ver iconEl) usados no menu de
+// conta no lugar de emoji: um visual mais discreto/profissional, consistente
+// com os outros ícones do projeto (login, footer).
+const ICON_USER = '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>';
+const ICON_SWITCH_ACCOUNT = '<path d="m17 2 4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path>';
+const ICON_LOGOUT = '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>';
+
+/** Botão "<ícone de usuário> <usuário> ▾" no canto superior direito do header
+ * — mesmo padrão visual/estrutural de renderMoreOptions (botão compacto +
+ * painel cm-glass-modal abaixo). `username` vem de GET /auth/verify (ver
+ * fetchUsername em main.js); fica null em dev local sem o serviço de auth, e
+ * o botão cai pra um rótulo genérico "Conta" — as ações continuam
+ * funcionando (POST /auth/logout + redirect), só a etiqueta de "logado
+ * como" não aparece. */
 function renderAccountMenu(container, { isOpen, username, onToggle, onSwitchAccount, onLogout }) {
   container.innerHTML = '';
 
   const btn = el('button', `cm-select flex items-center gap-2 rounded-full text-sm px-3 py-2 text-white/70 transition-colors duration-150 hover:border-white/25 hover:text-white ${isOpen ? 'text-white' : ''}`);
   btn.type = 'button';
   btn.setAttribute('aria-expanded', String(isOpen));
-  btn.appendChild(el('span', 'text-base leading-none', '👤'));
+  btn.appendChild(el('span', 'shrink-0 text-white/50', [iconEl(ICON_USER)]));
   btn.appendChild(el('span', 'max-w-[110px] truncate', username || 'Conta'));
   btn.appendChild(el('span', `shrink-0 text-white/40 text-[10px] transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`, '▾'));
   btn.addEventListener('click', (e) => { e.stopPropagation(); onToggle(); });
@@ -1343,17 +1363,17 @@ function renderAccountMenu(container, { isOpen, username, onToggle, onSwitchAcco
     panel.appendChild(el('p', 'px-3 pt-1.5 pb-2 text-xs text-white/40 truncate', `Logado como ${username}`));
   }
 
-  const menuItem = (icon, label, onClick) => {
+  const menuItem = (iconPaths, label, onClick) => {
     const b = el('button', 'w-full flex items-center gap-2.5 text-left text-sm px-3 py-2 rounded-xl text-white/80 hover:bg-white/10 transition-colors duration-100');
     b.type = 'button';
-    b.appendChild(el('span', 'text-base leading-none', icon));
+    b.appendChild(el('span', 'shrink-0 text-white/50', [iconEl(iconPaths)]));
     b.appendChild(el('span', '', label));
     b.addEventListener('click', onClick);
     return b;
   };
 
-  panel.appendChild(menuItem('🔄', 'Trocar de conta', onSwitchAccount));
-  panel.appendChild(menuItem('🚪', 'Sair', onLogout));
+  panel.appendChild(menuItem(ICON_SWITCH_ACCOUNT, 'Trocar de conta', onSwitchAccount));
+  panel.appendChild(menuItem(ICON_LOGOUT, 'Sair', onLogout));
 
   container.appendChild(panel);
 }

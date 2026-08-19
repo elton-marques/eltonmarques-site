@@ -9,6 +9,9 @@ dados/csv/*.csv
 # nunca publicado no GitHub (a pedido, por precaução).
 CLAUDE.md
 
+# Credenciais da VPS (chave SSH + host) — nunca versionar.
+deploy/.vps.env
+
 # OS junk
 .DS_Store
 Thumbs.db

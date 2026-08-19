@@ -337,10 +337,14 @@
 
       <main class="flex-1">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-          <!-- Resumo -->
+          <!-- Resumo. auto-fit (não colunas fixas por breakpoint): a
+           quantidade de KPIs varia — o card "Matrícula órfã" só entra quando
+           o usuário liga o toggle em "Mais opções" (ver showOrfaosCard em
+           main.js) — e colunas fixas deixavam uma célula vazia sobrando no
+           fim da grade quando ele estava oculto (5 cards numa grade de 6). -->
           <section
             id="kpi-grid"
-            class="cm-card grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4"
+            class="cm-card grid grid-cols-1 sm:[grid-template-columns:repeat(auto-fit,minmax(180px,1fr))] gap-4"
           ></section>
 
           <!-- Padrões -->
