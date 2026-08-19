@@ -268,7 +268,9 @@ function buildPrintReportHTML({ records, filters, duplicatesRemoved }) {
   @page { margin: 16mm 14mm; }
   * { box-sizing: border-box; }
   body { font-family: Arial, Helvetica, sans-serif; color: #111827; margin: 0; padding: 24px; background: #fff; }
-  h1 { font-size: 20px; margin: 0 0 4px; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .brand-icon { width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0; background: #0f1720; display: flex; align-items: center; justify-content: center; }
+  h1 { font-size: 20px; margin: 0; }
   .subtitle { color: #6b7280; font-size: 11px; margin: 0 0 20px; }
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
   .kpi { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 12px; break-inside: avoid; }
@@ -290,7 +292,10 @@ function buildPrintReportHTML({ records, filters, duplicatesRemoved }) {
 </style>
 </head>
 <body>
-  <h1>💳 Cartão Mestre — Relatório de Liberações</h1>
+  <div class="brand">
+    <span class="brand-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></span>
+    <h1>Cartão Mestre — Relatório de Liberações</h1>
+  </div>
   <p class="subtitle">${xmlEscape(dateRangeLabel(records))} · ${xmlEscape(filtroDesc)} · gerado em ${xmlEscape(geradoEm)}</p>
 
   <div class="kpi-grid">

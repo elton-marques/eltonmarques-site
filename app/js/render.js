@@ -929,7 +929,7 @@ function renderCommandPalette(root, query, results, onQueryChange, onSelect, onC
   box.addEventListener('click', (e) => e.stopPropagation());
 
   const inputWrap = el('div', 'flex items-center gap-2.5 px-4 py-3 border-b border-white/10');
-  inputWrap.appendChild(el('span', 'text-white/40 text-sm shrink-0', '🔍'));
+  inputWrap.appendChild(el('span', 'text-white/40 shrink-0', [iconEl(ICON_SEARCH)]));
   const input = document.createElement('input');
   input.type = 'text';
   input.placeholder = 'Buscar colaborador, setor ou gestor…';
@@ -1285,16 +1285,18 @@ function renderMoreOptions(container, { isOpen, onToggle, showOrfaosCard, onTogg
 
 // ------------------------------------------------------------- Menu de exportação
 
-/** Botão "⬇️ Exportar ▾" — mesmo padrão dos outros dropdowns (renderMoreOptions/
- * renderAccountMenu). As três opções exportam exatamente o que está filtrado
- * na tela agora (ver exportFilteredCSV/exportSpreadsheet/exportPDF em main.js). */
+/** Botão "<ícone de download> Exportar ▾" — mesmo padrão dos outros
+ * dropdowns (renderMoreOptions/renderAccountMenu). As três opções exportam
+ * exatamente o que está filtrado na tela agora (ver
+ * exportFilteredCSV/exportSpreadsheet/exportPDF em main.js). */
 function renderExportMenu(container, { isOpen, onToggle, onExportCSV, onExportExcel, onExportPDF }) {
   container.innerHTML = '';
 
   const btn = el('button', `cm-select flex items-center gap-2 rounded-full text-sm px-3 py-2 text-white/60 transition-colors duration-150 hover:border-white/25 hover:text-white/90 ${isOpen ? 'text-white' : ''}`);
   btn.type = 'button';
   btn.setAttribute('aria-expanded', String(isOpen));
-  btn.appendChild(el('span', '', '⬇️ Exportar'));
+  btn.appendChild(el('span', 'shrink-0', [iconEl(ICON_DOWNLOAD)]));
+  btn.appendChild(el('span', '', 'Exportar'));
   btn.appendChild(el('span', `shrink-0 text-white/40 text-[10px] transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`, '▾'));
   btn.addEventListener('click', (e) => { e.stopPropagation(); onToggle(); });
   container.appendChild(btn);
@@ -1305,10 +1307,10 @@ function renderExportMenu(container, { isOpen, onToggle, onExportCSV, onExportEx
   if (!REDUCED_MOTION) panel.style.animation = 'cm-chip-in 150ms cubic-bezier(0.16,1,0.3,1) both';
   panel.addEventListener('click', (e) => e.stopPropagation());
 
-  const menuItem = (icon, label, sublabel, onClick) => {
+  const menuItem = (iconPaths, label, sublabel, onClick) => {
     const b = el('button', 'w-full flex items-start gap-2.5 text-left text-sm px-3 py-2 rounded-xl text-white/80 hover:bg-white/10 transition-colors duration-100');
     b.type = 'button';
-    b.appendChild(el('span', 'text-base leading-none mt-0.5', icon));
+    b.appendChild(el('span', 'shrink-0 text-white/50 mt-0.5', [iconEl(iconPaths)]));
     const textWrap = el('span', 'min-w-0');
     textWrap.appendChild(el('span', 'block', label));
     textWrap.appendChild(el('span', 'block text-xs text-white/40', sublabel));
@@ -1317,9 +1319,9 @@ function renderExportMenu(container, { isOpen, onToggle, onExportCSV, onExportEx
     return b;
   };
 
-  panel.appendChild(menuItem('🧾', 'CSV', 'Abre em Excel, Sheets etc.', onExportCSV));
-  panel.appendChild(menuItem('📊', 'Planilha (Excel)', 'Várias abas: resumo, setor, motivo, gestor', onExportExcel));
-  panel.appendChild(menuItem('🖨️', 'PDF', 'Relatório com gráficos, via impressão do navegador', onExportPDF));
+  panel.appendChild(menuItem(ICON_FILE_TEXT, 'CSV', 'Abre em Excel, Sheets etc.', onExportCSV));
+  panel.appendChild(menuItem(ICON_TABLE, 'Planilha (Excel)', 'Várias abas: resumo, setor, motivo, gestor', onExportExcel));
+  panel.appendChild(menuItem(ICON_PRINTER, 'PDF', 'Relatório com gráficos, via impressão do navegador', onExportPDF));
   panel.appendChild(el('p', 'text-[11px] text-white/30 px-3 pt-1.5', 'Sempre respeita os filtros ativos na tela.'));
 
   container.appendChild(panel);
@@ -1333,6 +1335,14 @@ function renderExportMenu(container, { isOpen, onToggle, onExportCSV, onExportEx
 const ICON_USER = '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>';
 const ICON_SWITCH_ACCOUNT = '<path d="m17 2 4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path>';
 const ICON_LOGOUT = '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>';
+
+// Mesmo conjunto (traço Lucide), reusado no menu de exportação e na busca —
+// tudo ícone SVG inline no lugar de emoji.
+const ICON_SEARCH = '<circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>';
+const ICON_DOWNLOAD = '<path d="M12 15V3"></path><path d="M6 15v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4"></path><path d="m7 10 5 5 5-5"></path>';
+const ICON_FILE_TEXT = '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path>';
+const ICON_TABLE = '<path d="M12 3v18"></path><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path>';
+const ICON_PRINTER = '<path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect>';
 
 /** Botão "<ícone de usuário> <usuário> ▾" no canto superior direito do header
  * — mesmo padrão visual/estrutural de renderMoreOptions (botão compacto +
