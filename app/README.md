@@ -30,8 +30,11 @@ Depois abra `http://localhost:PORTA/app/` no navegador.
 - `js/normalize.js` — normalização de SETOR/MOTIVO/RESPONSÁVEL
 - `js/data.js` — carregamento dos 6 CSVs + limpeza (ETL)
 - `js/aggregate.js` — KPIs, rankings, heatmap, qualidade de dados
+- `js/export.js` — exportação da lista/agregados filtrados em CSV, planilha
+  Excel (SpreadsheetML, várias abas) e relatório PDF (via impressão do
+  navegador) — tudo montado no cliente, sem lib nem servidor
 - `js/render.js` — renderização em DOM puro
-- `js/main.js` — bootstrap e filtros interativos
+- `js/main.js` — bootstrap, filtros interativos, sessão (logout/troca de conta)
 
 ## Decisões de limpeza (ver plano completo para o racional)
 

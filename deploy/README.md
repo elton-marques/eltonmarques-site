@@ -79,6 +79,15 @@ Todo usuário logado tem o mesmo nível de acesso (só visualização/filtros �
 o app não tem modo de edição) — não existe hoje uma distinção de papéis
 por usuário.
 
+O dashboard (`app/js/main.js`) usa os três endpoints do serviço de sessão:
+`GET /auth/verify` no boot pra saber quem está logado (mostra o usuário no
+menu de conta do header), e `POST /auth/logout` nas duas ações desse menu —
+"Sair" (volta pro hub) e "Trocar de conta" (volta direto pro `/login/`, já
+com `next` de volta pro dashboard). O menu "Exportar" (mesmo header — CSV,
+planilha Excel ou PDF) é 100% client-side — não bate em nenhum endpoint, só
+monta o arquivo/relatório a partir do que já está carregado no navegador
+(ver `app/js/export.js`).
+
 A chave de assinatura dos cookies fica em `/etc/cartao-mestre/secret.key`
 (gerada automaticamente na primeira execução do serviço; fora do git).
 Trocar essa chave invalida todas as sessões ativas.

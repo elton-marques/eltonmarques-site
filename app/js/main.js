@@ -5,9 +5,11 @@
  */
 
 const state = {
-  // Órfãs entram por padrão: são eventos reais (prováveis promotores/terceiros
-  // sem cadastro em COLABORADORES.csv), não erros a esconder do total.
-  filters: { mes: '', setor: '', motivo: '', aprovador: '', weekday: '', data: '', band: '', matricula: '', nomeSemMatricula: '', onlyUnauthorized: false, onlyOrfaos: false, includeOrfaos: true },
+  // Matrícula órfã NÃO é um filtro de dado (ver applyFilters em aggregate.js):
+  // é uma liberação real, só sem cadastro em COLABORADORES.csv (que pode
+  // estar desatualizada) — por isso sempre entra no total, sem opção de
+  // excluir. `onlyOrfaos` (drill-down "ver só as órfãs") continua existindo.
+  filters: { mes: '', setor: '', motivo: '', aprovador: '', weekday: '', data: '', band: '', matricula: '', nomeSemMatricula: '', onlyUnauthorized: false, onlyOrfaos: false },
   dataset: null, // { records, duplicatesRemoved }
   colabQuery: '', // busca do card "Colaboradores" — não é um filtro do dashboard, só narrows essa lista
   paletteOpen: false,
@@ -16,7 +18,12 @@ const state = {
   liberacoesModalOpen: false, // lista de liberações relacionadas ao filtro atual (drill-down)
   detailRecord: null, // liberação aberta no modal de detalhe (null = fechado)
   anomaliasCollapsed: localStorage.getItem('cm_anomalias_collapsed') === '1',
-  openDropdown: null, // 'mes' | 'setor' | 'motivo' | 'aprovador' | null
+  // Oculto por padrão a pedido: o card "Matrícula órfã" só aparece se o
+  // usuário ligar esse toggle (popover "Mais opções") — não afeta o total,
+  // que sempre inclui as órfãs (ver applyFilters em aggregate.js).
+  showOrfaosCard: localStorage.getItem('cm_orfaos_card_visible') === '1',
+  openDropdown: null, // 'mes' | 'setor' | 'motivo' | 'aprovador' | 'more' | 'export' | 'account' | null
+  username: null, // vem de GET /auth/verify (X-User) no boot; null em dev local sem o serviço de auth
   filterOptions: { setor: [], motivo: [], aprovador: [] }, // opções fixas, calculadas 1x no boot a partir do dataset completo
   // Listas curtas o bastante pra não precisar de scroll (motivos, gestores
   // fora da lista) mostram só os primeiros itens por padrão — "expanded"
@@ -49,7 +56,10 @@ function els() {
     filterMotivo: document.getElementById('filter-motivo'),
     filterAprovador: document.getElementById('filter-aprovador'),
     filterMore: document.getElementById('filter-more'),
+    accountMenu: document.getElementById('account-menu'),
+    exportMenu: document.getElementById('export-menu'),
     subtitle: document.getElementById('header-subtitle'),
+    footerPeriod: document.getElementById('footer-period'),
     errorBanner: document.getElementById('error-banner'),
   };
 }
@@ -79,9 +89,56 @@ function onDiaClick(data) {
   setFilter('data', data);
 }
 
-function onToggleOrfaos(checked) {
-  state.filters.includeOrfaos = checked;
+/** Liga/desliga só a VISIBILIDADE do card "Matrícula órfã" (popover "Mais
+ * opções") — o dado em si sempre conta no total, isso não é um filtro. */
+function onToggleOrfaosCard(checked) {
+  state.showOrfaosCard = checked;
+  localStorage.setItem('cm_orfaos_card_visible', checked ? '1' : '0');
   renderAll();
+}
+
+// ------------------------------------------------------------------- Sessão
+
+/** GET /auth/verify (proxiado pelo nginx pro serviço de sessão em :8082) —
+ * mesma checagem que o nginx já faz via auth_request antes de servir a
+ * página, só que chamada agora pelo navegador pra descobrir QUEM está
+ * logado (o auth_request original só via se o cookie era válido, não
+ * expunha o usuário pra UI). Em dev local (sem nginx/serviço de auth na
+ * frente) o fetch falha ou cai num 404 qualquer — o menu de conta cai pro
+ * rótulo genérico "Conta" e as ações de logout continuam funcionando. */
+async function fetchUsername() {
+  try {
+    const res = await fetch('/auth/verify', { credentials: 'include' });
+    if (res.ok) return res.headers.get('X-User');
+  } catch (err) {
+    console.error('Falha ao consultar sessão:', err);
+  }
+  return null;
+}
+
+/** POST /auth/logout limpa o cookie de sessão no servidor; o redirect (pro
+ * hub ou de volta pro /login/) é o mesmo em ambos os casos — a diferença
+ * entre "Sair" e "Trocar de conta" é só pra onde cada um manda depois. */
+async function doLogout(redirectTo) {
+  state.openDropdown = null;
+  try {
+    await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+  } catch (err) {
+    console.error('Falha ao encerrar sessão:', err);
+  }
+  location.href = redirectTo;
+}
+
+/** "Sair": encerra a sessão e volta pro hub — sai do app por completo. */
+function onLogout() {
+  doLogout('/');
+}
+
+/** "Trocar de conta": encerra a sessão atual e manda direto pra tela de
+ * login (não pro hub), já com `next` apontando de volta pra cá — outro
+ * usuário loga e cai direto no dashboard, sem passar pelo hub no meio. */
+function onSwitchAccount() {
+  doLogout('/login/?next=' + encodeURIComponent(location.pathname));
 }
 
 // -------------------------------------------------------- Dropdowns de filtro
@@ -125,8 +182,24 @@ function renderFilterBar() {
   renderMoreOptions(e.filterMore, {
     isOpen: state.openDropdown === 'more',
     onToggle: () => onToggleDropdown('more'),
-    includeOrfaos: f.includeOrfaos,
-    onToggleOrfaos,
+    showOrfaosCard: state.showOrfaosCard,
+    onToggleOrfaosCard,
+  });
+  renderExportMenu(e.exportMenu, {
+    isOpen: state.openDropdown === 'export',
+    onToggle: () => onToggleDropdown('export'),
+    // Fecha o painel antes de disparar a exportação (mesmo padrão do
+    // onSelectFilter/doLogout — não fica aberto depois do clique).
+    onExportCSV: () => { state.openDropdown = null; renderFilterBar(); exportFilteredCSV(); },
+    onExportExcel: () => { state.openDropdown = null; renderFilterBar(); exportSpreadsheet(); },
+    onExportPDF: () => { state.openDropdown = null; renderFilterBar(); exportPDF(); },
+  });
+  renderAccountMenu(e.accountMenu, {
+    isOpen: state.openDropdown === 'account',
+    username: state.username,
+    onToggle: () => onToggleDropdown('account'),
+    onSwitchAccount,
+    onLogout,
   });
 }
 
@@ -411,7 +484,7 @@ function renderAll() {
 
   const kpis = computeKPIs(filtered, duplicatesRemoved);
   const trend = monthlyTrend(filtered);
-  renderKPIs(e.kpis, kpis, trend, f, onKpiClick);
+  renderKPIs(e.kpis, kpis, trend, f, onKpiClick, state.showOrfaosCard);
 
   renderAnomaliasCard();
 
@@ -437,6 +510,36 @@ function renderAll() {
   renderFilterBar();
 
   e.subtitle.textContent = `${fmtInt(kpis.total)} de ${fmtInt(records.length)} liberação(ões) · ${dateRangeLabel(records)}`;
+  e.footerPeriod.textContent = `Dados de ${dateRangeLabel(records)} · atualizado manualmente`;
+}
+
+// ------------------------------------------------------------- Exportação
+//
+// As três exportações (CSV, planilha, PDF) partem do mesmo recorte: os
+// registros filtrados NA TELA agora (mesmos state.filters do resto do
+// dashboard) — nunca o dataset inteiro. Ver js/export.js pro formato de
+// cada uma (CSV: BOM+escaping RFC 4180; planilha: SpreadsheetML com várias
+// abas; PDF: relatório HTML impresso pelo próprio navegador).
+
+function exportFilteredCSV() {
+  const { records } = state.dataset;
+  const filtered = applyFilters(records, state.filters);
+  const csv = recordsToCSV(filtered);
+  downloadCSV(`cartao-mestre_${exportTimestamp()}.csv`, csv);
+}
+
+function exportSpreadsheet() {
+  const { records, duplicatesRemoved } = state.dataset;
+  const filtered = applyFilters(records, state.filters);
+  const xml = buildDashboardWorkbookXML({ records: filtered, filters: state.filters, duplicatesRemoved });
+  downloadWorkbook(`cartao-mestre_${exportTimestamp()}.xls`, xml);
+}
+
+function exportPDF() {
+  const { records, duplicatesRemoved } = state.dataset;
+  const filtered = applyFilters(records, state.filters);
+  const html = buildPrintReportHTML({ records: filtered, filters: state.filters, duplicatesRemoved });
+  openPrintReport(html);
 }
 
 function wireFilters() {
@@ -472,6 +575,13 @@ async function boot() {
     e.errorBanner.classList.remove('hidden');
     return;
   }
+
+  // Chamada rápida (mesma origem, sem round-trip visível) — só pra já
+  // renderizar o menu de conta com o nome certo no primeiro paint. Se
+  // falhar (dev local sem o serviço de auth na frente), fetchUsername
+  // engole o erro e devolve null — o dashboard sobe normalmente, só o
+  // rótulo do menu cai pro genérico "Conta".
+  state.username = await fetchUsername();
 
   wireFilters();
   renderAll();

@@ -132,10 +132,15 @@ function kpiShell(spec, isActive, onClick, interactive) {
   return c;
 }
 
-function renderKPIs(container, kpis, trend, filters, onKpiClick) {
+/** `showOrfaosCard` (default false): o KPI "Matrícula órfã" só entra na grade
+ * quando o usuário liga esse toggle (popover "Mais opções") — a matrícula
+ * órfã continua contando no total sempre (ver applyFilters em aggregate.js),
+ * isso só decide se o CARD aparece. */
+function renderKPIs(container, kpis, trend, filters, onKpiClick, showOrfaosCard) {
   container.innerHTML = '';
 
   for (const spec of KPI_SPECS) {
+    if (spec.key === 'orfa' && !showOrfaosCard) continue;
     const isActive = spec.filterField ? filters[spec.filterField] === spec.filterValue : false;
     const accent = KPI_ACCENT[spec.color];
 
@@ -1219,24 +1224,25 @@ function closeTrendModal(root) {
   root.innerHTML = '';
 }
 
-/** Toggle "Incluir matrículas órfãs" — antes era um <input type=checkbox>
- * nativo (quadradinho róseo do SO); agora é um switch no mesmo padrão de
- * vidro dos outros controles do header. */
-/** "Incluir matrículas órfãs" saiu da barra (era um switch com texto longo sempre
- * visível) e virou uma opção dentro de um popover "Mais opções" — mesmo padrão
- * visual dos dropdowns de filtro, só que atrás de um botão compacto (ícone),
- * porque hoje é a única configuração secundária que existe aqui. `container`
- * precisa ser `relative`, igual aos dropdowns. */
-function renderMoreOptions(container, { isOpen, onToggle, includeOrfaos, onToggleOrfaos }) {
+/** Popover "Mais opções" — atrás de um botão compacto (ícone), mesmo padrão
+ * visual dos dropdowns de filtro. `container` precisa ser `relative`, igual
+ * aos dropdowns.
+ *
+ * `showOrfaosCard` controla só a VISIBILIDADE do card/KPI "Matrícula órfã" —
+ * não é mais um filtro de dado (ver applyFilters em aggregate.js): uma
+ * matrícula órfã é uma liberação real, só não está em COLABORADORES.csv
+ * (que pode estar desatualizada), então sempre conta no total independente
+ * deste toggle. Card fica OCULTO por padrão; isso só decide se ele aparece. */
+function renderMoreOptions(container, { isOpen, onToggle, showOrfaosCard, onToggleOrfaosCard }) {
   container.innerHTML = '';
 
   const btn = el('button', `cm-select flex items-center justify-center w-[38px] h-[38px] shrink-0 rounded-full text-white/70 transition-colors duration-150 hover:text-white ${isOpen ? 'text-white' : ''}`);
   btn.type = 'button';
   btn.title = 'Mais opções';
   btn.setAttribute('aria-expanded', String(isOpen));
-  // ponto no canto quando a órfã está OCULTA (fora do padrão), pra sinalizar
-  // "há uma opção não-padrão ativa aqui dentro" mesmo com o painel fechado.
-  const dot = !includeOrfaos ? el('span', 'absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-400') : null;
+  // ponto no canto quando o card está VISÍVEL (fora do padrão, que é oculto),
+  // pra sinalizar "há uma opção não-padrão ativa aqui dentro" mesmo fechado.
+  const dot = showOrfaosCard ? el('span', 'absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-400') : null;
   btn.style.position = 'relative';
   btn.appendChild(el('span', 'text-base leading-none', '⋯'));
   if (dot) btn.appendChild(dot);
@@ -1252,15 +1258,102 @@ function renderMoreOptions(container, { isOpen, onToggle, includeOrfaos, onToggl
   const row = el('button', 'w-full flex items-center justify-between gap-3 rounded-xl text-sm px-2.5 py-2 text-white/80 hover:bg-white/5 transition-colors duration-150');
   row.type = 'button';
   row.setAttribute('role', 'switch');
-  row.setAttribute('aria-checked', String(includeOrfaos));
-  row.appendChild(el('span', 'text-left', 'Incluir matrículas órfãs'));
-  const track = el('span', `relative inline-flex shrink-0 w-9 h-5 rounded-full transition-colors duration-200 ${includeOrfaos ? 'bg-emerald-500/80' : 'bg-white/15'}`);
-  const knob = el('span', `absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${includeOrfaos ? 'translate-x-4' : 'translate-x-0'}`);
+  row.setAttribute('aria-checked', String(showOrfaosCard));
+  row.appendChild(el('span', 'text-left', 'Mostrar card "Matrícula órfã"'));
+  const track = el('span', `relative inline-flex shrink-0 w-9 h-5 rounded-full transition-colors duration-200 ${showOrfaosCard ? 'bg-emerald-500/80' : 'bg-white/15'}`);
+  const knob = el('span', `absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${showOrfaosCard ? 'translate-x-4' : 'translate-x-0'}`);
   track.appendChild(knob);
   row.appendChild(track);
-  row.addEventListener('click', () => onToggleOrfaos(!includeOrfaos));
+  row.addEventListener('click', () => onToggleOrfaosCard(!showOrfaosCard));
   panel.appendChild(row);
-  panel.appendChild(el('p', 'text-xs text-white/40 px-2.5 pt-1.5', 'Matrículas sem cadastro na base de dados.'));
+  panel.appendChild(el('p', 'text-xs text-white/40 px-2.5 pt-1.5', 'Matrículas sem cadastro na base de dados — sempre contam no total, isso só decide se o card aparece.'));
+
+  container.appendChild(panel);
+}
+
+// ------------------------------------------------------------- Menu de exportação
+
+/** Botão "⬇️ Exportar ▾" — mesmo padrão dos outros dropdowns (renderMoreOptions/
+ * renderAccountMenu). As três opções exportam exatamente o que está filtrado
+ * na tela agora (ver exportFilteredCSV/exportSpreadsheet/exportPDF em main.js). */
+function renderExportMenu(container, { isOpen, onToggle, onExportCSV, onExportExcel, onExportPDF }) {
+  container.innerHTML = '';
+
+  const btn = el('button', `cm-select flex items-center gap-2 rounded-full text-sm px-3 py-2 text-white/60 transition-colors duration-150 hover:border-white/25 hover:text-white/90 ${isOpen ? 'text-white' : ''}`);
+  btn.type = 'button';
+  btn.setAttribute('aria-expanded', String(isOpen));
+  btn.appendChild(el('span', '', '⬇️ Exportar'));
+  btn.appendChild(el('span', `shrink-0 text-white/40 text-[10px] transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`, '▾'));
+  btn.addEventListener('click', (e) => { e.stopPropagation(); onToggle(); });
+  container.appendChild(btn);
+
+  if (!isOpen) return;
+
+  const panel = el('div', 'cm-glass-modal absolute left-0 z-40 mt-2 min-w-[230px] rounded-2xl p-1.5 shadow-2xl');
+  if (!REDUCED_MOTION) panel.style.animation = 'cm-chip-in 150ms cubic-bezier(0.16,1,0.3,1) both';
+  panel.addEventListener('click', (e) => e.stopPropagation());
+
+  const menuItem = (icon, label, sublabel, onClick) => {
+    const b = el('button', 'w-full flex items-start gap-2.5 text-left text-sm px-3 py-2 rounded-xl text-white/80 hover:bg-white/10 transition-colors duration-100');
+    b.type = 'button';
+    b.appendChild(el('span', 'text-base leading-none mt-0.5', icon));
+    const textWrap = el('span', 'min-w-0');
+    textWrap.appendChild(el('span', 'block', label));
+    textWrap.appendChild(el('span', 'block text-xs text-white/40', sublabel));
+    b.appendChild(textWrap);
+    b.addEventListener('click', onClick);
+    return b;
+  };
+
+  panel.appendChild(menuItem('🧾', 'CSV', 'Abre em Excel, Sheets etc.', onExportCSV));
+  panel.appendChild(menuItem('📊', 'Planilha (Excel)', 'Várias abas: resumo, setor, motivo, gestor', onExportExcel));
+  panel.appendChild(menuItem('🖨️', 'PDF', 'Relatório com gráficos, via impressão do navegador', onExportPDF));
+  panel.appendChild(el('p', 'text-[11px] text-white/30 px-3 pt-1.5', 'Sempre respeita os filtros ativos na tela.'));
+
+  container.appendChild(panel);
+}
+
+// -------------------------------------------------------------- Menu de conta
+
+/** Botão "👤 <usuário> ▾" no canto superior direito do header — mesmo padrão
+ * visual/estrutural de renderMoreOptions (botão compacto + painel cm-glass-modal
+ * abaixo). `username` vem de GET /auth/verify (ver fetchUsername em main.js);
+ * fica null em dev local sem o serviço de auth, e o botão cai pra um rótulo
+ * genérico "Conta" — as ações continuam funcionando (POST /auth/logout +
+ * redirect), só a etiqueta de "logado como" não aparece. */
+function renderAccountMenu(container, { isOpen, username, onToggle, onSwitchAccount, onLogout }) {
+  container.innerHTML = '';
+
+  const btn = el('button', `cm-select flex items-center gap-2 rounded-full text-sm px-3 py-2 text-white/70 transition-colors duration-150 hover:border-white/25 hover:text-white ${isOpen ? 'text-white' : ''}`);
+  btn.type = 'button';
+  btn.setAttribute('aria-expanded', String(isOpen));
+  btn.appendChild(el('span', 'text-base leading-none', '👤'));
+  btn.appendChild(el('span', 'max-w-[110px] truncate', username || 'Conta'));
+  btn.appendChild(el('span', `shrink-0 text-white/40 text-[10px] transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`, '▾'));
+  btn.addEventListener('click', (e) => { e.stopPropagation(); onToggle(); });
+  container.appendChild(btn);
+
+  if (!isOpen) return;
+
+  const panel = el('div', 'cm-glass-modal absolute right-0 z-40 mt-2 min-w-[200px] rounded-2xl p-1.5 shadow-2xl');
+  if (!REDUCED_MOTION) panel.style.animation = 'cm-chip-in 150ms cubic-bezier(0.16,1,0.3,1) both';
+  panel.addEventListener('click', (e) => e.stopPropagation());
+
+  if (username) {
+    panel.appendChild(el('p', 'px-3 pt-1.5 pb-2 text-xs text-white/40 truncate', `Logado como ${username}`));
+  }
+
+  const menuItem = (icon, label, onClick) => {
+    const b = el('button', 'w-full flex items-center gap-2.5 text-left text-sm px-3 py-2 rounded-xl text-white/80 hover:bg-white/10 transition-colors duration-100');
+    b.type = 'button';
+    b.appendChild(el('span', 'text-base leading-none', icon));
+    b.appendChild(el('span', '', label));
+    b.addEventListener('click', onClick);
+    return b;
+  };
+
+  panel.appendChild(menuItem('🔄', 'Trocar de conta', onSwitchAccount));
+  panel.appendChild(menuItem('🚪', 'Sair', onLogout));
 
   container.appendChild(panel);
 }

@@ -42,7 +42,10 @@ function applyFilters(records, filters) {
     if (filters.nomeSemMatricula && !(!r.matricula && r.nomeDisplay === filters.nomeSemMatricula)) return false;
     if (filters.onlyUnauthorized && !r.aprovadorNaoAutorizado) return false;
     if (filters.onlyOrfaos && !r.naoCadastrado) return false;
-    if (!filters.onlyOrfaos && !filters.includeOrfaos && r.naoCadastrado) return false;
+    // Matrícula órfã é uma liberação real (só não está em COLABORADORES.csv,
+    // que pode estar desatualizada) — por isso sempre entra no total. Não
+    // existe filtro pra excluí-la das contagens; o que dá pra esconder é só o
+    // CARD "Matrícula órfã" na UI (ver showOrfaosCard em main.js), não o dado.
     return true;
   });
 }
