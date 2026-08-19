@@ -1,3 +1,6 @@
+# Dados sensíveis (nomes, matrículas, setor de funcionários) — não versionar
+dados/csv/*.csv
+
 # Claude Code local settings (machine-specific, not shared)
 .claude/settings.local.json
 
