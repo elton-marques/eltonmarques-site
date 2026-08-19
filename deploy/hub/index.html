@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>eltonmarques.com</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <!-- Mesmo runtime Tailwind + fonte self-hosted usados no dashboard do
+     Cartão Mestre, pra manter a mesma linguagem visual entre os projetos
+     hospedados nesta VPS. -->
+    <script src="design-system/assets/resource_3fa48481346f.js"></script>
+    <link rel="stylesheet" href="design-system/assets/css2_0b2072b66163.css" />
+    <style>
+      body {
+        font-family:
+          "Plus Jakarta Sans",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      :root {
+        --glass-bg: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
+        color-scheme: dark;
+      }
+
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+      }
+      *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      *::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.16);
+        border-radius: 9999px;
+      }
+
+      .cm-glass {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+          var(--glass-shadow),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      }
+
+      /* -------------------------------------------------- fundo ambiente (aurora) */
+      .cm-aurora {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .cm-aurora__blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.28;
+        will-change: transform;
+      }
+      .cm-aurora__blob--1 {
+        width: 42rem;
+        height: 42rem;
+        top: -14rem;
+        left: -10rem;
+        background: radial-gradient(circle at 30% 30%, #2563eb, transparent 70%);
+        animation: cm-drift-1 34s ease-in-out infinite;
+      }
+      .cm-aurora__blob--2 {
+        width: 38rem;
+        height: 38rem;
+        top: 8rem;
+        right: -12rem;
+        background: radial-gradient(circle at 70% 40%, #db2777, transparent 70%);
+        animation: cm-drift-2 40s ease-in-out infinite;
+      }
+      .cm-aurora__blob--3 {
+        width: 34rem;
+        height: 34rem;
+        bottom: -16rem;
+        left: 22rem;
+        background: radial-gradient(circle at 50% 50%, #059669, transparent 70%);
+        animation: cm-drift-3 46s ease-in-out infinite;
+      }
+      @keyframes cm-drift-1 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(4rem, 3rem) scale(1.08); }
+      }
+      @keyframes cm-drift-2 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-3rem, 4rem) scale(1.05); }
+      }
+      @keyframes cm-drift-3 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(3rem, -3rem) scale(1.1); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-aurora__blob { animation: none; }
+      }
+
+      .cm-card {
+        transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+      }
+      .cm-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.09);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-neutral-950 text-white antialiased">
+    <div class="cm-aurora" aria-hidden="true">
+      <div class="cm-aurora__blob cm-aurora__blob--1"></div>
+      <div class="cm-aurora__blob cm-aurora__blob--2"></div>
+      <div class="cm-aurora__blob cm-aurora__blob--3"></div>
+    </div>
+
+    <div class="min-h-screen flex flex-col relative z-10">
+      <header class="border-b border-white/10">
+        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-5">
+          <div class="flex flex-wrap items-center gap-3">
+            <div
+              class="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl cm-glass flex items-center justify-center text-lg shadow-[0_0_0_1px_rgba(96,165,250,0.15),0_10px_30px_-12px_rgba(96,165,250,0.4)]"
+            >
+              🗂️
+            </div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              eltonmarques.com
+              <span class="text-white/35 font-medium ml-2">Projetos</span>
+            </h1>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1">
+        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a
+              href="/cartaomestre/"
+              class="cm-card cm-glass rounded-3xl p-6 flex flex-col gap-3 no-underline"
+            >
+              <span
+                class="self-start rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-blue-300/80"
+                >Dashboard</span
+              >
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-base">
+                  💳
+                </div>
+                <h2 class="text-lg font-semibold text-white">Cartão Mestre</h2>
+              </div>
+              <p class="text-sm text-white/55 leading-relaxed">
+                Controle de uso do cartão mestre — quem contornou uma
+                restrição de checkout, quando e qual gestor autorizou.
+              </p>
+              <span class="mt-auto text-xs text-white/40">🔒 Acesso restrito</span>
+            </a>
+
+            <a
+              href="/leitor"
+              class="cm-card cm-glass rounded-3xl p-6 flex flex-col gap-3 no-underline"
+            >
+              <span
+                class="self-start rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-emerald-300/80"
+                >Ferramenta</span
+              >
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-base">
+                  🖋️
+                </div>
+                <h2 class="text-lg font-semibold text-white">Leitor de Matrículas</h2>
+              </div>
+              <p class="text-sm text-white/55 leading-relaxed">
+                OCR das folhas manuscritas de liberação do cartão mestre, com
+                validação automática e exportação para XLSX.
+              </p>
+              <span class="mt-auto text-xs text-white/40">&nbsp;</span>
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <footer class="border-t border-white/10 py-6 text-center text-xs text-white/30">
+        eltonmarques.com
+      </footer>
+    </div>
+  </body>
+</html>

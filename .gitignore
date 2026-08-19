@@ -3,6 +3,7 @@ dados/csv/*.csv
 
 # Claude Code local settings (machine-specific, not shared)
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # OS junk
 .DS_Store
