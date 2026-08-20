@@ -221,6 +221,18 @@
         scroll-margin-top: 88px; /* compensa a nav fixa ao rolar pra uma âncora */
       }
 
+      /* hero ocupa a tela inteira (menos a nav) antes do scroll, pra "Sobre"
+       não vazar na primeira dobra — 65px é a altura real da nav (h-16 = 64px
+       + 1px de border-bottom; não usa os 88px de .cm-section acima porque
+       aquele valor é uma folga proposital pro scroll até a âncora, maior
+       que a nav em si, e deixaria uma fresta do "Sobre" visível aqui).
+       min-height dobrado é fallback progressivo: dvh some se o browser não
+       suportar e o 100vh anterior prevalece. */
+      .cm-hero {
+        min-height: 100vh;
+        min-height: calc(100dvh - 65px);
+      }
+
       .cm-btn-primary {
         background: var(--brand-blue);
         transition:
@@ -457,10 +469,10 @@
     <!-- ================================================== hero -->
     <section
       id="top"
-      class="cm-section relative z-10 px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28"
+      class="cm-hero cm-section relative z-10 px-4 sm:px-6 py-16 sm:py-20 flex items-center"
     >
       <div
-        class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center"
+        class="max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-14 items-center"
       >
         <div class="cm-rise-in min-w-0" style="animation-delay: 0ms">
           <p class="text-sm text-white/70 mb-3">Olá, eu sou</p>
@@ -1438,8 +1450,18 @@
 
         var original = codeEl.innerHTML;
         var LOOP_PAUSE_MS = 3200; // tempo parado no resultado final antes de reiniciar
+        var ERASE_PAUSE_MS = 450; // pausa depois de apagar tudo, antes de digitar de novo
 
         try {
+          // trava a altura do bloco no tamanho do conteúdo já digitado (medido
+          // antes de qualquer alteração), senão digitar/apagar caractere a
+          // caractere encolhe/estica o <pre> e empurra o resto da página
+          // (hero, "Sobre" etc.) junto a cada volta do loop
+          var codeBox = codeEl.closest("pre");
+          if (codeBox) {
+            codeBox.style.minHeight = codeBox.getBoundingClientRect().height + "px";
+          }
+
           // achata o markup existente (spans tok-* + texto) numa lista de
           // caracteres com a classe do token a que cada um pertence —
           // calculado uma vez só e reaproveitado a cada volta do loop
@@ -1470,12 +1492,41 @@
             window.setTimeout(tick, 550);
           }
 
+          // acha o último nó de texto (a última letra ainda na tela), descendo
+          // até a folha mais profunda — pode estar direto em codeEl ou dentro
+          // de um span de token (tok-kw/tok-str/...)
+          function lastLeaf(node) {
+            while (node && node.lastChild) node = node.lastChild;
+            return node;
+          }
+
+          function eraseTick() {
+            caret.remove();
+            var leaf = lastLeaf(codeEl);
+            if (!leaf || leaf === codeEl) {
+              // já apagou tudo (codeEl sem filhos) — pausa curta e começa a
+              // digitar de novo
+              window.setTimeout(startLoop, ERASE_PAUSE_MS);
+              return;
+            }
+            var parent = leaf.parentNode;
+            leaf.remove();
+            // limpa o span de token que ficou vazio depois de perder a letra
+            if (parent !== codeEl && !parent.hasChildNodes()) parent.remove();
+
+            codeEl.appendChild(caret);
+
+            // apagar é mais rápido que digitar, mesma lógica de setTimeout
+            // puro (não pausa em aba em segundo plano)
+            window.setTimeout(eraseTick, 8 + Math.random() * 10);
+          }
+
           function tick() {
             if (i >= chars.length) {
               codeEl.appendChild(caret);
               // resultado final fica parado na tela por um tempo antes de
-              // apagar e começar a digitar de novo
-              window.setTimeout(startLoop, LOOP_PAUSE_MS);
+              // começar a apagar (animado, letra a letra) e digitar de novo
+              window.setTimeout(eraseTick, LOOP_PAUSE_MS);
               return;
             }
             var item = chars[i++];
