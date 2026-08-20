@@ -32,6 +32,12 @@
     <style>
       html {
         scroll-behavior: smooth;
+        /* rede de segurança: qualquer elemento que vaze da largura da
+         viewport (ex.: item de grid sem largura mínima explícita) rolava a
+         página inteira na horizontal e obrigava a dar zoom-out pra ver o
+         site inteiro no celular — isso não deve acontecer nunca, mas trava
+         aqui também caso escape de novo. */
+        overflow-x: hidden;
       }
       @media (prefers-reduced-motion: reduce) {
         html {
@@ -40,6 +46,7 @@
       }
 
       body {
+        overflow-x: hidden;
         font-family:
           "Inter",
           ui-sans-serif,
@@ -147,7 +154,7 @@
       }
 
       .cm-social {
-        color: rgba(255, 255, 255, 0.45);
+        color: rgba(255, 255, 255, 0.55);
         transition:
           color 150ms ease,
           border-color 150ms ease,
@@ -227,10 +234,10 @@
         color: rgba(255, 255, 255, 0.75);
       }
       .cm-code .tok-punc {
-        color: rgba(255, 255, 255, 0.35);
+        color: rgba(255, 255, 255, 0.45);
       }
       .cm-code .tok-com {
-        color: rgba(255, 255, 255, 0.35);
+        color: rgba(255, 255, 255, 0.45);
         font-style: italic;
       }
 
@@ -257,7 +264,9 @@
         }
       }
 
-      /* entrada suave dos blocos, escalonada via style="animation-delay" */
+      /* entrada suave do herói, dispara no load — não depende de rolagem
+       porque o herói (inclusive o mockup perfil.js) já está na primeira
+       tela. Escalonada via style="animation-delay". */
       @keyframes cm-rise-in {
         from {
           opacity: 0;
@@ -273,6 +282,38 @@
       }
       @media (prefers-reduced-motion: reduce) {
         .cm-rise-in {
+          animation: none;
+        }
+      }
+
+      /* entrada dos blocos abaixo do herói (Sobre/Projetos/Serviços/Contato)
+       — ao contrário do .cm-rise-in acima, esses só devem aparecer quando o
+       usuário rola até eles, não no load. cm-scroll-reveal.js observa cada
+       .cm-reveal com IntersectionObserver e soma .is-visible quando entra
+       na viewport, disparando a mesma keyframe cm-rise-in de cima (reusada
+       aqui, não duplicada). De propósito usa "animation", não "transition":
+       os cards de Projetos são .cm-card *e* .cm-reveal ao mesmo tempo, e
+       .cm-card já tem sua própria "transition" pro hover (transform,
+       border-color, background, box-shadow) — se cm-reveal também setasse
+       "transition" nesses elementos, uma declaração pisaria na outra (é a
+       mesma propriedade CSS, não soma) e o hover suave do card quebraria.
+       "animation" não compartilha esse problema, roda em paralelo à
+       transition do hover sem interferir. Escalonada via
+       style="animation-delay" nos elementos que precisam de stagger dentro
+       do mesmo bloco (ex.: cards de um grid). */
+      .cm-reveal {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .cm-reveal.is-visible {
+        animation: cm-rise-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-reveal {
+          opacity: 1;
+          transform: none;
+        }
+        .cm-reveal.is-visible {
           animation: none;
         }
       }
@@ -379,9 +420,11 @@
       id="top"
       class="cm-section relative z-10 px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28"
     >
-      <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
-        <div class="cm-rise-in" style="animation-delay: 0ms">
-          <p class="text-sm text-white/45 mb-3">Olá, eu sou</p>
+      <div
+        class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center"
+      >
+        <div class="cm-rise-in min-w-0" style="animation-delay: 0ms">
+          <p class="text-sm text-white/55 mb-3">Olá, eu sou</p>
           <h1
             class="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.1]"
           >
@@ -478,7 +521,7 @@
          tinha CodeBlockDemo/animate-ui aqui — motion reimplementada em JS
          vanilla pra não puxar React só por causa disso). -->
         <div
-          class="cm-rise-in"
+          class="cm-rise-in min-w-0"
           style="animation-delay: 120ms"
           aria-hidden="true"
         >
@@ -489,7 +532,7 @@
               <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
-              <span class="ml-2 text-xs text-white/35">perfil.ts</span>
+              <span class="ml-2 text-xs text-white/50">perfil.js</span>
             </div>
             <pre
               class="cm-code px-5 py-5 overflow-x-auto"
@@ -513,13 +556,13 @@
     >
       <div class="max-w-3xl mx-auto text-center">
         <p
-          class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-4"
+          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/50 mb-4"
         >
           Sobre
         </p>
         <p
           data-cm-scroll-highlight
-          class="cm-rise-in text-lg sm:text-xl leading-relaxed"
+          class="cm-reveal text-lg sm:text-xl leading-relaxed"
           style="animation-delay: 40ms"
         >
           Sou desenvolvedor de software focado em transformar processos manuais
@@ -530,7 +573,7 @@
           dados operacionais.
         </p>
         <div
-          class="cm-rise-in flex flex-wrap justify-center gap-2.5 mt-7"
+          class="cm-reveal flex flex-wrap justify-center gap-2.5 mt-7"
           style="animation-delay: 80ms"
         >
           <span
@@ -620,7 +663,7 @@
     >
       <div class="max-w-5xl mx-auto">
         <p
-          class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-6"
+          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/50 mb-6"
         >
           Projetos
         </p>
@@ -628,7 +671,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a
             href="/cartaomestre/"
-            class="cm-card cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3 no-underline"
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
             style="animation-delay: 40ms"
           >
             <div
@@ -646,7 +689,7 @@
                 class="rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-blue-300/80"
                 >Dashboard</span
               >
-              <span class="flex items-center gap-1 text-[11px] text-white/35">
+              <span class="flex items-center gap-1 text-[11px] text-white/50">
                 <svg
                   width="11"
                   height="11"
@@ -708,7 +751,7 @@
 
           <a
             href="/leitor"
-            class="cm-card cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3 no-underline"
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
             style="animation-delay: 90ms"
           >
             <div
@@ -726,7 +769,7 @@
                 class="rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-emerald-300/80"
                 >Ferramenta</span
               >
-              <span class="flex items-center gap-1 text-[11px] text-white/35">
+              <span class="flex items-center gap-1 text-[11px] text-white/50">
                 <svg
                   width="11"
                   height="11"
@@ -802,14 +845,14 @@
     >
       <div class="max-w-5xl mx-auto">
         <p
-          class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-6"
+          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/50 mb-6"
         >
           Serviços
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div
-            class="cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3"
+            class="cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
             style="animation-delay: 40ms"
           >
             <div
@@ -841,7 +884,7 @@
           </div>
 
           <div
-            class="cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3"
+            class="cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
             style="animation-delay: 90ms"
           >
             <div
@@ -871,7 +914,7 @@
           </div>
 
           <div
-            class="cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3"
+            class="cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
             style="animation-delay: 140ms"
           >
             <div
@@ -913,21 +956,21 @@
     >
       <div class="max-w-2xl mx-auto text-center">
         <p
-          class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-4"
+          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/50 mb-4"
         >
           Contato
         </p>
         <h2
-          class="cm-rise-in text-2xl sm:text-3xl font-bold text-white"
+          class="cm-reveal text-2xl sm:text-3xl font-bold text-white"
           style="animation-delay: 40ms"
         >
           Tem um projeto em mente?
         </h2>
-        <p class="cm-rise-in text-white/55 mt-3" style="animation-delay: 70ms">
+        <p class="cm-reveal text-white/55 mt-3" style="animation-delay: 70ms">
           Me manda uma mensagem — respondo por e-mail ou LinkedIn.
         </p>
         <div
-          class="cm-rise-in flex flex-wrap justify-center gap-3 mt-7"
+          class="cm-reveal flex flex-wrap justify-center gap-3 mt-7"
           style="animation-delay: 100ms"
         >
           <a
@@ -971,7 +1014,7 @@
       <div
         class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
       >
-        <p class="text-xs text-white/35">
+        <p class="text-xs text-white/50">
           © <span id="cm-year">2026</span> Elton Marques · Todos os direitos
           reservados · eltonmarques.com
         </p>
@@ -1369,12 +1412,14 @@
       })();
     </script>
 
-    <!-- cm-hero-type.js — digita o mockup de código do hero (perfil.ts) no
-     load, preservando a coloração por token (tok-kw/tok-str/...). Vanilla
-     JS pra não puxar React/animate-ui só por causa de um card decorativo;
-     se prefers-reduced-motion estiver ligado, ou algo falhar no meio, o
-     código volta a aparecer inteiro e estático (o markup original nunca é
-     perdido). -->
+    <!-- cm-hero-type.js — digita o mockup de código do hero (perfil.js) em
+     loop: escreve, pausa alguns segundos com o resultado final parado na
+     tela (tempo de leitura), apaga e reinicia — preservando a coloração
+     por token (tok-kw/tok-str/...) a cada rodada. Vanilla JS pra não puxar
+     React/animate-ui só por causa de um card decorativo; se
+     prefers-reduced-motion estiver ligado, ou algo falhar no meio, o
+     código volta a aparecer inteiro e estático, sem loop (o markup
+     original nunca é perdido). -->
     <script>
       (function () {
         var codeEl = document.querySelector("[data-cm-typecode]");
@@ -1386,10 +1431,12 @@
         if (reduced) return;
 
         var original = codeEl.innerHTML;
+        var LOOP_PAUSE_MS = 3200; // tempo parado no resultado final antes de reiniciar
 
         try {
           // achata o markup existente (spans tok-* + texto) numa lista de
-          // caracteres com a classe do token a que cada um pertence
+          // caracteres com a classe do token a que cada um pertence —
+          // calculado uma vez só e reaproveitado a cada volta do loop
           var chars = [];
           (function flatten(node, cls) {
             node.childNodes.forEach(function (child) {
@@ -1403,19 +1450,26 @@
             });
           })(codeEl, null);
 
-          codeEl.textContent = "";
-
           var caret = document.createElement("span");
           caret.className = "cm-caret";
           caret.textContent = "|";
 
-          var i = 0;
-          var openSpan = null;
-          var openCls;
+          var i, openSpan, openCls;
+
+          function startLoop() {
+            codeEl.textContent = "";
+            i = 0;
+            openSpan = null;
+            openCls = undefined;
+            window.setTimeout(tick, 550);
+          }
 
           function tick() {
             if (i >= chars.length) {
               codeEl.appendChild(caret);
+              // resultado final fica parado na tela por um tempo antes de
+              // apagar e começar a digitar de novo
+              window.setTimeout(startLoop, LOOP_PAUSE_MS);
               return;
             }
             var item = chars[i++];
@@ -1440,7 +1494,7 @@
             window.setTimeout(tick, delay);
           }
 
-          window.setTimeout(tick, 550);
+          startLoop();
         } catch (e) {
           codeEl.innerHTML = original;
         }
@@ -1504,6 +1558,49 @@
           ? mq.addEventListener.bind(mq)
           : mq.addListener.bind(mq))("change", function (e) {
           if (e.matches) setOpen(false);
+        });
+      })();
+    </script>
+
+    <!-- cm-scroll-reveal.js — os blocos abaixo do herói (Sobre/Projetos/
+     Serviços/Contato, marcados com .cm-reveal) só entram (fade + subida)
+     quando cruzam a viewport ao rolar, em vez de já aparecerem prontos no
+     load como o herói (que usa .cm-rise-in, sem relação com rolagem).
+     IntersectionObserver, unobserve após revelar (dispara uma vez só, não
+     fica escondendo de novo ao rolar pra cima). Sem prefers-reduced-motion:
+     o CSS de .cm-reveal já cai pra opacity:1 direto, então nem precisa
+     rodar isso. -->
+    <script>
+      (function () {
+        var els = document.querySelectorAll(".cm-reveal");
+        if (!els.length) return;
+
+        var reduced =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduced) return;
+
+        if (!("IntersectionObserver" in window)) {
+          els.forEach(function (el) {
+            el.classList.add("is-visible");
+          });
+          return;
+        }
+
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+        );
+
+        els.forEach(function (el) {
+          io.observe(el);
         });
       })();
     </script>
