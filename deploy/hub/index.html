@@ -22,6 +22,40 @@
       content="design-system/assets/logo/logo-em-256.png"
     />
     <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://eltonmarques.com/" />
+    <meta name="author" content="Elton Marques" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Elton Marques — Desenvolvedor de Software"
+    />
+    <meta
+      name="twitter:description"
+      content="Dashboards, automação e ferramentas de dados, do design ao deploy."
+    />
+    <meta
+      name="twitter:image"
+      content="design-system/assets/logo/logo-em-256.png"
+    />
+    <!-- dados estruturados (schema.org/Person) — mesmos fatos já publicados
+     na página (nome, cargo, e-mail, perfis), só declarados de um jeito que
+     buscadores conseguem ler direto; nada aqui que não esteja no HTML
+     visível logo abaixo. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Elton Marques",
+        "url": "https://eltonmarques.com/",
+        "image": "https://eltonmarques.com/design-system/assets/logo/logo-em-256.png",
+        "jobTitle": "Desenvolvedor de Software",
+        "email": "mailto:contato@eltonmarques.com",
+        "sameAs": [
+          "https://github.com/elton-marques",
+          "https://www.linkedin.com/in/elton-marques/"
+        ]
+      }
+    </script>
     <!-- Mesmo runtime Tailwind usado no dashboard do Cartão Mestre. Fonte
      trocada pra Inter (self-hosted, design-system/assets/css2_inter.css) —
      o Cartão Mestre continua em Plus Jakarta Sans (css2_0b2072b66163.css,
@@ -320,6 +354,11 @@
     </style>
   </head>
   <body class="min-h-screen bg-[var(--brand-navy)] text-white antialiased">
+    <a
+      href="#top"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 cm-btn-primary rounded-full px-4 py-2 text-sm font-semibold text-white no-underline"
+      >Pular para o conteúdo</a
+    >
     <canvas id="cm-kinetic-grid" aria-hidden="true"></canvas>
 
     <!-- ================================================== navegação -->
@@ -437,8 +476,8 @@
             Desenvolvedor de Software
           </p>
           <p class="text-white/70 leading-relaxed mt-5 max-w-md">
-            Transformo ideias em soluções digitais eficientes, modernas e
-            escaláveis — da interface ao servidor que serve ela.
+            Transformo processos manuais e dados dispersos em ferramentas que
+            as pessoas realmente usam — da interface ao servidor que a serve.
           </p>
 
           <div class="flex flex-wrap items-center gap-3 mt-8">
@@ -555,104 +594,41 @@
       class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
     >
       <div class="max-w-3xl mx-auto text-center">
-        <p
+        <h2
           class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-4"
         >
           Sobre
-        </p>
+        </h2>
         <p
           data-cm-scroll-highlight
           class="cm-reveal text-lg sm:text-xl leading-relaxed"
           style="animation-delay: 40ms"
         >
-          Sou desenvolvedor de software focado em transformar processos manuais
-          e dados dispersos em ferramentas simples de usar. Gosto de cuidar do
-          processo inteiro — da interface ao servidor que a serve — com atenção
-          aos detalhes que fazem diferença no dia a dia de quem usa. Hoje, meus
-          projetos giram em torno de controle de acesso, automação e leitura de
-          dados operacionais.
+          Sou desenvolvedor de software e gosto de cuidar do processo inteiro
+          — da interface ao servidor que a serve. Meu foco é pegar processos
+          manuais e dados dispersos e transformar em ferramentas simples de
+          usar, com atenção aos detalhes que fazem diferença no dia a dia de
+          quem opera. Hoje isso se traduz em controle de acesso, automação e
+          leitura de dados operacionais — sempre com o mesmo objetivo: tirar
+          trabalho manual repetitivo do caminho de quem precisa focar no que
+          importa.
         </p>
-        <div
-          class="cm-reveal flex flex-wrap justify-center gap-2.5 mt-7"
+        <ul
+          class="cm-reveal flex flex-wrap justify-center gap-2.5 mt-7 list-none"
           style="animation-delay: 80ms"
+          aria-label="Tecnologias que uso"
         >
-          <span
-            class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="16 18 22 12 16 6"></polyline>
-              <polyline points="8 6 2 12 8 18"></polyline>
-            </svg>
-            Tecnologia
-          </span>
-          <span
-            class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
-            </svg>
-            Confiança
-          </span>
-          <span
-            class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="9"></circle>
-              <circle cx="12" cy="12" r="4"></circle>
-              <circle cx="12" cy="12" r="0.5" fill="currentColor"></circle>
-            </svg>
-            Foco
-          </span>
-          <span
-            class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Z"
-              ></path>
-              <path
-                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"
-              ></path>
-            </svg>
-            Evolução
-          </span>
-        </div>
+          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">
+            JavaScript
+          </li>
+          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">Python</li>
+          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">SQL</li>
+          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">Nginx</li>
+          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">Systemd</li>
+          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">
+            Tailwind CSS
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -662,11 +638,11 @@
       class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
     >
       <div class="max-w-5xl mx-auto">
-        <p
+        <h2
           class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-6"
         >
           Projetos
-        </p>
+        </h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a
@@ -724,11 +700,13 @@
                   <line x1="2" y1="10" x2="22" y2="10"></line>
                 </svg>
               </div>
-              <h2 class="text-lg font-semibold text-white">Cartão Mestre</h2>
+              <h3 class="text-lg font-semibold text-white">Cartão Mestre</h3>
             </div>
             <p class="text-sm text-white/70 leading-relaxed">
-              Dashboard — Controle de uso do cartão mestre — Kpis e insights
-              sobre liberações com cartão mestre na portaria.
+              Dashboard de controle de acesso pela portaria — acompanha as
+              liberações do cartão mestre com login por sessão, filtros e
+              exportação de relatórios, reunindo tudo em KPIs e insights
+              operacionais.
             </p>
             <span
               class="cm-card__arrow mt-auto flex items-center gap-1 text-xs text-white/70"
@@ -806,13 +784,14 @@
                   ></path>
                 </svg>
               </div>
-              <h2 class="text-lg font-semibold text-white">
+              <h3 class="text-lg font-semibold text-white">
                 Leitor de Matrículas
-              </h2>
+              </h3>
             </div>
             <p class="text-sm text-white/70 leading-relaxed">
-              OCR das folhas manuscritas de liberação do cartão mestre, com
-              validação automática e exportação para XLSX.
+              Lê as folhas manuscritas de liberação do cartão mestre via OCR,
+              valida os dados automaticamente e exporta tudo pronto pra
+              planilha — sem digitação manual.
             </p>
             <span
               class="cm-card__arrow mt-auto flex items-center gap-1 text-xs text-white/70"
@@ -844,11 +823,11 @@
       class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
     >
       <div class="max-w-5xl mx-auto">
-        <p
+        <h2
           class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-6"
         >
           Serviços
-        </p>
+        </h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div
@@ -878,8 +857,9 @@
               Dashboards internos
             </h3>
             <p class="text-sm text-white/70 leading-relaxed">
-              Interfaces pra acompanhar operação e dados sensíveis com controle
-              de acesso — login por sessão, filtros e exportação de relatórios.
+              Painéis pra acompanhar operação e dados sensíveis em um só
+              lugar, com controle de acesso: login por sessão, filtros sob
+              medida e exportação de relatórios.
             </p>
           </div>
 
@@ -908,8 +888,9 @@
               Automação &amp; OCR
             </h3>
             <p class="text-sm text-white/70 leading-relaxed">
-              Ferramentas que tiram trabalho manual repetitivo do caminho —
-              leitura de formulários e exportação direta pra planilha.
+              Ferramentas que tiram trabalho manual repetitivo do caminho:
+              leitura automática de formulários manuscritos ou digitais, com
+              exportação direta pra planilha.
             </p>
           </div>
 
@@ -940,9 +921,9 @@
               Infraestrutura &amp; deploy
             </h3>
             <p class="text-sm text-white/70 leading-relaxed">
-              Publicação e operação de aplicações do zero — nginx, serviços
-              systemd, autenticação por sessão e túnel, sem depender de
-              plataformas terceirizadas.
+              Publicação e operação de aplicações do zero, sem depender de
+              plataformas terceirizadas — nginx, serviços systemd,
+              autenticação por sessão e túnel.
             </p>
           </div>
         </div>
