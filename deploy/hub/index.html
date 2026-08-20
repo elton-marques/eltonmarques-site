@@ -22,11 +22,13 @@
       content="design-system/assets/logo/logo-em-256.png"
     />
     <meta property="og:type" content="website" />
-    <!-- Mesmo runtime Tailwind + fonte self-hosted usados no dashboard do
-     Cartão Mestre, pra manter a mesma linguagem visual entre os projetos
-     hospedados nesta VPS. -->
+    <!-- Mesmo runtime Tailwind usado no dashboard do Cartão Mestre. Fonte
+     trocada pra Inter (self-hosted, design-system/assets/css2_inter.css) —
+     o Cartão Mestre continua em Plus Jakarta Sans (css2_0b2072b66163.css,
+     ainda no repo mas sem uso aqui), então por ora os dois divergem de
+     tipografia; unificar de novo é só trocar o link lá também. -->
     <script src="design-system/assets/resource_3fa48481346f.js"></script>
-    <link rel="stylesheet" href="design-system/assets/css2_0b2072b66163.css" />
+    <link rel="stylesheet" href="design-system/assets/css2_inter.css" />
     <style>
       html {
         scroll-behavior: smooth;
@@ -39,7 +41,7 @@
 
       body {
         font-family:
-          "Plus Jakarta Sans",
+          "Inter",
           ui-sans-serif,
           system-ui,
           -apple-system,
@@ -48,23 +50,29 @@
       }
 
       :root {
-        /* Antes 6% de branco — legível sobre os blobs de aurora (fundo
-         liso e desfocado), mas com o kinetic-grid (linhas/pontos nítidos)
-         o conteúdo do card ficava ilegível por baixo. Subiu pra um navy
-         quase opaco, mesma lógica já usada em .cm-nav (ver comentário lá
-         embaixo) — sem backdrop-filter, que a gente evita por custo de
-         GPU. */
-        --glass-bg: rgba(18, 30, 46, 0.82);
-        --glass-border: rgba(255, 255, 255, 0.12);
+        /* Vidro dos cards. Passou por duas rodadas: 6% de branco (legível
+         só sobre os blobs de aurora, fundo liso) → 82% de navy (ainda
+         meio apagado com o kinetic-grid atrás) → 90% agora. Definição das
+         bordas subiu junto (12%→16%) porque opacidade sozinha não resolve
+         contraste nas quinas do card. Sem backdrop-filter em lugar nenhum
+         do site — custo de GPU, mesmo motivo do .cm-nav logo abaixo. */
+        --glass-bg: rgba(18, 30, 46, 0.9);
+        --glass-border: rgba(255, 255, 255, 0.16);
         --glass-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
         color-scheme: dark;
 
         /* Paleta do painel de identidade (media/Painel de Identidades Elton
-         Marques.png): navy escuro, azul de marca, cinza e branco-gelo. */
+         Marques.png): navy escuro + azul de marca, monocromática — o tom
+         de cinza que existia aqui (--brand-gray) saiu por não ter uso
+         real e contrariar essa intenção. --brand-navy é o fundo canônico
+         do site inteiro (body, nav, canvas do kinetic-grid, cards);
+         --accent é o único destaque claro (headline, código, cursor,
+         kinetic-grid) — muda aqui, muda em todo lugar. */
         --brand-navy: #0d1b2a;
         --brand-blue: #1e40af;
         --brand-blue-hover: #2547c9;
-        --brand-gray: #e2e8f0;
+        --accent: #93c5fd;
+        --accent-emerald: #059669;
       }
 
       * {
@@ -111,8 +119,8 @@
       }
       .cm-card:hover {
         transform: translateY(-4px);
-        border-color: rgba(255, 255, 255, 0.22);
-        background: rgba(28, 44, 64, 0.9);
+        border-color: rgba(255, 255, 255, 0.26);
+        background: rgba(32, 50, 72, 0.95);
         box-shadow:
           0 20px 40px -16px rgba(0, 0, 0, 0.7),
           inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
@@ -147,8 +155,8 @@
       }
       .cm-social:hover {
         color: rgba(255, 255, 255, 0.9);
-        border-color: rgba(255, 255, 255, 0.22);
-        background: rgba(28, 44, 64, 0.9);
+        border-color: rgba(255, 255, 255, 0.26);
+        background: rgba(32, 50, 72, 0.95);
       }
 
       /* -------------------------------------------------- navegação */
@@ -190,8 +198,8 @@
           transform 150ms ease;
       }
       .cm-btn-secondary:hover {
-        background: rgba(28, 44, 64, 0.9);
-        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(32, 50, 72, 0.95);
+        border-color: rgba(255, 255, 255, 0.26);
         transform: translateY(-1px);
       }
 
@@ -210,7 +218,7 @@
         line-height: 1.7;
       }
       .cm-code .tok-kw {
-        color: #93c5fd;
+        color: var(--accent);
       }
       .cm-code .tok-str {
         color: #86efac;
@@ -231,7 +239,7 @@
       .cm-caret {
         display: inline-block;
         width: 1ch;
-        color: #93c5fd;
+        color: var(--accent);
         animation: cm-caret-blink 1s step-end infinite;
       }
       @keyframes cm-caret-blink {
@@ -270,7 +278,7 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-[#0d1117] text-white antialiased">
+  <body class="min-h-screen bg-[var(--brand-navy)] text-white antialiased">
     <canvas id="cm-kinetic-grid" aria-hidden="true"></canvas>
 
     <!-- ================================================== navegação -->
@@ -280,11 +288,13 @@
       >
         <a href="#top" class="flex items-center gap-2.5 no-underline">
           <img
-            src="design-system/assets/logo/logo-em-32.png"
+            src="design-system/assets/logo/logo-em-256.png"
             alt="Elton Marques"
-            class="w-8 h-8 rounded-lg"
+            width="256"
+            height="256"
+            class="w-10 h-10 rounded-lg"
           />
-          <span class="font-semibold text-white text-sm sm:text-base"
+          <span class="font-semibold text-white text-base sm:text-lg"
             >Elton Marques</span
           >
         </a>
@@ -321,7 +331,7 @@
           </h1>
           <p
             class="text-lg sm:text-xl font-semibold mt-2"
-            style="color: #93c5fd"
+            style="color: var(--accent)"
           >
             Desenvolvedor de Software
           </p>
@@ -450,7 +460,8 @@
           Sobre
         </p>
         <p
-          class="cm-rise-in text-lg sm:text-xl text-white/70 leading-relaxed"
+          data-cm-scroll-highlight
+          class="cm-rise-in text-lg sm:text-xl leading-relaxed"
           style="animation-delay: 40ms"
         >
           Sou desenvolvedor de software focado em transformar processos manuais
@@ -565,7 +576,11 @@
             <div
               class="cm-card__glow"
               style="
-                background: radial-gradient(circle, #2563eb, transparent 70%);
+                background: radial-gradient(
+                  circle,
+                  var(--brand-blue-hover),
+                  transparent 70%
+                );
               "
             ></div>
             <div class="flex items-center justify-between">
@@ -641,7 +656,11 @@
             <div
               class="cm-card__glow"
               style="
-                background: radial-gradient(circle, #059669, transparent 70%);
+                background: radial-gradient(
+                  circle,
+                  var(--accent-emerald),
+                  transparent 70%
+                );
               "
             ></div>
             <div class="flex items-center justify-between">
@@ -894,7 +913,10 @@
       <div
         class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
       >
-        <p class="text-xs text-white/25">eltonmarques.com</p>
+        <p class="text-xs text-white/35">
+          © <span id="cm-year">2026</span> Elton Marques · Todos os direitos
+          reservados · eltonmarques.com
+        </p>
         <div class="flex items-center gap-2">
           <a
             href="mailto:contato@eltonmarques.com"
@@ -950,10 +972,13 @@
      clique/toque. Porta pra JS vanilla de um componente React (canvas +
      rAF, sem estado de framework nenhum) — não fazia sentido puxar
      Next.js/shadcn pra um site estático de uma página só. Mesma lógica e
-     constantes do original, cor única trocada pro azul de marca (#93c5fd)
-     pra continuar monocromática, e com devicePixelRatio pra não borrar em
-     tela retina. Em prefers-reduced-motion desenha só um frame estático,
-     sem loop nem listeners de ponteiro. -->
+     constantes do original; cor lida de --brand-navy/--accent (CSS, fonte
+     única da paleta — muda lá, muda aqui sem precisar duplicar hex), com
+     devicePixelRatio pra não borrar em tela retina. Intensidade um pouco
+     mais baixa que a primeira versão (linhas/pontos/glow) porque estava
+     competindo demais com o conteúdo dos cards por cima. Em
+     prefers-reduced-motion desenha só um frame estático, sem loop nem
+     listeners de ponteiro. -->
     <script>
       (function () {
         var canvas = document.getElementById("cm-kinetic-grid");
@@ -972,18 +997,43 @@
         var DOT_SPACING = 28;
         var LERP_SPEED = 0.08;
 
-        var LINE_BASE = { r: 255, g: 255, b: 255, a: 0.13 };
+        var LINE_BASE = { r: 255, g: 255, b: 255, a: 0.1 };
         var NODE_BASE_RADIUS = 1.8;
         var NODE_ACTIVE_RADIUS = 3.2;
 
-        // paleta do site: mesmo fundo do body (#0d1117) + azul de marca como
-        // único acento (mesmo tom usado no headline e no mockup de código)
+        // lê a paleta direto do CSS (--brand-navy / --accent em :root) em
+        // vez de duplicar hex aqui — cai pros mesmos valores se por algum
+        // motivo as custom properties não resolverem
+        function cssVar(name, fallback) {
+          var v = getComputedStyle(document.documentElement)
+            .getPropertyValue(name)
+            .trim();
+          return v || fallback;
+        }
+        function hexToRgb(hex, fallback) {
+          var m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+          if (!m) return fallback;
+          return {
+            r: parseInt(m[1], 16),
+            g: parseInt(m[2], 16),
+            b: parseInt(m[3], 16),
+          };
+        }
+
+        var bgHex = cssVar("--brand-navy", "#0d1b2a");
+        var accentRgb = hexToRgb(cssVar("--accent", "#93c5fd"), {
+          r: 147,
+          g: 197,
+          b: 253,
+        });
+        var accentCsv = accentRgb.r + "," + accentRgb.g + "," + accentRgb.b;
+
         var THEME = {
-          bg: "#0d1117",
-          lineActive: { r: 147, g: 197, b: 253, a: 0.9 },
-          nodeActive: { r: 147, g: 197, b: 253, a: 1.0 },
-          glow: "147,197,253",
-          ripple: "147,197,253",
+          bg: bgHex,
+          lineActive: { r: accentRgb.r, g: accentRgb.g, b: accentRgb.b, a: 0.85 },
+          nodeActive: { r: accentRgb.r, g: accentRgb.g, b: accentRgb.b, a: 1.0 },
+          glow: accentCsv,
+          ripple: accentCsv,
         };
 
         function lerpN(a, b, t) {
@@ -1080,7 +1130,7 @@
           ctx.fillStyle = THEME.bg;
           ctx.fillRect(0, 0, W, H);
 
-          ctx.fillStyle = "rgba(255,255,255,0.05)";
+          ctx.fillStyle = "rgba(255,255,255,0.04)";
           for (var x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
             for (var y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
               ctx.beginPath();
@@ -1171,7 +1221,7 @@
                 );
                 grd.addColorStop(
                   0,
-                  "rgba(" + THEME.glow + "," + (t2 * 0.3).toFixed(3) + ")",
+                  "rgba(" + THEME.glow + "," + (t2 * 0.22).toFixed(3) + ")",
                 );
                 grd.addColorStop(1, "rgba(" + THEME.glow + ",0)");
                 ctx.beginPath();
@@ -1336,6 +1386,101 @@
         } catch (e) {
           codeEl.innerHTML = original;
         }
+      })();
+    </script>
+
+    <script>
+      // ano do copyright no rodapé, sempre atual sem precisar editar o HTML
+      var cmYearEl = document.getElementById("cm-year");
+      if (cmYearEl) cmYearEl.textContent = new Date().getFullYear();
+    </script>
+
+    <!-- cm-scroll-highlight.js — porta vanilla de um efeito de "Scroll Text
+     Highlight" (Originkit, GSAP/ScrollTrigger no original): cada palavra do
+     parágrafo nasce apagada e acende conforme o parágrafo cruza o centro
+     da viewport ao rolar. Não puxamos GSAP pra um efeito que é só
+     interpolar opacidade por palavra em função do scroll — mesmo raciocínio
+     de sempre neste arquivo (canvas do fundo, digitação do código): JS
+     vanilla, zero dependência nova, nada de build step. Progressive
+     enhancement de verdade: o HTML já traz o parágrafo legível (branco
+     sólido) antes do script rodar; se algo falhar no meio, ele fica assim
+     mesmo, nunca em branco. Sem prefers-reduced-motion: pula o efeito e
+     deixa o texto na cor final. -->
+    <script>
+      (function () {
+        var els = document.querySelectorAll("[data-cm-scroll-highlight]");
+        if (!els.length) return;
+
+        var reduced =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduced) return;
+
+        var DIM_A = 0.22;
+        var LIT_A = 0.95;
+
+        function colorAt(t) {
+          var a = DIM_A + (LIT_A - DIM_A) * t;
+          return "rgba(255,255,255," + a.toFixed(3) + ")";
+        }
+
+        var entries = [];
+
+        els.forEach(function (el) {
+          try {
+            var text = el.textContent.trim();
+            var words = text.split(/\s+/).filter(Boolean);
+            if (!words.length) return;
+
+            el.textContent = "";
+            var spans = [];
+            words.forEach(function (word, i) {
+              var span = document.createElement("span");
+              span.textContent = word;
+              span.style.color = colorAt(0);
+              el.appendChild(span);
+              if (i < words.length - 1) {
+                el.appendChild(document.createTextNode(" "));
+              }
+              spans.push(span);
+            });
+            entries.push({ el: el, spans: spans });
+          } catch (e) {
+            // parágrafo fica como texto normal se algo falhar aqui
+          }
+        });
+
+        if (!entries.length) return;
+
+        function update() {
+          var center = window.innerHeight / 2;
+          entries.forEach(function (entry) {
+            var rect = entry.el.getBoundingClientRect();
+            var n = entry.spans.length;
+            var progress = rect.height ? (center - rect.top) / rect.height : 0;
+            progress = Math.max(0, Math.min(1, progress));
+            var band = Math.max(1 / n, 0.06);
+            entry.spans.forEach(function (span, i) {
+              var t = (progress - i / n) / band;
+              t = Math.max(0, Math.min(1, t));
+              span.style.color = colorAt(t);
+            });
+          });
+        }
+
+        var scheduled = false;
+        function requestUpdate() {
+          if (scheduled) return;
+          scheduled = true;
+          window.requestAnimationFrame(function () {
+            scheduled = false;
+            update();
+          });
+        }
+
+        window.addEventListener("scroll", requestUpdate, { passive: true });
+        window.addEventListener("resize", requestUpdate);
+        requestUpdate();
       })();
     </script>
   </body>
