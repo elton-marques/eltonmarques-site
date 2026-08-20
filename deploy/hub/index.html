@@ -286,15 +286,16 @@
       <nav
         class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <a href="#top" class="flex items-center gap-2.5 no-underline">
+        <a href="#top" class="flex items-center gap-2.5 no-underline min-w-0">
           <img
             src="design-system/assets/logo/logo-em-256.png"
             alt="Elton Marques"
             width="256"
             height="256"
-            class="w-10 h-10 rounded-lg"
+            class="w-10 h-10 rounded-lg shrink-0"
           />
-          <span class="font-semibold text-white text-base sm:text-lg"
+          <span
+            class="font-semibold text-white text-base sm:text-lg truncate"
             >Elton Marques</span
           >
         </a>
@@ -308,12 +309,69 @@
             >Contato</a
           >
         </div>
-        <a
-          href="#contato"
-          class="md:hidden cm-btn-primary rounded-full px-4 py-2 text-sm font-semibold text-white no-underline"
-          >Contato</a
-        >
+        <div class="md:hidden flex items-center gap-2 shrink-0">
+          <a
+            href="#contato"
+            class="cm-btn-primary rounded-full px-3 sm:px-4 py-2 text-sm font-semibold text-white no-underline whitespace-nowrap"
+            >Contato</a
+          >
+          <button
+            type="button"
+            id="cm-nav-toggle"
+            class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="cm-nav-mobile"
+          >
+            <svg
+              id="cm-nav-toggle-icon-open"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+            <svg
+              id="cm-nav-toggle-icon-close"
+              class="hidden"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
       </nav>
+      <!-- painel do menu mobile: some acima de md (a nav horizontal reaparece
+       e este painel fica sempre oculto, id/JS inertes nesse breakpoint) -->
+      <div
+        id="cm-nav-mobile"
+        class="md:hidden hidden px-4 sm:px-6 pb-4 text-sm border-t border-white/5"
+      >
+        <a href="#sobre" class="cm-nav__link no-underline block py-2.5"
+          >Sobre</a
+        >
+        <a href="#projetos" class="cm-nav__link no-underline block py-2.5"
+          >Projetos</a
+        >
+        <a href="#servicos" class="cm-nav__link no-underline block py-2.5"
+          >Serviços</a
+        >
+      </div>
     </header>
 
     <!-- ================================================== hero -->
@@ -1393,6 +1451,61 @@
       // ano do copyright no rodapé, sempre atual sem precisar editar o HTML
       var cmYearEl = document.getElementById("cm-year");
       if (cmYearEl) cmYearEl.textContent = new Date().getFullYear();
+    </script>
+
+    <!-- menu mobile: abaixo de md a nav horizontal (Sobre/Projetos/Serviços)
+     some e vira este painel, escondido por padrão. Sem framework, só
+     toggle de classes — "hidden" (display:none) trocado por "flex
+     flex-col" quando aberto. Fecha ao clicar num link (a página já rola
+     até a âncora) ou fora do painel/header. -->
+    <script>
+      (function () {
+        var toggle = document.getElementById("cm-nav-toggle");
+        var panel = document.getElementById("cm-nav-mobile");
+        var iconOpen = document.getElementById("cm-nav-toggle-icon-open");
+        var iconClose = document.getElementById("cm-nav-toggle-icon-close");
+        if (!toggle || !panel) return;
+
+        function setOpen(open) {
+          panel.classList.toggle("hidden", !open);
+          panel.classList.toggle("flex", open);
+          panel.classList.toggle("flex-col", open);
+          toggle.setAttribute("aria-expanded", open ? "true" : "false");
+          toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+          if (iconOpen) iconOpen.classList.toggle("hidden", open);
+          if (iconClose) iconClose.classList.toggle("hidden", !open);
+        }
+
+        toggle.addEventListener("click", function () {
+          setOpen(panel.classList.contains("hidden"));
+        });
+
+        panel.addEventListener("click", function (e) {
+          if (e.target.closest("a")) setOpen(false);
+        });
+
+        document.addEventListener("click", function (e) {
+          if (
+            !panel.classList.contains("hidden") &&
+            !panel.contains(e.target) &&
+            !toggle.contains(e.target)
+          ) {
+            setOpen(false);
+          }
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") setOpen(false);
+        });
+
+        // fecha o painel se a tela crescer pra md+ (nav horizontal volta)
+        var mq = window.matchMedia("(min-width: 768px)");
+        (mq.addEventListener
+          ? mq.addEventListener.bind(mq)
+          : mq.addListener.bind(mq))("change", function (e) {
+          if (e.matches) setOpen(false);
+        });
+      })();
     </script>
 
     <!-- cm-scroll-highlight.js — porta vanilla de um efeito de "Scroll Text
