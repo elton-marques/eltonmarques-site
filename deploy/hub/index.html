@@ -48,8 +48,14 @@
       }
 
       :root {
-        --glass-bg: rgba(255, 255, 255, 0.06);
-        --glass-border: rgba(255, 255, 255, 0.1);
+        /* Antes 6% de branco — legível sobre os blobs de aurora (fundo
+         liso e desfocado), mas com o kinetic-grid (linhas/pontos nítidos)
+         o conteúdo do card ficava ilegível por baixo. Subiu pra um navy
+         quase opaco, mesma lógica já usada em .cm-nav (ver comentário lá
+         embaixo) — sem backdrop-filter, que a gente evita por custo de
+         GPU. */
+        --glass-bg: rgba(18, 30, 46, 0.82);
+        --glass-border: rgba(255, 255, 255, 0.12);
         --glass-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
         color-scheme: dark;
 
@@ -82,93 +88,16 @@
           inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
       }
 
-      /* -------------------------------------------------- fundo ambiente (aurora) */
-      /* Só tons de azul/navy + um brilho neutro bem sutil — os blobs
-       rosa/verde do template genérico saíram pra bater com a paleta da
-       marca (que é essencialmente monocromática em azul). */
-      .cm-aurora {
+      /* -------------------------------------------------- fundo ambiente (kinetic grid) */
+      /* Substituiu os blobs de aurora: grade de pontos em canvas que se
+       deforma perto do cursor e ondula ao clique — cm-kinetic-grid.js logo
+       antes de </body>. Cor única (azul de marca, #93c5fd — mesmo tom do
+       headline e do mockup de código) pra continuar monocromática. */
+      #cm-kinetic-grid {
         position: fixed;
         inset: 0;
         z-index: 0;
-        overflow: hidden;
         pointer-events: none;
-      }
-      .cm-aurora__blob {
-        position: absolute;
-        border-radius: 9999px;
-        filter: blur(90px);
-        will-change: transform;
-      }
-      .cm-aurora__blob--1 {
-        width: 44rem;
-        height: 44rem;
-        top: -16rem;
-        left: -12rem;
-        opacity: 0.32;
-        background: radial-gradient(
-          circle at 30% 30%,
-          var(--brand-blue),
-          transparent 70%
-        );
-        animation: cm-drift-1 34s ease-in-out infinite;
-      }
-      .cm-aurora__blob--2 {
-        width: 40rem;
-        height: 40rem;
-        top: 14rem;
-        right: -14rem;
-        opacity: 0.24;
-        background: radial-gradient(
-          circle at 70% 40%,
-          #2563eb,
-          transparent 70%
-        );
-        animation: cm-drift-2 40s ease-in-out infinite;
-      }
-      .cm-aurora__blob--3 {
-        width: 36rem;
-        height: 36rem;
-        bottom: -18rem;
-        left: 22rem;
-        opacity: 0.08;
-        background: radial-gradient(
-          circle at 50% 50%,
-          var(--brand-gray),
-          transparent 70%
-        );
-        animation: cm-drift-3 46s ease-in-out infinite;
-      }
-      @keyframes cm-drift-1 {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-        }
-        50% {
-          transform: translate(4rem, 3rem) scale(1.08);
-        }
-      }
-      @keyframes cm-drift-2 {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-        }
-        50% {
-          transform: translate(-3rem, 4rem) scale(1.05);
-        }
-      }
-      @keyframes cm-drift-3 {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-        }
-        50% {
-          transform: translate(3rem, -3rem) scale(1.1);
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .cm-aurora__blob {
-          animation: none;
-        }
       }
 
       .cm-card {
@@ -183,7 +112,7 @@
       .cm-card:hover {
         transform: translateY(-4px);
         border-color: rgba(255, 255, 255, 0.22);
-        background: rgba(255, 255, 255, 0.09);
+        background: rgba(28, 44, 64, 0.9);
         box-shadow:
           0 20px 40px -16px rgba(0, 0, 0, 0.7),
           inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
@@ -219,7 +148,7 @@
       .cm-social:hover {
         color: rgba(255, 255, 255, 0.9);
         border-color: rgba(255, 255, 255, 0.22);
-        background: rgba(255, 255, 255, 0.09);
+        background: rgba(28, 44, 64, 0.9);
       }
 
       /* -------------------------------------------------- navegação */
@@ -261,7 +190,7 @@
           transform 150ms ease;
       }
       .cm-btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(28, 44, 64, 0.9);
         border-color: rgba(255, 255, 255, 0.22);
         transform: translateY(-1px);
       }
@@ -342,11 +271,7 @@
     </style>
   </head>
   <body class="min-h-screen bg-[#0d1117] text-white antialiased">
-    <div class="cm-aurora" aria-hidden="true">
-      <div class="cm-aurora__blob cm-aurora__blob--1"></div>
-      <div class="cm-aurora__blob cm-aurora__blob--2"></div>
-      <div class="cm-aurora__blob cm-aurora__blob--3"></div>
-    </div>
+    <canvas id="cm-kinetic-grid" aria-hidden="true"></canvas>
 
     <!-- ================================================== navegação -->
     <header class="cm-nav sticky top-0 z-20">
@@ -1019,6 +944,322 @@
         </div>
       </div>
     </footer>
+
+    <!-- cm-kinetic-grid.js — fundo do site inteiro (fixed, atrás de tudo):
+     grade de pontos em canvas que se deforma perto do cursor e ondula ao
+     clique/toque. Porta pra JS vanilla de um componente React (canvas +
+     rAF, sem estado de framework nenhum) — não fazia sentido puxar
+     Next.js/shadcn pra um site estático de uma página só. Mesma lógica e
+     constantes do original, cor única trocada pro azul de marca (#93c5fd)
+     pra continuar monocromática, e com devicePixelRatio pra não borrar em
+     tela retina. Em prefers-reduced-motion desenha só um frame estático,
+     sem loop nem listeners de ponteiro. -->
+    <script>
+      (function () {
+        var canvas = document.getElementById("cm-kinetic-grid");
+        if (!canvas) return;
+        var ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        var reduced =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        // constantes do componente original
+        var CELL_SIZE = 55;
+        var INFLUENCE_RADIUS = 260;
+        var MAX_WARP = 24;
+        var DOT_SPACING = 28;
+        var LERP_SPEED = 0.08;
+
+        var LINE_BASE = { r: 255, g: 255, b: 255, a: 0.13 };
+        var NODE_BASE_RADIUS = 1.8;
+        var NODE_ACTIVE_RADIUS = 3.2;
+
+        // paleta do site: mesmo fundo do body (#0d1117) + azul de marca como
+        // único acento (mesmo tom usado no headline e no mockup de código)
+        var THEME = {
+          bg: "#0d1117",
+          lineActive: { r: 147, g: 197, b: 253, a: 0.9 },
+          nodeActive: { r: 147, g: 197, b: 253, a: 1.0 },
+          glow: "147,197,253",
+          ripple: "147,197,253",
+        };
+
+        function lerpN(a, b, t) {
+          return a + (b - a) * t;
+        }
+        function lerpColor(base, active, t) {
+          var r = Math.round(lerpN(base.r, active.r, t));
+          var g = Math.round(lerpN(base.g, active.g, t));
+          var b = Math.round(lerpN(base.b, active.b, t));
+          var a = lerpN(base.a, active.a, t);
+          return "rgba(" + r + "," + g + "," + b + "," + a.toFixed(3) + ")";
+        }
+
+        var mouse = { x: -9999, y: -9999 };
+        var targetMouse = { x: -9999, y: -9999 };
+        var ripples = [];
+        var size = { w: 0, h: 0 };
+        var rafId = 0;
+
+        function setSize() {
+          var w = window.innerWidth;
+          var h = window.innerHeight;
+          var dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+          canvas.style.width = w + "px";
+          canvas.style.height = h + "px";
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          size = { w: w, h: h };
+        }
+
+        function getWarpedPoint(gx, gy, col, row, cols, rows) {
+          var edgeMargin = 1.5;
+          var colPin = Math.min(
+            col / edgeMargin,
+            (cols - 1 - col) / edgeMargin,
+            1,
+          );
+          var rowPin = Math.min(
+            row / edgeMargin,
+            (rows - 1 - row) / edgeMargin,
+            1,
+          );
+          var pinFactor = colPin * colPin * rowPin * rowPin;
+
+          var dx = gx - mouse.x;
+          var dy = gy - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var proximity = Math.max(0, 1 - dist / INFLUENCE_RADIUS) * pinFactor;
+
+          var rx = 0,
+            ry = 0;
+          for (var i = 0; i < ripples.length; i++) {
+            var r = ripples[i];
+            var rdx = gx - r.x;
+            var rdy = gy - r.y;
+            var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+            var waveWidth = 55;
+            var diff = rdist - r.radius;
+            if (Math.abs(diff) < waveWidth) {
+              var strength =
+                (1 - Math.abs(diff) / waveWidth) * r.opacity * 18 * pinFactor;
+              var angle = Math.atan2(rdy, rdx);
+              var sign = diff < 0 ? -1 : 1;
+              rx += Math.cos(angle) * strength * sign * -1;
+              ry += Math.sin(angle) * strength * sign * -1;
+            }
+          }
+
+          if (dist < INFLUENCE_RADIUS && dist > 0 && pinFactor > 0) {
+            var t = dist / INFLUENCE_RADIUS;
+            var eased =
+              t < 0.01 ? 0 : (1 - t) * (1 - t) * Math.min(1, dist / 60);
+            var warpAmt = eased * MAX_WARP * pinFactor;
+            var ang = Math.atan2(dy, dx);
+            return {
+              pt: {
+                x: gx - Math.cos(ang) * warpAmt + rx,
+                y: gy - Math.sin(ang) * warpAmt + ry,
+              },
+              proximity: proximity,
+            };
+          }
+
+          return { pt: { x: gx + rx, y: gy + ry }, proximity: proximity };
+        }
+
+        function draw(now) {
+          var W = size.w,
+            H = size.h;
+          if (!W || !H) return;
+
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = THEME.bg;
+          ctx.fillRect(0, 0, W, H);
+
+          ctx.fillStyle = "rgba(255,255,255,0.05)";
+          for (var x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
+            for (var y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
+              ctx.beginPath();
+              ctx.arc(x, y, 0.7, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          for (var i = ripples.length - 1; i >= 0; i--) {
+            var rp = ripples[i];
+            var age = (now - rp.born) / 1000;
+            rp.radius = Math.max(0, age * 400);
+            rp.opacity = Math.max(0, 1 - age * 1.2);
+            if (rp.opacity <= 0) ripples.splice(i, 1);
+          }
+
+          var cols = Math.max(2, Math.ceil(W / CELL_SIZE)) + 1;
+          var rows = Math.max(2, Math.ceil(H / CELL_SIZE)) + 1;
+          var cellW = W / (cols - 1);
+          var cellH = H / (rows - 1);
+
+          var pts = [];
+          var prox = [];
+          for (var row = 0; row < rows; row++) {
+            pts[row] = [];
+            prox[row] = [];
+            for (var col = 0; col < cols; col++) {
+              var res = getWarpedPoint(
+                col * cellW,
+                row * cellH,
+                col,
+                row,
+                cols,
+                rows,
+              );
+              pts[row][col] = res.pt;
+              prox[row][col] = res.proximity;
+            }
+          }
+
+          function drawSeg(p1, p2, pr1, pr2) {
+            var avg = (pr1 + pr2) / 2;
+            var t = avg * avg * (3 - 2 * avg);
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = lerpColor(LINE_BASE, THEME.lineActive, t);
+            ctx.lineWidth = lerpN(0.8, 1.5, t);
+            ctx.stroke();
+          }
+
+          ctx.lineCap = "butt";
+
+          for (var row2 = 0; row2 < rows; row2++)
+            for (var col2 = 0; col2 < cols - 1; col2++)
+              drawSeg(
+                pts[row2][col2],
+                pts[row2][col2 + 1],
+                prox[row2][col2],
+                prox[row2][col2 + 1],
+              );
+
+          for (var col3 = 0; col3 < cols; col3++)
+            for (var row3 = 0; row3 < rows - 1; row3++)
+              drawSeg(
+                pts[row3][col3],
+                pts[row3 + 1][col3],
+                prox[row3][col3],
+                prox[row3 + 1][col3],
+              );
+
+          for (var row4 = 0; row4 < rows; row4++) {
+            for (var col4 = 0; col4 < cols; col4++) {
+              var p = pts[row4][col4];
+              var pr = prox[row4][col4];
+              var t2 = pr * pr * (3 - 2 * pr);
+              var rad = lerpN(NODE_BASE_RADIUS, NODE_ACTIVE_RADIUS, t2);
+
+              if (t2 > 0.3) {
+                var glowR = rad + lerpN(0, 6, (t2 - 0.3) / 0.7);
+                var grd = ctx.createRadialGradient(
+                  p.x,
+                  p.y,
+                  rad * 0.5,
+                  p.x,
+                  p.y,
+                  glowR,
+                );
+                grd.addColorStop(
+                  0,
+                  "rgba(" + THEME.glow + "," + (t2 * 0.3).toFixed(3) + ")",
+                );
+                grd.addColorStop(1, "rgba(" + THEME.glow + ",0)");
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+                ctx.fillStyle = grd;
+                ctx.fill();
+              }
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
+              ctx.fillStyle = lerpColor(
+                { r: 255, g: 255, b: 255, a: 0.2 },
+                THEME.nodeActive,
+                t2,
+              );
+              ctx.fill();
+            }
+          }
+
+          for (var i2 = 0; i2 < ripples.length; i2++) {
+            var rp2 = ripples[i2];
+            var safeRadius = Math.max(0, rp2.radius);
+            ctx.beginPath();
+            ctx.arc(rp2.x, rp2.y, safeRadius, 0, Math.PI * 2);
+            ctx.strokeStyle =
+              "rgba(" + THEME.ripple + "," + (rp2.opacity * 0.28).toFixed(3) + ")";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        }
+
+        function animate(now) {
+          mouse.x = lerpN(mouse.x, targetMouse.x, LERP_SPEED);
+          mouse.y = lerpN(mouse.y, targetMouse.y, LERP_SPEED);
+          draw(now);
+          rafId = window.requestAnimationFrame(animate);
+        }
+
+        setSize();
+        window.addEventListener("resize", setSize);
+
+        if (reduced) {
+          // sem loop de animação nem listeners de ponteiro — só a grade
+          // parada (mouse fica em -9999, ou seja, sem warp nenhum)
+          draw(performance.now());
+          return;
+        }
+
+        window.addEventListener("mousemove", function (e) {
+          targetMouse.x = e.clientX;
+          targetMouse.y = e.clientY;
+        });
+        window.addEventListener(
+          "touchmove",
+          function (e) {
+            if (e.touches[0]) {
+              targetMouse.x = e.touches[0].clientX;
+              targetMouse.y = e.touches[0].clientY;
+            }
+          },
+          { passive: true },
+        );
+
+        function addRipple(x, y) {
+          ripples.push({
+            x: x,
+            y: y,
+            radius: 0,
+            opacity: 1,
+            born: performance.now(),
+          });
+        }
+        window.addEventListener("click", function (e) {
+          addRipple(e.clientX, e.clientY);
+        });
+        window.addEventListener(
+          "touchstart",
+          function (e) {
+            if (e.touches[0]) {
+              addRipple(e.touches[0].clientX, e.touches[0].clientY);
+            }
+          },
+          { passive: true },
+        );
+
+        rafId = window.requestAnimationFrame(animate);
+      })();
+    </script>
 
     <!-- cm-hero-type.js — digita o mockup de código do hero (perfil.ts) no
      load, preservando a coloração por token (tok-kw/tok-str/...). Vanilla
