@@ -2,16 +2,35 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>Elton Marques</title>
+    <title>Elton Marques — Desenvolvedor de Software</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta name="description" content="Elton Marques — desenvolvedor de software. Projetos e ferramentas." />
+    <meta
+      name="description"
+      content="Elton Marques — desenvolvedor de software. Dashboards, automação e ferramentas de dados, do design ao deploy."
+    />
     <link rel="icon" href="design-system/assets/logo/logo-em-32.png" />
+    <meta property="og:title" content="Elton Marques — Desenvolvedor de Software" />
+    <meta
+      property="og:description"
+      content="Dashboards, automação e ferramentas de dados, do design ao deploy."
+    />
+    <meta property="og:image" content="design-system/assets/logo/logo-em-256.png" />
+    <meta property="og:type" content="website" />
     <!-- Mesmo runtime Tailwind + fonte self-hosted usados no dashboard do
      Cartão Mestre, pra manter a mesma linguagem visual entre os projetos
      hospedados nesta VPS. -->
     <script src="design-system/assets/resource_3fa48481346f.js"></script>
     <link rel="stylesheet" href="design-system/assets/css2_0b2072b66163.css" />
     <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
       body {
         font-family:
           "Plus Jakarta Sans",
@@ -27,6 +46,13 @@
         --glass-border: rgba(255, 255, 255, 0.1);
         --glass-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
         color-scheme: dark;
+
+        /* Paleta do painel de identidade (media/Painel de Identidades Elton
+         Marques.png): navy escuro, azul de marca, cinza e branco-gelo. */
+        --brand-navy: #0d1b2a;
+        --brand-blue: #1e40af;
+        --brand-blue-hover: #2547c9;
+        --brand-gray: #e2e8f0;
       }
 
       * {
@@ -51,6 +77,9 @@
       }
 
       /* -------------------------------------------------- fundo ambiente (aurora) */
+      /* Só tons de azul/navy + um brilho neutro bem sutil — os blobs
+       rosa/verde do template genérico saíram pra bater com a paleta da
+       marca (que é essencialmente monocromática em azul). */
       .cm-aurora {
         position: fixed;
         inset: 0;
@@ -62,31 +91,33 @@
         position: absolute;
         border-radius: 9999px;
         filter: blur(90px);
-        opacity: 0.28;
         will-change: transform;
       }
       .cm-aurora__blob--1 {
-        width: 42rem;
-        height: 42rem;
-        top: -14rem;
-        left: -10rem;
-        background: radial-gradient(circle at 30% 30%, #2563eb, transparent 70%);
+        width: 44rem;
+        height: 44rem;
+        top: -16rem;
+        left: -12rem;
+        opacity: 0.32;
+        background: radial-gradient(circle at 30% 30%, var(--brand-blue), transparent 70%);
         animation: cm-drift-1 34s ease-in-out infinite;
       }
       .cm-aurora__blob--2 {
-        width: 38rem;
-        height: 38rem;
-        top: 8rem;
-        right: -12rem;
-        background: radial-gradient(circle at 70% 40%, #db2777, transparent 70%);
+        width: 40rem;
+        height: 40rem;
+        top: 14rem;
+        right: -14rem;
+        opacity: 0.24;
+        background: radial-gradient(circle at 70% 40%, #2563eb, transparent 70%);
         animation: cm-drift-2 40s ease-in-out infinite;
       }
       .cm-aurora__blob--3 {
-        width: 34rem;
-        height: 34rem;
-        bottom: -16rem;
+        width: 36rem;
+        height: 36rem;
+        bottom: -18rem;
         left: 22rem;
-        background: radial-gradient(circle at 50% 50%, #059669, transparent 70%);
+        opacity: 0.08;
+        background: radial-gradient(circle at 50% 50%, var(--brand-gray), transparent 70%);
         animation: cm-drift-3 46s ease-in-out infinite;
       }
       @keyframes cm-drift-1 {
@@ -146,6 +177,63 @@
         background: rgba(255, 255, 255, 0.09);
       }
 
+      /* -------------------------------------------------- navegação */
+      /* Fundo quase opaco (não os 6% do resto do vidro) porque fica fixa no
+       topo por cima de conteúdo que rola por baixo — translúcido de
+       verdade ficaria ilegível sem backdrop-filter (que a gente evita por
+       custo de GPU, mesmo motivo documentado no dashboard). */
+      .cm-nav {
+        background: rgba(13, 27, 42, 0.86);
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .cm-nav__link {
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 150ms ease;
+      }
+      .cm-nav__link:hover {
+        color: #fff;
+      }
+
+      .cm-section {
+        scroll-margin-top: 88px; /* compensa a nav fixa ao rolar pra uma âncora */
+      }
+
+      .cm-btn-primary {
+        background: var(--brand-blue);
+        transition: background 150ms ease, transform 150ms ease;
+      }
+      .cm-btn-primary:hover {
+        background: var(--brand-blue-hover);
+        transform: translateY(-1px);
+      }
+
+      .cm-btn-secondary {
+        transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+      }
+      .cm-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.22);
+        transform: translateY(-1px);
+      }
+
+      .cm-chip {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* -------------------------------------------------- mockup de código (hero) */
+      .cm-code {
+        font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
+        font-size: 0.8125rem;
+        line-height: 1.7;
+      }
+      .cm-code .tok-kw { color: #93c5fd; }
+      .cm-code .tok-str { color: #86efac; }
+      .cm-code .tok-prop { color: rgba(255, 255, 255, 0.75); }
+      .cm-code .tok-punc { color: rgba(255, 255, 255, 0.35); }
+      .cm-code .tok-com { color: rgba(255, 255, 255, 0.35); font-style: italic; }
+
       /* entrada suave dos blocos, escalonada via style="animation-delay" */
       @keyframes cm-rise-in {
         from { opacity: 0; transform: translateY(10px); }
@@ -159,33 +247,72 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-neutral-950 text-white antialiased">
+  <body class="min-h-screen bg-[#0d1117] text-white antialiased">
     <div class="cm-aurora" aria-hidden="true">
       <div class="cm-aurora__blob cm-aurora__blob--1"></div>
       <div class="cm-aurora__blob cm-aurora__blob--2"></div>
       <div class="cm-aurora__blob cm-aurora__blob--3"></div>
     </div>
 
-    <div class="min-h-screen flex items-center justify-center relative z-10 px-4 py-16">
-      <div class="w-full max-w-3xl">
-        <div class="cm-rise-in flex flex-col items-center text-center gap-4 mb-14" style="animation-delay: 0ms">
-          <div
-            class="w-16 h-16 rounded-2xl cm-glass overflow-hidden shadow-[0_0_0_1px_rgba(96,165,250,0.15),0_10px_30px_-12px_rgba(96,165,250,0.4)]"
+    <!-- ================================================== navegação -->
+    <header class="cm-nav sticky top-0 z-20">
+      <nav class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <a href="#top" class="flex items-center gap-2.5 no-underline">
+          <img
+            src="design-system/assets/logo/logo-em-32.png"
+            alt="Elton Marques"
+            class="w-8 h-8 rounded-lg"
+          />
+          <span class="font-semibold text-white text-sm sm:text-base">Elton Marques</span>
+        </a>
+        <div class="hidden md:flex items-center gap-7 text-sm">
+          <a href="#sobre" class="cm-nav__link no-underline">Sobre</a>
+          <a href="#projetos" class="cm-nav__link no-underline">Projetos</a>
+          <a href="#servicos" class="cm-nav__link no-underline">Serviços</a>
+          <a
+            href="#contato"
+            class="cm-btn-primary rounded-full px-4 py-2 text-sm font-semibold text-white no-underline"
+            >Contato</a
           >
-            <img
-              src="design-system/assets/logo/logo-em-256.png"
-              alt="Elton Marques"
-              class="w-full h-full object-cover"
-            />
-          </div>
-          <div>
-            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-              Elton Marques
-            </h1>
-            <p class="text-sm text-white/45 mt-1.5">Desenvolvedor de software</p>
+        </div>
+        <a
+          href="#contato"
+          class="md:hidden cm-btn-primary rounded-full px-4 py-2 text-sm font-semibold text-white no-underline"
+          >Contato</a
+        >
+      </nav>
+    </header>
+
+    <!-- ================================================== hero -->
+    <section id="top" class="cm-section relative z-10 px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
+      <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
+        <div class="cm-rise-in" style="animation-delay: 0ms">
+          <p class="text-sm text-white/45 mb-3">Olá, eu sou</p>
+          <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.1]">
+            Elton Marques
+          </h1>
+          <p class="text-lg sm:text-xl font-semibold mt-2" style="color: #93c5fd">
+            Desenvolvedor de Software
+          </p>
+          <p class="text-white/55 leading-relaxed mt-5 max-w-md">
+            Transformo ideias em soluções digitais eficientes, modernas e
+            escaláveis — da interface ao servidor que serve ela.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 mt-8">
+            <a
+              href="#projetos"
+              class="cm-btn-primary rounded-full px-6 py-3 text-sm font-semibold text-white no-underline"
+              >Ver projetos</a
+            >
+            <a
+              href="#contato"
+              class="cm-btn-secondary cm-glass rounded-full px-6 py-3 text-sm font-semibold text-white no-underline"
+              >Entrar em contato</a
+            >
           </div>
 
-          <div class="flex items-center gap-2 mt-1">
+          <div class="flex items-center gap-2 mt-8">
             <a
               href="mailto:contato@eltonmarques.com"
               class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
@@ -195,27 +322,93 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>
             </a>
             <a
-              href="https://github.com/eltoncastor"
+              href="https://github.com/elton-marques"
               target="_blank"
               rel="noopener noreferrer"
               class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
               aria-label="GitHub"
-              title="github.com/eltoncastor"
+              title="github.com/elton-marques"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.11 3.06.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.25 5.69.42.36.78 1.07.78 2.16 0 1.56-.01 2.81-.01 3.19 0 .31.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"></path></svg>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/elton-marques/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+              aria-label="LinkedIn"
+              title="linkedin.com/in/elton-marques"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"></path></svg>
             </a>
           </div>
         </div>
 
-        <div class="cm-rise-in mb-4" style="animation-delay: 60ms">
-          <p class="text-xs uppercase tracking-[0.2em] text-white/35">Projetos</p>
+        <!-- mockup decorativo, sem lib de syntax highlight — só spans coloridos -->
+        <div class="cm-rise-in" style="animation-delay: 120ms">
+          <div class="cm-glass rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/10">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
+              <span class="ml-2 text-xs text-white/35">perfil.ts</span>
+            </div>
+            <pre class="cm-code px-5 py-5 overflow-x-auto"><code><span class="tok-com">// eltonmarques.com</span>
+<span class="tok-kw">const</span> <span class="tok-prop">dev</span> <span class="tok-punc">=</span> <span class="tok-punc">{</span>
+  <span class="tok-prop">nome</span><span class="tok-punc">:</span> <span class="tok-str">"Elton Marques"</span><span class="tok-punc">,</span>
+  <span class="tok-prop">foco</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">"dashboards"</span><span class="tok-punc">,</span> <span class="tok-str">"automação"</span><span class="tok-punc">,</span> <span class="tok-str">"dados"</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
+  <span class="tok-prop">stack</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">"JS"</span><span class="tok-punc">,</span> <span class="tok-str">"Python"</span><span class="tok-punc">,</span> <span class="tok-str">"SQL"</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
+<span class="tok-punc">}</span><span class="tok-punc">;</span>
+
+<span class="tok-kw">export default</span> <span class="tok-prop">dev</span><span class="tok-punc">;</span></code></pre>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ================================================== sobre -->
+    <section id="sobre" class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-4">Sobre</p>
+        <p class="cm-rise-in text-lg sm:text-xl text-white/70 leading-relaxed" style="animation-delay: 40ms">
+          Sou desenvolvedor de software focado em transformar processos
+          manuais e dados dispersos em ferramentas simples de usar. Gosto de
+          cuidar do processo inteiro — da interface ao servidor que a serve —
+          com atenção aos detalhes que fazem diferença no dia a dia de quem
+          usa. Hoje, meus projetos giram em torno de controle de acesso,
+          automação e leitura de dados operacionais.
+        </p>
+        <div class="cm-rise-in flex flex-wrap justify-center gap-2.5 mt-7" style="animation-delay: 80ms">
+          <span class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Tecnologia
+          </span>
+          <span class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path></svg>
+            Confiança
+          </span>
+          <span class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.5" fill="currentColor"></circle></svg>
+            Foco
+          </span>
+          <span class="cm-chip rounded-full px-3.5 py-1.5 text-xs flex items-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"></path></svg>
+            Evolução
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== projetos -->
+    <section id="projetos" class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5">
+      <div class="max-w-5xl mx-auto">
+        <p class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-6">Projetos</p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a
             href="/cartaomestre/"
             class="cm-card cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3 no-underline"
-            style="animation-delay: 110ms"
+            style="animation-delay: 40ms"
           >
             <div class="cm-card__glow" style="background: radial-gradient(circle, #2563eb, transparent 70%)"></div>
             <div class="flex items-center justify-between">
@@ -247,7 +440,7 @@
           <a
             href="/leitor"
             class="cm-card cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3 no-underline"
-            style="animation-delay: 170ms"
+            style="animation-delay: 90ms"
           >
             <div class="cm-card__glow" style="background: radial-gradient(circle, #059669, transparent 70%)"></div>
             <div class="flex items-center justify-between">
@@ -276,11 +469,118 @@
             </span>
           </a>
         </div>
-
-        <p class="cm-rise-in text-center text-xs text-white/25 mt-14" style="animation-delay: 240ms">
-          eltonmarques.com
-        </p>
       </div>
-    </div>
+    </section>
+
+    <!-- ================================================== serviços -->
+    <!-- Copy gerada a partir do que os projetos acima já provam na prática,
+     não uma lista genérica de serviços. -->
+    <section id="servicos" class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5">
+      <div class="max-w-5xl mx-auto">
+        <p class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-6">Serviços</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3" style="animation-delay: 40ms">
+            <div class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
+            </div>
+            <h3 class="text-base font-semibold text-white">Dashboards internos</h3>
+            <p class="text-sm text-white/55 leading-relaxed">
+              Interfaces pra acompanhar operação e dados sensíveis com
+              controle de acesso — login por sessão, filtros e exportação de
+              relatórios.
+            </p>
+          </div>
+
+          <div class="cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3" style="animation-delay: 90ms">
+            <div class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+            </div>
+            <h3 class="text-base font-semibold text-white">Automação &amp; OCR</h3>
+            <p class="text-sm text-white/55 leading-relaxed">
+              Ferramentas que tiram trabalho manual repetitivo do caminho —
+              leitura de formulários e exportação direta pra planilha.
+            </p>
+          </div>
+
+          <div class="cm-glass cm-rise-in rounded-3xl p-6 flex flex-col gap-3" style="animation-delay: 140ms">
+            <div class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="7" rx="1.5"></rect><rect x="2" y="14" width="20" height="7" rx="1.5"></rect><line x1="6" y1="6.5" x2="6" y2="6.5"></line><line x1="6" y1="17.5" x2="6" y2="17.5"></line></svg>
+            </div>
+            <h3 class="text-base font-semibold text-white">Infraestrutura &amp; deploy</h3>
+            <p class="text-sm text-white/55 leading-relaxed">
+              Publicação e operação de aplicações do zero — nginx, serviços
+              systemd, autenticação por sessão e túnel, sem depender de
+              plataformas terceirizadas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== contato -->
+    <section id="contato" class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5">
+      <div class="max-w-2xl mx-auto text-center">
+        <p class="cm-rise-in text-xs uppercase tracking-[0.2em] text-white/35 mb-4">Contato</p>
+        <h2 class="cm-rise-in text-2xl sm:text-3xl font-bold text-white" style="animation-delay: 40ms">
+          Tem um projeto em mente?
+        </h2>
+        <p class="cm-rise-in text-white/55 mt-3" style="animation-delay: 70ms">
+          Me manda uma mensagem — respondo por e-mail ou LinkedIn.
+        </p>
+        <div class="cm-rise-in flex flex-wrap justify-center gap-3 mt-7" style="animation-delay: 100ms">
+          <a
+            href="mailto:contato@eltonmarques.com"
+            class="cm-btn-primary rounded-full px-6 py-3 text-sm font-semibold text-white no-underline flex items-center gap-2"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>
+            contato@eltonmarques.com
+          </a>
+          <a
+            href="https://www.linkedin.com/in/elton-marques/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cm-btn-secondary cm-glass rounded-full px-6 py-3 text-sm font-semibold text-white no-underline flex items-center gap-2"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"></path></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== rodapé -->
+    <footer class="relative z-10 px-4 sm:px-6 py-10 border-t border-white/5">
+      <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-white/25">eltonmarques.com</p>
+        <div class="flex items-center gap-2">
+          <a
+            href="mailto:contato@eltonmarques.com"
+            class="cm-social cm-glass rounded-full w-8 h-8 flex items-center justify-center"
+            aria-label="E-mail"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>
+          </a>
+          <a
+            href="https://github.com/elton-marques"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cm-social cm-glass rounded-full w-8 h-8 flex items-center justify-center"
+            aria-label="GitHub"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.11 3.06.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.25 5.69.42.36.78 1.07.78 2.16 0 1.56-.01 2.81-.01 3.19 0 .31.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"></path></svg>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/elton-marques/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cm-social cm-glass rounded-full w-8 h-8 flex items-center justify-center"
+            aria-label="LinkedIn"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"></path></svg>
+          </a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
