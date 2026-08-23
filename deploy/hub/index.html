@@ -114,6 +114,7 @@
         --brand-blue-hover: #2547c9;
         --accent: #93c5fd;
         --accent-emerald: #059669;
+        --accent-amber: #d97706;
       }
 
       * {
@@ -270,6 +271,15 @@
         font-size: 0.8125rem;
         line-height: 1.7;
       }
+      /* em telas grandes o hero tem folga de sobra (ver .cm-hero) — o
+       mockup cresce um pouco pra ocupar melhor essa altura e equilibrar
+       com a coluna de texto, que também fica maior nesse breakpoint */
+      @media (min-width: 1024px) {
+        .cm-code {
+          font-size: 0.9375rem;
+          line-height: 1.85;
+        }
+      }
       .cm-code .tok-kw {
         color: var(--accent);
       }
@@ -362,6 +372,29 @@
         .cm-reveal.is-visible {
           animation: none;
         }
+      }
+
+      /* cm-scroll-reveal.js soma esta classe no "animationend" de
+       cm-rise-in — solta o transform de volta pro cascade normal depois
+       que a entrada assenta. Sem isso, "animation: ... both" continua
+       "segurando" transform: translateY(0) pra sempre (efeito colateral
+       pouco óbvio do CSS: uma animação em andamento — ou parada com
+       fill-mode both/forwards — vence estilo inline e regras normais de
+       :hover no cascade, especificidade não importa aí). Isso quebrava em
+       silêncio tanto o lift do :hover em .cm-card quanto o tilt de
+       cm-card-tilt.js nos cards de Projetos, que também são .cm-reveal.
+       Duas regras separadas de propósito: a de baixo (uma classe só,
+       mesma especificidade de .cm-reveal, decidida por ordem no arquivo)
+       devolve o transform de descanso sem brigar com .cm-card:hover (duas
+       classes, especificidade maior, sempre vence quando ativo); a de
+       cima (três classes) só existe pra ter especificidade suficiente e
+       finalmente desligar a animation. */
+      .cm-reveal-settled {
+        transform: none;
+      }
+      .cm-reveal.is-visible.cm-reveal-settled {
+        animation: none;
+        opacity: 1;
       }
     </style>
   </head>
@@ -472,43 +505,56 @@
       class="cm-hero cm-section relative z-10 px-4 sm:px-6 py-16 sm:py-20 flex items-center"
     >
       <div
-        class="max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-14 items-center"
+        class="max-w-5xl lg:max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center"
       >
         <div class="cm-rise-in min-w-0" style="animation-delay: 0ms">
           <p class="text-sm text-white/70 mb-3">Olá, eu sou</p>
           <h1
-            class="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.1]"
+            class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.1]"
           >
             Elton Marques
           </h1>
           <p
-            class="text-lg sm:text-xl font-semibold mt-2"
+            class="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mt-2"
             style="color: var(--accent)"
           >
             Desenvolvedor de Software
           </p>
-          <p class="text-white/70 leading-relaxed mt-5 max-w-md">
+          <p class="text-white/70 leading-relaxed mt-5 lg:mt-6 max-w-md lg:max-w-lg xl:max-w-xl lg:text-lg xl:text-xl">
             Transformo processos manuais e dados dispersos em ferramentas que
             as pessoas realmente usam — da interface ao servidor que a serve.
           </p>
 
-          <div class="flex flex-wrap items-center gap-3 mt-8">
+          <ul
+            class="flex flex-wrap gap-2 mt-5 lg:mt-6 list-none"
+            aria-label="Foco atual"
+          >
+            <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs lg:text-sm">
+              dashboards
+            </li>
+            <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs lg:text-sm">
+              automação
+            </li>
+            <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs lg:text-sm">dados</li>
+          </ul>
+
+          <div class="flex flex-wrap items-center gap-3 mt-6 lg:mt-8">
             <a
               href="#projetos"
-              class="cm-btn-primary rounded-full px-6 py-3 text-sm font-semibold text-white no-underline"
+              class="cm-btn-primary rounded-full px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold text-white no-underline"
               >Ver projetos</a
             >
             <a
               href="#contato"
-              class="cm-btn-secondary cm-glass rounded-full px-6 py-3 text-sm font-semibold text-white no-underline"
+              class="cm-btn-secondary cm-glass rounded-full px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold text-white no-underline"
               >Entrar em contato</a
             >
           </div>
 
-          <div class="flex items-center gap-2 mt-8">
+          <div class="flex items-center gap-2 mt-8 lg:mt-10">
             <a
               href="mailto:contato@eltonmarques.com"
-              class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+              class="cm-social cm-glass rounded-full w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center"
               aria-label="E-mail"
               title="contato@eltonmarques.com"
             >
@@ -530,7 +576,7 @@
               href="https://github.com/elton-marques"
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+              class="cm-social cm-glass rounded-full w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center"
               aria-label="GitHub"
               title="github.com/elton-marques"
             >
@@ -549,7 +595,7 @@
               href="https://www.linkedin.com/in/elton-marques/"
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+              class="cm-social cm-glass rounded-full w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center"
               aria-label="LinkedIn"
               title="linkedin.com/in/elton-marques"
             >
@@ -578,7 +624,7 @@
         >
           <div class="cm-glass rounded-2xl overflow-hidden">
             <div
-              class="flex items-center gap-1.5 px-4 py-3 border-b border-white/10"
+              class="flex items-center gap-1.5 px-4 py-3 lg:px-5 lg:py-4 border-b border-white/10"
             >
               <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></span>
@@ -586,7 +632,7 @@
               <span class="ml-2 text-xs text-white/65">perfil.js</span>
             </div>
             <pre
-              class="cm-code px-5 py-5 overflow-x-auto"
+              class="cm-code px-5 py-5 lg:px-6 lg:py-7 overflow-x-auto"
             ><code data-cm-typecode><span class="tok-com">// eltonmarques.com</span>
 <span class="tok-kw">const</span> <span class="tok-prop">dev</span> <span class="tok-punc">=</span> <span class="tok-punc">{</span>
   <span class="tok-prop">nome</span><span class="tok-punc">:</span> <span class="tok-str">"Elton Marques"</span><span class="tok-punc">,</span>
@@ -616,14 +662,9 @@
           class="cm-reveal text-lg sm:text-xl leading-relaxed"
           style="animation-delay: 40ms"
         >
-          Sou desenvolvedor de software e gosto de cuidar do processo inteiro
-          — da interface ao servidor que a serve. Meu foco é pegar processos
-          manuais e dados dispersos e transformar em ferramentas simples de
-          usar, com atenção aos detalhes que fazem diferença no dia a dia de
-          quem opera. Hoje isso se traduz em controle de acesso, automação e
-          leitura de dados operacionais — sempre com o mesmo objetivo: tirar
-          trabalho manual repetitivo do caminho de quem precisa focar no que
-          importa.
+          Desenvolvedor de software full-stack — da interface ao servidor.
+          Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
+          tirar trabalho manual do caminho de quem opera.
         </p>
         <ul
           class="cm-reveal flex flex-wrap justify-center gap-2.5 mt-7 list-none"
@@ -656,7 +697,7 @@
           Projetos
         </h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <a
             href="/cartaomestre/"
             class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
@@ -823,6 +864,95 @@
               </svg>
             </span>
           </a>
+
+          <a
+            href="/calc/"
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
+            style="animation-delay: 140ms"
+          >
+            <div
+              class="cm-card__glow"
+              style="
+                background: radial-gradient(
+                  circle,
+                  var(--accent-amber),
+                  transparent 70%
+                );
+              "
+            ></div>
+            <div class="flex items-center justify-between">
+              <span
+                class="rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-amber-300/80"
+                >Sátira</span
+              >
+              <span class="flex items-center gap-1 text-[11px] text-white/65">
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 3"></path>
+                </svg>
+                Público
+              </span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div
+                class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-amber-300/90"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                  <line x1="8" y1="6" x2="16" y2="6"></line>
+                  <line x1="16" y1="14" x2="16" y2="18"></line>
+                  <path d="M16 10h.01"></path>
+                  <path d="M12 10h.01"></path>
+                  <path d="M8 10h.01"></path>
+                  <path d="M12 14h.01"></path>
+                  <path d="M8 14h.01"></path>
+                  <path d="M12 18h.01"></path>
+                  <path d="M8 18h.01"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-white">Calculadora Pro</h3>
+            </div>
+            <p class="text-sm text-white/70 leading-relaxed">
+              Uma calculadora "premium" com cara de SaaS de verdade — até você
+              apertar "=" e esbarrar num paywall pedindo assinatura pra ver o
+              resultado de qualquer conta. Sátira, não produto.
+            </p>
+            <span
+              class="cm-card__arrow mt-auto flex items-center gap-1 text-xs text-white/70"
+            >
+              Acessar
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6"></path>
+              </svg>
+            </span>
+          </a>
         </div>
       </div>
     </section>
@@ -841,11 +971,59 @@
           Serviços
         </h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div
-            class="cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
             style="animation-delay: 40ms"
           >
+            <div
+              class="cm-card__glow"
+              style="
+                background: radial-gradient(
+                  circle,
+                  var(--brand-blue-hover),
+                  transparent 70%
+                );
+              "
+            ></div>
+            <div
+              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold text-white">Automação</h3>
+            <p class="text-sm text-white/70 leading-relaxed">
+              Rotinas e integrações que tiram tarefa repetitiva do caminho:
+              leitura de formulários, jobs agendados, dados fluindo sozinhos
+              entre sistemas.
+            </p>
+          </div>
+
+          <div
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
+            style="animation-delay: 70ms"
+          >
+            <div
+              class="cm-card__glow"
+              style="
+                background: radial-gradient(
+                  circle,
+                  var(--brand-blue-hover),
+                  transparent 70%
+                );
+              "
+            ></div>
             <div
               class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
             >
@@ -865,20 +1043,27 @@
                 <path d="M8 17v-3"></path>
               </svg>
             </div>
-            <h3 class="text-base font-semibold text-white">
-              Dashboards internos
-            </h3>
+            <h3 class="text-base font-semibold text-white">BI</h3>
             <p class="text-sm text-white/70 leading-relaxed">
-              Painéis pra acompanhar operação e dados sensíveis em um só
-              lugar, com controle de acesso: login por sessão, filtros sob
-              medida e exportação de relatórios.
+              Dashboards e relatórios que juntam dado espalhado em indicador
+              claro — pra decisão rápida, não planilha manual.
             </p>
           </div>
 
           <div
-            class="cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
-            style="animation-delay: 90ms"
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
+            style="animation-delay: 100ms"
           >
+            <div
+              class="cm-card__glow"
+              style="
+                background: radial-gradient(
+                  circle,
+                  var(--brand-blue-hover),
+                  transparent 70%
+                );
+              "
+            ></div>
             <div
               class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
             >
@@ -892,24 +1077,31 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <path d="M12 20h9"></path>
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                <path d="M3 3v18h18"></path>
+                <path d="m19 9-5 5-4-4-3 3"></path>
               </svg>
             </div>
-            <h3 class="text-base font-semibold text-white">
-              Automação &amp; OCR
-            </h3>
+            <h3 class="text-base font-semibold text-white">Ciência de Dados</h3>
             <p class="text-sm text-white/70 leading-relaxed">
-              Ferramentas que tiram trabalho manual repetitivo do caminho:
-              leitura automática de formulários manuscritos ou digitais, com
-              exportação direta pra planilha.
+              Dado bruto virando padrão e tendência legível — do tratamento
+              à análise, sem ruído.
             </p>
           </div>
 
           <div
-            class="cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
-            style="animation-delay: 140ms"
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
+            style="animation-delay: 130ms"
           >
+            <div
+              class="cm-card__glow"
+              style="
+                background: radial-gradient(
+                  circle,
+                  var(--brand-blue-hover),
+                  transparent 70%
+                );
+              "
+            ></div>
             <div
               class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
             >
@@ -923,19 +1115,60 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <rect x="2" y="3" width="20" height="7" rx="1.5"></rect>
-                <rect x="2" y="14" width="20" height="7" rx="1.5"></rect>
-                <line x1="6" y1="6.5" x2="6" y2="6.5"></line>
-                <line x1="6" y1="17.5" x2="6" y2="17.5"></line>
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
               </svg>
             </div>
-            <h3 class="text-base font-semibold text-white">
-              Infraestrutura &amp; deploy
-            </h3>
+            <h3 class="text-base font-semibold text-white">Dev. Web</h3>
             <p class="text-sm text-white/70 leading-relaxed">
-              Publicação e operação de aplicações do zero, sem depender de
-              plataformas terceirizadas — nginx, serviços systemd,
-              autenticação por sessão e túnel.
+              Aplicações do zero — interface, back-end e o servidor que
+              serve tudo, sem depender de plataforma terceirizada.
+            </p>
+          </div>
+
+          <div
+            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
+            style="animation-delay: 160ms"
+          >
+            <div
+              class="cm-card__glow"
+              style="
+                background: radial-gradient(
+                  circle,
+                  var(--brand-blue-hover),
+                  transparent 70%
+                );
+              "
+            ></div>
+            <div
+              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                <rect x="9" y="9" width="6" height="6"></rect>
+                <path d="M9 2v2"></path>
+                <path d="M15 2v2"></path>
+                <path d="M9 20v2"></path>
+                <path d="M15 20v2"></path>
+                <path d="M2 9h2"></path>
+                <path d="M2 15h2"></path>
+                <path d="M20 9h2"></path>
+                <path d="M20 15h2"></path>
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold text-white">IA</h3>
+            <p class="text-sm text-white/70 leading-relaxed">
+              Modelos aplicados a problema real — OCR, classificação,
+              automação inteligente.
             </p>
           </div>
         </div>
@@ -1077,7 +1310,10 @@
       (function () {
         var canvas = document.getElementById("cm-kinetic-grid");
         if (!canvas) return;
-        var ctx = canvas.getContext("2d");
+        // alpha:false — o canvas sempre pinta o fundo inteiro (fillRect logo
+        // no início de draw()), nunca precisa compor com o que está atrás;
+        // sem canal alfa o browser compõe mais barato, custa nada visual.
+        var ctx = canvas.getContext("2d", { alpha: false });
         if (!ctx) return;
 
         var reduced =
@@ -1241,14 +1477,19 @@
           ctx.fillStyle = THEME.bg;
           ctx.fillRect(0, 0, W, H);
 
+          // grade de pontos de fundo num path só (antes: beginPath+fill por
+          // ponto — em tela cheia isso são milhares de chamadas de desenho
+          // por frame, o maior custo do efeito em hardware fraco; cor é fixa
+          // e não reage ao cursor, então agrupar não muda nada visualmente)
           ctx.fillStyle = "rgba(255,255,255," + (0.04 * BG_INTENSITY).toFixed(3) + ")";
+          ctx.beginPath();
           for (var x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
             for (var y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
-              ctx.beginPath();
+              ctx.moveTo(x + 0.7, y);
               ctx.arc(x, y, 0.7, 0, Math.PI * 2);
-              ctx.fill();
             }
           }
+          ctx.fill();
 
           for (var i = ripples.length - 1; i >= 0; i--) {
             var rp = ripples[i];
@@ -1295,65 +1536,127 @@
 
           ctx.lineCap = "butt";
 
+          // segmentos e nós "de repouso" (sem influência de cursor/ripple —
+          // é o estado da grade inteira boa parte do tempo, já que o raio de
+          // influência é pequeno perto da tela toda) vão pra um path/fill
+          // único cada, na cor base; só os poucos afetados são desenhados um
+          // a um com a cor/gradiente interpolados. Idle isso troca milhares
+          // de stroke()/fill() por frame por 2, sem mudar o efeito visual —
+          // era o maior custo do fundo animado em hardware fraco.
+          var ACTIVE_EPS = 0.01;
+          var activeSegs = [];
+          var activeNodes = [];
+
+          ctx.beginPath();
+          ctx.strokeStyle =
+            "rgba(" +
+            LINE_BASE.r +
+            "," +
+            LINE_BASE.g +
+            "," +
+            LINE_BASE.b +
+            "," +
+            LINE_BASE.a.toFixed(3) +
+            ")";
+          ctx.lineWidth = 0.8;
+
           for (var row2 = 0; row2 < rows; row2++)
-            for (var col2 = 0; col2 < cols - 1; col2++)
-              drawSeg(
-                pts[row2][col2],
-                pts[row2][col2 + 1],
-                prox[row2][col2],
-                prox[row2][col2 + 1],
-              );
+            for (var col2 = 0; col2 < cols - 1; col2++) {
+              var prA = prox[row2][col2],
+                prB = prox[row2][col2 + 1];
+              if (prA < ACTIVE_EPS && prB < ACTIVE_EPS) {
+                ctx.moveTo(pts[row2][col2].x, pts[row2][col2].y);
+                ctx.lineTo(pts[row2][col2 + 1].x, pts[row2][col2 + 1].y);
+              } else {
+                activeSegs.push([
+                  pts[row2][col2],
+                  pts[row2][col2 + 1],
+                  prA,
+                  prB,
+                ]);
+              }
+            }
 
           for (var col3 = 0; col3 < cols; col3++)
-            for (var row3 = 0; row3 < rows - 1; row3++)
-              drawSeg(
-                pts[row3][col3],
-                pts[row3 + 1][col3],
-                prox[row3][col3],
-                prox[row3 + 1][col3],
-              );
+            for (var row3 = 0; row3 < rows - 1; row3++) {
+              var prC = prox[row3][col3],
+                prD = prox[row3 + 1][col3];
+              if (prC < ACTIVE_EPS && prD < ACTIVE_EPS) {
+                ctx.moveTo(pts[row3][col3].x, pts[row3][col3].y);
+                ctx.lineTo(pts[row3 + 1][col3].x, pts[row3 + 1][col3].y);
+              } else {
+                activeSegs.push([
+                  pts[row3][col3],
+                  pts[row3 + 1][col3],
+                  prC,
+                  prD,
+                ]);
+              }
+            }
+          ctx.stroke();
+
+          for (var s = 0; s < activeSegs.length; s++) {
+            var seg = activeSegs[s];
+            drawSeg(seg[0], seg[1], seg[2], seg[3]);
+          }
+
+          ctx.beginPath();
+          ctx.fillStyle =
+            "rgba(255,255,255," + (0.2 * BG_INTENSITY).toFixed(3) + ")";
 
           for (var row4 = 0; row4 < rows; row4++) {
             for (var col4 = 0; col4 < cols; col4++) {
               var p = pts[row4][col4];
               var pr = prox[row4][col4];
-              var t2 = pr * pr * (3 - 2 * pr);
-              var rad = lerpN(NODE_BASE_RADIUS, NODE_ACTIVE_RADIUS, t2);
-
-              if (t2 > 0.3) {
-                var glowR = rad + lerpN(0, 6, (t2 - 0.3) / 0.7);
-                var grd = ctx.createRadialGradient(
-                  p.x,
-                  p.y,
-                  rad * 0.5,
-                  p.x,
-                  p.y,
-                  glowR,
-                );
-                grd.addColorStop(
-                  0,
-                  "rgba(" +
-                    THEME.glow +
-                    "," +
-                    (t2 * 0.22 * BG_INTENSITY).toFixed(3) +
-                    ")",
-                );
-                grd.addColorStop(1, "rgba(" + THEME.glow + ",0)");
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
-                ctx.fillStyle = grd;
-                ctx.fill();
+              if (pr < ACTIVE_EPS) {
+                ctx.moveTo(p.x + NODE_BASE_RADIUS, p.y);
+                ctx.arc(p.x, p.y, NODE_BASE_RADIUS, 0, Math.PI * 2);
+              } else {
+                activeNodes.push([p, pr]);
               }
+            }
+          }
+          ctx.fill();
 
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
-              ctx.fillStyle = lerpColor(
-                { r: 255, g: 255, b: 255, a: 0.2 * BG_INTENSITY },
-                THEME.nodeActive,
-                t2,
+          for (var n = 0; n < activeNodes.length; n++) {
+            var np = activeNodes[n][0];
+            var pr2 = activeNodes[n][1];
+            var t2 = pr2 * pr2 * (3 - 2 * pr2);
+            var rad = lerpN(NODE_BASE_RADIUS, NODE_ACTIVE_RADIUS, t2);
+
+            if (t2 > 0.3) {
+              var glowR = rad + lerpN(0, 6, (t2 - 0.3) / 0.7);
+              var grd = ctx.createRadialGradient(
+                np.x,
+                np.y,
+                rad * 0.5,
+                np.x,
+                np.y,
+                glowR,
               );
+              grd.addColorStop(
+                0,
+                "rgba(" +
+                  THEME.glow +
+                  "," +
+                  (t2 * 0.22 * BG_INTENSITY).toFixed(3) +
+                  ")",
+              );
+              grd.addColorStop(1, "rgba(" + THEME.glow + ",0)");
+              ctx.beginPath();
+              ctx.arc(np.x, np.y, glowR, 0, Math.PI * 2);
+              ctx.fillStyle = grd;
               ctx.fill();
             }
+
+            ctx.beginPath();
+            ctx.arc(np.x, np.y, rad, 0, Math.PI * 2);
+            ctx.fillStyle = lerpColor(
+              { r: 255, g: 255, b: 255, a: 0.2 * BG_INTENSITY },
+              THEME.nodeActive,
+              t2,
+            );
+            ctx.fill();
           }
 
           for (var i2 = 0; i2 < ripples.length; i2++) {
@@ -1648,8 +1951,19 @@
           function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) {
-                entry.target.classList.add("is-visible");
-                io.unobserve(entry.target);
+                var el = entry.target;
+                el.classList.add("is-visible");
+                io.unobserve(el);
+                // solta o transform de volta pro cascade normal quando a
+                // entrada assenta — ver comentário de .cm-reveal-settled no
+                // CSS acima (senão hover/tilt em .cm-card nunca se move).
+                el.addEventListener(
+                  "animationend",
+                  function () {
+                    el.classList.add("cm-reveal-settled");
+                  },
+                  { once: true },
+                );
               }
             });
           },
@@ -1748,6 +2062,76 @@
         window.addEventListener("scroll", requestUpdate, { passive: true });
         window.addEventListener("resize", requestUpdate);
         requestUpdate();
+      })();
+    </script>
+
+    <!-- cm-card-tilt.js — porta vanilla, bem contida, do tilt 3D do HoloCard
+     (Motiq, https://motiq.dev/components/holo-card): só a inclinação que
+     segue o ponteiro, sem o foil holográfico nem o glare do original —
+     aqui é usado nos cards de Projetos (.cm-card), que já têm identidade
+     visual própria (vidro fosco monocromático), então o efeito fica restrito
+     a dar profundidade, não a chamar atenção pra si. Sem rAF/spring manual:
+     o próprio .cm-card já declara "transition: transform 200ms
+     cubic-bezier(...)" pro hover (ver CSS acima), então só reatribuir o
+     transform a cada pointermove (throttlado por rAF) já anima suave — zero
+     dependência nova, nada de build step, mesmo raciocínio do resto deste
+     arquivo. Só roda em ponteiro fino (mouse/trackpad): em touch o gesto de
+     arrastar não é "olhar de lado" pro card, é rolar a página, e
+     prefers-reduced-motion desliga o efeito inteiro. -->
+    <script>
+      (function () {
+        var cards = document.querySelectorAll(".cm-card");
+        if (!cards.length) return;
+
+        var reduced =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var pointerFine =
+          window.matchMedia && window.matchMedia("(pointer: fine)").matches;
+        if (reduced || !pointerFine) return;
+
+        var MAX_RX = 4; // grau, eixo X (inclina pra cima/baixo)
+        var MAX_RY = 6; // grau, eixo Y (inclina pra esquerda/direita)
+        var LIFT = "-4px"; // mesmo translateY do .cm-card:hover em CSS —
+        // precisa repetir aqui porque o transform inline sobrepõe o da regra
+
+        cards.forEach(function (card) {
+          var raf = null;
+          var pending = null;
+
+          function apply() {
+            raf = null;
+            if (!pending) return;
+            card.style.transform =
+              "perspective(900px) rotateX(" +
+              pending.rx.toFixed(2) +
+              "deg) rotateY(" +
+              pending.ry.toFixed(2) +
+              "deg) translateY(" +
+              LIFT +
+              ")";
+          }
+
+          function onMove(e) {
+            var r = card.getBoundingClientRect();
+            if (r.width === 0 || r.height === 0) return;
+            var px = (e.clientX - r.left) / r.width;
+            var py = (e.clientY - r.top) / r.height;
+            pending = {
+              rx: (0.5 - py) * 2 * MAX_RX,
+              ry: (px - 0.5) * 2 * MAX_RY,
+            };
+            if (!raf) raf = requestAnimationFrame(apply);
+          }
+
+          function onLeave() {
+            pending = null;
+            card.style.transform = "";
+          }
+
+          card.addEventListener("pointermove", onMove);
+          card.addEventListener("pointerleave", onLeave);
+        });
       })();
     </script>
   </body>
