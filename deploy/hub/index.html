@@ -2,45 +2,57 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>Elton Marques — Desenvolvedor de Software</title>
+    <title>Elton Marques — Ferramentas internas sob medida</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta
       name="description"
-      content="Elton Marques — desenvolvedor de software. Dashboards, automação e ferramentas de dados, do design ao deploy."
+      content="Dashboards, automações e integrações sob medida para tirar trabalho manual da operação. Da interface ao servidor — por Elton Marques, desenvolvedor de software."
     />
+    <meta name="author" content="Elton Marques" />
+    <meta name="theme-color" content="#0d1b2a" />
+    <link rel="canonical" href="https://eltonmarques.com/" />
     <link rel="icon" href="design-system/assets/logo/logo-em-32.png" />
+
+    <!-- og:image/twitter:image precisam ser URL absoluta: quem lê essas tags é
+     um scraper externo (WhatsApp, LinkedIn, Slack), que não tem base pra
+     resolver caminho relativo — com caminho relativo o preview do link
+     simplesmente não carrega imagem. Pelo mesmo motivo o card é "summary" e
+     não "summary_large_image": o asset é um quadrado de 256px, e o formato
+     grande espera 1200x630 (ficaria cortado ou seria descartado). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eltonmarques.com/" />
+    <meta property="og:site_name" content="Elton Marques" />
+    <meta property="og:locale" content="pt_BR" />
     <meta
       property="og:title"
-      content="Elton Marques — Desenvolvedor de Software"
+      content="Elton Marques — Ferramentas internas sob medida"
     />
     <meta
       property="og:description"
-      content="Dashboards, automação e ferramentas de dados, do design ao deploy."
+      content="Dashboards, automações e integrações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
     />
     <meta
       property="og:image"
-      content="design-system/assets/logo/logo-em-256.png"
+      content="https://eltonmarques.com/design-system/assets/logo/logo-em-256.png"
     />
-    <meta property="og:type" content="website" />
-    <link rel="canonical" href="https://eltonmarques.com/" />
-    <meta name="author" content="Elton Marques" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta
       name="twitter:title"
-      content="Elton Marques — Desenvolvedor de Software"
+      content="Elton Marques — Ferramentas internas sob medida"
     />
     <meta
       name="twitter:description"
-      content="Dashboards, automação e ferramentas de dados, do design ao deploy."
+      content="Dashboards, automações e integrações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
     />
     <meta
       name="twitter:image"
-      content="design-system/assets/logo/logo-em-256.png"
+      content="https://eltonmarques.com/design-system/assets/logo/logo-em-256.png"
     />
+
     <!-- dados estruturados (schema.org/Person) — mesmos fatos já publicados
-     na página (nome, cargo, e-mail, perfis), só declarados de um jeito que
-     buscadores conseguem ler direto; nada aqui que não esteja no HTML
-     visível logo abaixo. -->
+     na página (nome, cargo, e-mail, perfis, o que faço), só declarados de um
+     jeito que buscadores conseguem ler direto; nada aqui que não esteja no
+     HTML visível logo abaixo. -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -49,21 +61,127 @@
         "url": "https://eltonmarques.com/",
         "image": "https://eltonmarques.com/design-system/assets/logo/logo-em-256.png",
         "jobTitle": "Desenvolvedor de Software",
+        "description": "Desenvolvedor de software full-stack. Constrói dashboards, automações e integrações sob medida, da interface ao servidor.",
         "email": "mailto:contato@eltonmarques.com",
+        "knowsAbout": [
+          "Automação de processos",
+          "Business Intelligence",
+          "Ciência de dados",
+          "Desenvolvimento web",
+          "OCR",
+          "JavaScript",
+          "Python",
+          "SQL"
+        ],
         "sameAs": [
           "https://github.com/elton-marques",
           "https://www.linkedin.com/in/elton-marques/"
         ]
       }
     </script>
+
+    <!-- preload das fontes que renderizam acima da dobra (400 corpo, 600
+     botões/nav, 700 manchete). Sem isso o browser só descobre esses arquivos
+     depois de baixar E parsear o css2_inter.css — três round trips em série
+     (HTML -> CSS -> woff2) antes do texto aparecer na fonte certa. Os pesos
+     500 e 800 continuam declarados no CSS mas não são pré-carregados: nada
+     acima da dobra usa. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="design-system/assets/inter-400-latin.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="design-system/assets/inter-600-latin.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="design-system/assets/inter-700-latin.woff2"
+    />
+
     <!-- Mesmo runtime Tailwind usado no dashboard do Cartão Mestre. Fonte
      trocada pra Inter (self-hosted, design-system/assets/css2_inter.css) —
      o Cartão Mestre continua em Plus Jakarta Sans (css2_0b2072b66163.css,
      ainda no repo mas sem uso aqui), então por ora os dois divergem de
-     tipografia; unificar de novo é só trocar o link lá também. -->
+     tipografia; unificar de novo é só trocar o link lá também.
+
+     NOTA DE PERFORMANCE: este é o Play CDN do Tailwind (~407 KB de JS que
+     bloqueia a renderização e gera o CSS lendo o DOM em runtime). A própria
+     Tailwind documenta como modo de desenvolvimento. É de longe o maior
+     custo de carregamento da página e continua aqui por decisão consciente
+     (trocar exigiria escrever o CSS à mão ou adicionar build step). Tudo em
+     volta — fontes, fundo inicial, animações — foi otimizado assumindo esse
+     custo fixo. -->
     <script src="design-system/assets/resource_3fa48481346f.js"></script>
     <link rel="stylesheet" href="design-system/assets/css2_inter.css" />
+
     <style>
+      /* ==================================================================
+         TOKENS — fonte única de verdade do visual da página.
+         Três níveis por eixo (superfície, texto, raio, elevação), de
+         propósito: a versão anterior tinha nove opacidades de texto e cinco
+         raios diferentes espalhados pelo markup, o que achatava a
+         hierarquia — tudo parecia igualmente importante.
+         ================================================================== */
+      :root {
+        color-scheme: dark;
+
+        /* Paleta do painel de identidade (media/Painel de Identidades Elton
+         Marques.png): navy escuro + azul de marca, monocromática.
+         --brand-navy é o fundo canônico do site inteiro; --accent é o único
+         destaque claro (kicker, código, cursor, grade cinética, foco).
+         ATENÇÃO: --brand-navy e --accent precisam continuar sendo hex
+         literal de 6 dígitos — o script da grade cinética lê os dois com
+         getComputedStyle e converte com regex de hex. */
+        --brand-navy: #0d1b2a;
+        --brand-blue: #1e40af;
+        --brand-blue-hover: #2547c9;
+        --accent: #93c5fd;
+        --accent-emerald: #059669;
+        --accent-amber: #d97706;
+
+        /* superfícies — 3 níveis. Antes existia um "vidro" só, aplicado em
+         29 elementos (card, chip, badge, ícone, botão social, toggle): tudo
+         flutuava e nada era chão. Agora só card e painel têm elevação; chip
+         e badge são superfície rasa, com borda e sem sombra. */
+        --surface-2: rgba(18, 30, 46, 0.9);
+        --surface-2-hover: rgba(30, 47, 68, 0.95);
+        --surface-3: rgba(255, 255, 255, 0.04);
+        --surface-3-hover: rgba(255, 255, 255, 0.08);
+
+        /* linhas — filete, borda de card, borda em hover */
+        --line-1: rgba(255, 255, 255, 0.1);
+        --line-2: rgba(255, 255, 255, 0.16);
+        --line-3: rgba(255, 255, 255, 0.28);
+
+        /* texto — 3 níveis: declaração, corpo, meta. --text-3 dá 6.9:1
+         sobre --brand-navy (passa AA com folga), então serve pro texto
+         pequeno de badge/URL/rodapé sem virar cinza ilegível. */
+        --text-1: #ffffff;
+        --text-2: rgba(255, 255, 255, 0.78);
+        --text-3: rgba(255, 255, 255, 0.6);
+
+        /* raio — 3 valores. --r-pill só em botão e chip; card e painel usam
+         --r-md (14px, não 24px: raio muito grande em caixa grande é o que
+         dá aquela leitura de "bolha" genérica). */
+        --r-sm: 8px;
+        --r-md: 14px;
+        --r-pill: 9999px;
+
+        /* elevação — 2 níveis, não uma sombra genérica em tudo */
+        --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --elev-2: 0 16px 40px -20px rgba(0, 0, 0, 0.75);
+      }
+
       html {
         scroll-behavior: smooth;
         /* rede de segurança: qualquer elemento que vaze da largura da
@@ -81,6 +199,11 @@
 
       body {
         overflow-x: hidden;
+        /* o background também é declarado aqui, e não só na classe Tailwind
+         do <body>: o CSS do Tailwind só existe depois que os 407 KB do Play
+         CDN rodam, e sem esta regra a primeira pintura é branca. */
+        background: var(--brand-navy);
+        color: var(--text-1);
         font-family:
           "Inter",
           ui-sans-serif,
@@ -88,33 +211,6 @@
           -apple-system,
           "Segoe UI",
           sans-serif;
-      }
-
-      :root {
-        /* Vidro dos cards. Passou por duas rodadas: 6% de branco (legível
-         só sobre os blobs de aurora, fundo liso) → 82% de navy (ainda
-         meio apagado com o kinetic-grid atrás) → 90% agora. Definição das
-         bordas subiu junto (12%→16%) porque opacidade sozinha não resolve
-         contraste nas quinas do card. Sem backdrop-filter em lugar nenhum
-         do site — custo de GPU, mesmo motivo do .cm-nav logo abaixo. */
-        --glass-bg: rgba(18, 30, 46, 0.9);
-        --glass-border: rgba(255, 255, 255, 0.16);
-        --glass-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
-        color-scheme: dark;
-
-        /* Paleta do painel de identidade (media/Painel de Identidades Elton
-         Marques.png): navy escuro + azul de marca, monocromática — o tom
-         de cinza que existia aqui (--brand-gray) saiu por não ter uso
-         real e contrariar essa intenção. --brand-navy é o fundo canônico
-         do site inteiro (body, nav, canvas do kinetic-grid, cards);
-         --accent é o único destaque claro (headline, código, cursor,
-         kinetic-grid) — muda aqui, muda em todo lugar. */
-        --brand-navy: #0d1b2a;
-        --brand-blue: #1e40af;
-        --brand-blue-hover: #2547c9;
-        --accent: #93c5fd;
-        --accent-emerald: #059669;
-        --accent-amber: #d97706;
       }
 
       * {
@@ -130,19 +226,233 @@
         border-radius: 9999px;
       }
 
-      .cm-glass {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        box-shadow:
-          var(--glass-shadow),
-          inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      /* ---------------------------------------------------------- foco */
+      /* A versão anterior não definia foco em lugar nenhum além do
+       skip-link: todo link, botão e card caía no outline padrão do browser,
+       que sobre navy escuro é praticamente invisível. Navegar essa página
+       só de teclado era adivinhação. */
+      :where(a, button, [tabindex]):focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
       }
 
-      /* -------------------------------------------------- fundo ambiente (kinetic grid) */
-      /* Substituiu os blobs de aurora: grade de pontos em canvas que se
-       deforma perto do cursor e ondula ao clique — cm-kinetic-grid.js logo
-       antes de </body>. Cor única (azul de marca, #93c5fd — mesmo tom do
-       headline e do mockup de código) pra continuar monocromática. */
+      /* ------------------------------------------------------ tipografia */
+      /* Escala em clamp() em vez de degraus de breakpoint: a manchete antes
+       começava em 36px, grande demais pra um título de 3 linhas num aparelho
+       de 360px. */
+      .cm-h1 {
+        font-size: clamp(1.875rem, 1.1rem + 3.6vw, 3.75rem);
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 1.05;
+        color: var(--text-1);
+      }
+      .cm-h2 {
+        font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.25rem);
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+        color: var(--text-1);
+      }
+      /* rótulo de seção. Continua pequeno — mas agora é um <p>, e o <h2>
+       ao lado carrega a frase de verdade. Antes o <h2> ERA este rótulo de
+       12px, ou seja, a hierarquia semântica existia sem nenhum peso
+       visual e sem dizer nada. */
+      .cm-kicker {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-3);
+      }
+      .cm-lead {
+        color: var(--text-2);
+        line-height: 1.65;
+        font-size: 1rem;
+      }
+      @media (min-width: 640px) {
+        .cm-lead {
+          font-size: 1.0625rem;
+        }
+      }
+      /* corpo menor, dentro de card. Classe própria em vez de text-[...] do
+       Tailwind pelo mesmo motivo de .cm-card--stack: mesma especificidade
+       de .cm-lead, e a ordem do CSS injetado pelo Play CDN não é garantida —
+       aqui a decisão fica no arquivo, não no acaso. */
+      .cm-lead--sm {
+        font-size: 0.9375rem;
+      }
+      @media (min-width: 640px) {
+        .cm-lead--sm {
+          font-size: 0.9375rem;
+        }
+      }
+      .cm-mono {
+        font-family:
+          ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas,
+          monospace;
+        font-size: 0.75rem;
+        letter-spacing: -0.01em;
+      }
+
+      /* --------------------------------------------------------- botões */
+      .cm-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: var(--r-pill);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        line-height: 1.2;
+        padding: 0.8125rem 1.5rem;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+          background 150ms ease,
+          border-color 150ms ease,
+          color 150ms ease,
+          transform 150ms ease;
+      }
+      .cm-btn-sm {
+        padding: 0.5rem 1.125rem;
+        font-size: 0.875rem;
+      }
+      /* variante quadrada, só ícone — o CTA do topo no mobile */
+      .cm-btn-icon {
+        padding: 0;
+        width: 2.25rem;
+        height: 2.25rem;
+        flex: none;
+      }
+      .cm-btn-primary {
+        background: var(--brand-blue);
+        color: #fff;
+        border: 1px solid transparent;
+        box-shadow: var(--elev-1);
+      }
+      .cm-btn-primary:hover {
+        background: var(--brand-blue-hover);
+        transform: translateY(-1px);
+      }
+      .cm-btn-ghost {
+        background: transparent;
+        color: var(--text-1);
+        border: 1px solid var(--line-2);
+      }
+      .cm-btn-ghost:hover {
+        background: var(--surface-3);
+        border-color: var(--line-3);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-btn-primary:hover {
+          transform: none;
+        }
+      }
+
+      /* link de texto com seta — a ação secundária desceu de "pílula de
+       vidro concorrendo com o CTA" pra isto. Só existe um botão dominante
+       na página agora. */
+      .cm-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: var(--text-2);
+        font-weight: 500;
+        font-size: 0.9375rem;
+        text-decoration: none;
+        transition: color 150ms ease;
+      }
+      .cm-link:hover {
+        color: var(--text-1);
+      }
+      .cm-link svg {
+        transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .cm-link:hover svg {
+        transform: translateX(3px);
+      }
+      /* variante de seta pra baixo — mesma especificidade da regra acima,
+       vence por vir depois no arquivo */
+      .cm-link--down:hover svg {
+        transform: translateY(2px);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-link:hover svg,
+        .cm-link--down:hover svg {
+          transform: none;
+        }
+      }
+
+      /* ---------------------------------------------------- chip / badge */
+      .cm-chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: var(--r-pill);
+        background: var(--surface-3);
+        border: 1px solid var(--line-1);
+        color: var(--text-3);
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.2;
+        padding: 0.375rem 0.8125rem;
+      }
+      .cm-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-3);
+        white-space: nowrap;
+      }
+      .cm-badge--tag {
+        border: 1px solid var(--line-1);
+        border-radius: var(--r-pill);
+        background: var(--surface-3);
+        padding: 0.25rem 0.6875rem;
+      }
+      /* cores de categoria em opacidade cheia (antes eram /80 sobre vidro,
+       contraste no limite) */
+      .cm-tag-blue {
+        color: #93c5fd;
+      }
+      .cm-tag-emerald {
+        color: #6ee7b7;
+      }
+      .cm-tag-amber {
+        color: #fcd34d;
+      }
+
+      /* --------------------------------------------------- superfícies */
+      .cm-panel {
+        background: var(--surface-2);
+        border: 1px solid var(--line-2);
+        border-radius: var(--r-md);
+        box-shadow: var(--elev-2);
+      }
+      .cm-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        flex: none;
+        border-radius: var(--r-sm);
+        background: var(--surface-3);
+        border: 1px solid var(--line-1);
+      }
+      .cm-rule {
+        border-top: 1px solid var(--line-1);
+      }
+
+      /* ---------------------------------------- fundo ambiente (grade) */
+      /* Grade de pontos em canvas que se deforma perto do cursor e ondula ao
+       clique — script no fim do <body>. Cor única (--accent) pra continuar
+       monocromática. */
       #cm-kinetic-grid {
         position: fixed;
         inset: 0;
@@ -150,32 +460,60 @@
         pointer-events: none;
       }
 
+      /* ---------------------------------------------------------- cards */
       .cm-card {
         position: relative;
         overflow: hidden;
+        display: block;
+        background: var(--surface-2);
+        border: 1px solid var(--line-2);
+        border-radius: var(--r-md);
+        box-shadow: var(--elev-2);
+        text-decoration: none;
         transition:
           transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
           border-color 200ms ease,
           background 200ms ease,
           box-shadow 200ms ease;
       }
+      /* cards que precisam empurrar o rodapé (endereço + "Acessar") pro fim
+       da caixa, pra os dois cards da linha alinharem embaixo mesmo com
+       descrições de tamanhos diferentes. Classe própria em vez das
+       utilitárias "flex flex-col" do Tailwind: o CSS do Play CDN é injetado
+       em runtime e a ordem dele em relação a este <style> não é garantida —
+       com a mesma especificidade (uma classe cada), quem vier depois vence,
+       e isso decidiria display:block vs display:flex por acaso. */
+      .cm-card--stack {
+        display: flex;
+        flex-direction: column;
+      }
+      .cm-card__foot {
+        margin-top: auto;
+        padding-top: 1.25rem;
+      }
       .cm-card:hover {
         transform: translateY(-4px);
-        border-color: rgba(255, 255, 255, 0.26);
-        background: rgba(32, 50, 72, 0.95);
-        box-shadow:
-          0 20px 40px -16px rgba(0, 0, 0, 0.7),
-          inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+        border-color: var(--line-3);
+        background: var(--surface-2-hover);
+        box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.8);
       }
       .cm-card:hover .cm-card__arrow {
+        color: var(--text-1);
+      }
+      .cm-card:hover .cm-card__arrow svg {
         transform: translateX(3px);
-        opacity: 1;
       }
       .cm-card__arrow {
-        transition:
-          transform 200ms ease,
-          opacity 200ms ease;
-        opacity: 0.35;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-2);
+        transition: color 200ms ease;
+      }
+      .cm-card__arrow svg {
+        transition: transform 200ms ease;
       }
       .cm-card__glow {
         position: absolute;
@@ -184,86 +522,141 @@
         height: 12rem;
         border-radius: 9999px;
         filter: blur(50px);
-        opacity: 0.18;
+        opacity: 0.16;
         pointer-events: none;
       }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-card:hover {
+          transform: none;
+        }
+        .cm-card:hover .cm-card__arrow svg {
+          transform: none;
+        }
+      }
 
+      /* barra de endereço dos cards de projeto — é o material de
+       credibilidade da página: o endereço é real e dá pra conferir. Não
+       inventa número, cliente nem depoimento; só mostra que o sistema está
+       no ar. */
+      .cm-addr {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 0;
+        color: var(--text-3);
+      }
+      .cm-addr__url {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* ------------------------------------------------ botões sociais */
       .cm-social {
-        color: rgba(255, 255, 255, 0.65);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--line-1);
+        background: var(--surface-3);
+        color: var(--text-3);
+        text-decoration: none;
         transition:
           color 150ms ease,
           border-color 150ms ease,
           background 150ms ease;
       }
       .cm-social:hover {
-        color: rgba(255, 255, 255, 0.9);
-        border-color: rgba(255, 255, 255, 0.26);
-        background: rgba(32, 50, 72, 0.95);
+        color: var(--text-1);
+        border-color: var(--line-3);
+        background: var(--surface-3-hover);
+      }
+      .cm-social--sm {
+        width: 2rem;
+        height: 2rem;
       }
 
-      /* -------------------------------------------------- navegação */
-      /* Fundo quase opaco (não os 6% do resto do vidro) porque fica fixa no
-       topo por cima de conteúdo que rola por baixo — translúcido de
-       verdade ficaria ilegível sem backdrop-filter (que a gente evita por
-       custo de GPU, mesmo motivo documentado no dashboard). */
+      /* ----------------------------------------------------- navegação */
+      /* Fundo quase opaco (não translúcido de verdade) porque fica fixa no
+       topo por cima de conteúdo que rola por baixo — sem backdrop-filter em
+       lugar nenhum do site, por custo de GPU. */
       .cm-nav {
-        background: rgba(13, 27, 42, 0.86);
-        border-bottom: 1px solid var(--glass-border);
+        background: rgba(13, 27, 42, 0.9);
+        border-bottom: 1px solid var(--line-1);
       }
       .cm-nav__link {
-        color: rgba(255, 255, 255, 0.68);
+        color: var(--text-3);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
         transition: color 150ms ease;
       }
       .cm-nav__link:hover {
-        color: #fff;
+        color: var(--text-1);
       }
 
+      /* ------------------------------------------------------- seções */
       .cm-section {
-        scroll-margin-top: 88px; /* compensa a nav fixa ao rolar pra uma âncora */
+        scroll-margin-top: 72px; /* nav de 65px + 7px de folga */
       }
 
-      /* hero ocupa a tela inteira (menos a nav) antes do scroll, pra "Sobre"
-       não vazar na primeira dobra — 65px é a altura real da nav (h-16 = 64px
-       + 1px de border-bottom; não usa os 88px de .cm-section acima porque
-       aquele valor é uma folga proposital pro scroll até a âncora, maior
-       que a nav em si, e deixaria uma fresta do "Sobre" visível aqui).
-       min-height dobrado é fallback progressivo: dvh some se o browser não
-       suportar e o 100vh anterior prevalece. */
+      /* Hero ocupa a tela antes do scroll pra a próxima seção não vazar na
+       primeira dobra (65px = altura real da nav: h-16 + 1px de borda). A
+       guarda de min-height:700px é nova e existe porque a manchete cresceu:
+       em tela baixa (celular deitado, notebook pequeno) forçar 100dvh
+       espremia o conteúdo; abaixo disso o hero simplesmente cresce com o que
+       tem dentro. min-height dobrado é fallback progressivo — dvh some se o
+       browser não suportar e o 100vh anterior prevalece. */
       .cm-hero {
-        min-height: 100vh;
-        min-height: calc(100dvh - 65px);
+        display: flex;
+        align-items: center;
+      }
+      @media (min-height: 700px) {
+        .cm-hero {
+          min-height: calc(100vh - 65px);
+          min-height: calc(100dvh - 65px);
+        }
       }
 
-      .cm-btn-primary {
-        background: var(--brand-blue);
-        transition:
-          background 150ms ease,
-          transform 150ms ease;
+      /* ------------------------------------------- lista de serviços */
+      /* Antes: cinco cards idênticos em lg:grid-cols-5 (~180px de largura
+       com parágrafo de três linhas dentro), cada um com o mesmo glow azul e
+       o mesmo ícone-chip, e um card órfão no breakpoint do meio. A copy é a
+       mesma, palavra por palavra — só a apresentação virou lista editorial:
+       <dl> semântico, filete entre as linhas, zero caixa. */
+      .cm-dl > div {
+        display: grid;
+        gap: 0.375rem;
+        padding: 1.25rem 0;
+        border-top: 1px solid var(--line-1);
       }
-      .cm-btn-primary:hover {
-        background: var(--brand-blue-hover);
-        transform: translateY(-1px);
+      .cm-dl > div:last-child {
+        border-bottom: 1px solid var(--line-1);
+      }
+      @media (min-width: 768px) {
+        .cm-dl > div {
+          grid-template-columns: 13rem 1fr;
+          gap: 0 3rem;
+          padding: 1.5rem 0;
+          align-items: baseline;
+        }
+      }
+      .cm-dl dt {
+        color: var(--text-1);
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .cm-dl dd {
+        margin: 0;
+        color: var(--text-2);
+        font-size: 0.9375rem;
+        line-height: 1.65;
+        max-width: 58ch;
       }
 
-      .cm-btn-secondary {
-        transition:
-          background 150ms ease,
-          border-color 150ms ease,
-          transform 150ms ease;
-      }
-      .cm-btn-secondary:hover {
-        background: rgba(32, 50, 72, 0.95);
-        border-color: rgba(255, 255, 255, 0.26);
-        transform: translateY(-1px);
-      }
-
-      .cm-chip {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        color: rgba(255, 255, 255, 0.7);
-      }
-
-      /* -------------------------------------------------- mockup de código (hero) */
+      /* ------------------------------------- mockup de código (hero) */
       .cm-code {
         font-family:
           ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas,
@@ -271,13 +664,10 @@
         font-size: 0.8125rem;
         line-height: 1.7;
       }
-      /* em telas grandes o hero tem folga de sobra (ver .cm-hero) — o
-       mockup cresce um pouco pra ocupar melhor essa altura e equilibrar
-       com a coluna de texto, que também fica maior nesse breakpoint */
       @media (min-width: 1024px) {
         .cm-code {
-          font-size: 0.9375rem;
-          line-height: 1.85;
+          font-size: 0.875rem;
+          line-height: 1.8;
         }
       }
       .cm-code .tok-kw {
@@ -297,8 +687,9 @@
         font-style: italic;
       }
 
-      /* cursor de digitação do mockup de código — cm-hero-type.js anexa e
-       reposiciona este span a cada caractere digitado */
+      /* cursor de digitação do mockup — o script anexa e reposiciona este
+       span a cada caractere, e o remove alguns segundos depois de terminar
+       (antes ficava piscando pra sempre). */
       .cm-caret {
         display: inline-block;
         width: 1ch;
@@ -320,9 +711,10 @@
         }
       }
 
+      /* ---------------------------------------------------- animações */
       /* entrada suave do herói, dispara no load — não depende de rolagem
-       porque o herói (inclusive o mockup perfil.js) já está na primeira
-       tela. Escalonada via style="animation-delay". */
+       porque o herói já está na primeira tela. Escalonada via
+       style="animation-delay". */
       @keyframes cm-rise-in {
         from {
           opacity: 0;
@@ -342,21 +734,17 @@
         }
       }
 
-      /* entrada dos blocos abaixo do herói (Sobre/Projetos/Serviços/Contato)
-       — ao contrário do .cm-rise-in acima, esses só devem aparecer quando o
-       usuário rola até eles, não no load. cm-scroll-reveal.js observa cada
-       .cm-reveal com IntersectionObserver e soma .is-visible quando entra
-       na viewport, disparando a mesma keyframe cm-rise-in de cima (reusada
-       aqui, não duplicada). De propósito usa "animation", não "transition":
-       os cards de Projetos são .cm-card *e* .cm-reveal ao mesmo tempo, e
-       .cm-card já tem sua própria "transition" pro hover (transform,
-       border-color, background, box-shadow) — se cm-reveal também setasse
-       "transition" nesses elementos, uma declaração pisaria na outra (é a
-       mesma propriedade CSS, não soma) e o hover suave do card quebraria.
-       "animation" não compartilha esse problema, roda em paralelo à
-       transition do hover sem interferir. Escalonada via
-       style="animation-delay" nos elementos que precisam de stagger dentro
-       do mesmo bloco (ex.: cards de um grid). */
+      /* entrada dos blocos abaixo do herói — ao contrário do .cm-rise-in
+       acima, esses só aparecem quando o usuário rola até eles. O script
+       observa cada .cm-reveal com IntersectionObserver e soma .is-visible
+       quando entra na viewport, disparando a mesma keyframe cm-rise-in
+       (reusada aqui, não duplicada). De propósito usa "animation", não
+       "transition": os cards de Projetos são .cm-card *e* .cm-reveal ao
+       mesmo tempo, e .cm-card já tem sua própria "transition" pro hover —
+       se cm-reveal também setasse "transition" nesses elementos, uma
+       declaração pisaria na outra (é a mesma propriedade CSS, não soma) e o
+       hover suave do card quebraria. "animation" roda em paralelo à
+       transition do hover sem interferir. */
       .cm-reveal {
         opacity: 0;
         transform: translateY(10px);
@@ -374,21 +762,20 @@
         }
       }
 
-      /* cm-scroll-reveal.js soma esta classe no "animationend" de
-       cm-rise-in — solta o transform de volta pro cascade normal depois
-       que a entrada assenta. Sem isso, "animation: ... both" continua
-       "segurando" transform: translateY(0) pra sempre (efeito colateral
-       pouco óbvio do CSS: uma animação em andamento — ou parada com
-       fill-mode both/forwards — vence estilo inline e regras normais de
-       :hover no cascade, especificidade não importa aí). Isso quebrava em
-       silêncio tanto o lift do :hover em .cm-card quanto o tilt de
-       cm-card-tilt.js nos cards de Projetos, que também são .cm-reveal.
-       Duas regras separadas de propósito: a de baixo (uma classe só,
-       mesma especificidade de .cm-reveal, decidida por ordem no arquivo)
-       devolve o transform de descanso sem brigar com .cm-card:hover (duas
-       classes, especificidade maior, sempre vence quando ativo); a de
-       cima (três classes) só existe pra ter especificidade suficiente e
-       finalmente desligar a animation. */
+      /* o script soma esta classe no "animationend" de cm-rise-in — solta o
+       transform de volta pro cascade normal depois que a entrada assenta.
+       Sem isso, "animation: ... both" continua "segurando"
+       transform: translateY(0) pra sempre (efeito colateral pouco óbvio do
+       CSS: uma animação em andamento — ou parada com fill-mode
+       both/forwards — vence estilo inline e regras normais de :hover no
+       cascade, especificidade não importa aí). Isso quebrava em silêncio
+       tanto o lift do :hover em .cm-card quanto o tilt 3D dos cards de
+       Projetos, que também são .cm-reveal. Duas regras separadas de
+       propósito: a de baixo (uma classe só, mesma especificidade de
+       .cm-reveal, decidida por ordem no arquivo) devolve o transform de
+       descanso sem brigar com .cm-card:hover (duas classes, especificidade
+       maior, sempre vence quando ativo); a de cima (três classes) só existe
+       pra ter especificidade suficiente e finalmente desligar a animation. */
       .cm-reveal-settled {
         transform: none;
       }
@@ -398,52 +785,119 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-[var(--brand-navy)] text-white antialiased">
+  <body class="min-h-screen antialiased">
     <a
       href="#top"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 cm-btn-primary rounded-full px-4 py-2 text-sm font-semibold text-white no-underline"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 cm-btn cm-btn-primary cm-btn-sm"
       >Pular para o conteúdo</a
     >
+
+    <!-- sprite de ícones repetidos (e-mail x3, GitHub x2, LinkedIn x3, seta
+     x3). Antes cada um estava colado inline em todo lugar que aparecia,
+     ~4 KB de path duplicado. Fica fora do fluxo com width/height 0 em vez de
+     display:none, que quebra <use> em alguns browsers. -->
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      style="position: absolute; width: 0; height: 0; overflow: hidden"
+    >
+      <symbol id="i-mail" viewBox="0 0 24 24">
+        <rect
+          x="2"
+          y="4"
+          width="20"
+          height="16"
+          rx="2"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        ></rect>
+        <path
+          d="m22 7-10 6L2 7"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </symbol>
+      <symbol id="i-github" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.11 3.06.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.25 5.69.42.36.78 1.07.78 2.16 0 1.56-.01 2.81-.01 3.19 0 .31.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
+        ></path>
+      </symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"
+        ></path>
+      </symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24">
+        <path
+          d="M5 12h14M13 6l6 6-6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </symbol>
+    </svg>
+
     <canvas id="cm-kinetic-grid" aria-hidden="true"></canvas>
 
     <!-- ================================================== navegação -->
     <header class="cm-nav sticky top-0 z-20">
       <nav
-        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3"
+        aria-label="Principal"
       >
-        <a href="#top" class="flex items-center gap-2.5 no-underline min-w-0">
+        <a
+          href="#top"
+          class="flex items-center gap-2.5 min-w-0"
+          style="text-decoration: none"
+        >
           <img
             src="design-system/assets/logo/logo-em-256.png"
-            alt="Elton Marques"
+            alt=""
             width="256"
             height="256"
-            class="w-10 h-10 rounded-lg shrink-0"
+            class="w-9 h-9 rounded-lg shrink-0"
           />
-          <span
-            class="font-semibold text-white text-base sm:text-lg truncate"
+          <span class="font-semibold text-base sm:text-lg truncate"
             >Elton Marques</span
           >
         </a>
-        <div class="hidden md:flex items-center gap-7 text-sm">
-          <a href="#sobre" class="cm-nav__link no-underline">Sobre</a>
-          <a href="#projetos" class="cm-nav__link no-underline">Projetos</a>
-          <a href="#servicos" class="cm-nav__link no-underline">Serviços</a>
-          <a
-            href="#contato"
-            class="cm-btn-primary rounded-full px-4 py-2 text-sm font-semibold text-white no-underline"
-            >Contato</a
+
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#projetos" class="cm-nav__link">Projetos</a>
+          <a href="#servicos" class="cm-nav__link">Serviços</a>
+          <a href="#sobre" class="cm-nav__link">Sobre</a>
+          <a href="#contato" class="cm-btn cm-btn-primary cm-btn-sm"
+            >Falar sobre o projeto</a
           >
         </div>
+
+        <!-- Abaixo de md o CTA vira só o ícone de e-mail: "Falar sobre o
+         projeto" por extenso não cabe ao lado do logo e do hambúrguer num
+         aparelho de 360px, e encurtar o rótulo só no celular quebraria a
+         consistência do CTA. O botão por extenso reaparece dentro do painel
+         do menu, em largura total. -->
         <div class="md:hidden flex items-center gap-2 shrink-0">
           <a
             href="#contato"
-            class="cm-btn-primary rounded-full px-3 sm:px-4 py-2 text-sm font-semibold text-white no-underline whitespace-nowrap"
-            >Contato</a
+            class="cm-btn cm-btn-primary cm-btn-icon"
+            aria-label="Falar sobre o projeto"
           >
+            <svg width="16" height="16" aria-hidden="true">
+              <use href="#i-mail"></use>
+            </svg>
+          </a>
           <button
             type="button"
             id="cm-nav-toggle"
-            class="cm-social cm-glass rounded-full w-9 h-9 flex items-center justify-center"
+            class="cm-social"
             aria-label="Abrir menu"
             aria-expanded="false"
             aria-controls="cm-nav-mobile"
@@ -457,7 +911,7 @@
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              aria-hidden="true"
             >
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -473,7 +927,7 @@
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              aria-hidden="true"
             >
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -481,20 +935,18 @@
           </button>
         </div>
       </nav>
+
       <!-- painel do menu mobile: some acima de md (a nav horizontal reaparece
        e este painel fica sempre oculto, id/JS inertes nesse breakpoint) -->
       <div
         id="cm-nav-mobile"
-        class="md:hidden hidden px-4 sm:px-6 pb-4 text-sm border-t border-white/5"
+        class="md:hidden hidden px-4 sm:px-6 pb-4 pt-1 cm-rule"
       >
-        <a href="#sobre" class="cm-nav__link no-underline block py-2.5"
-          >Sobre</a
-        >
-        <a href="#projetos" class="cm-nav__link no-underline block py-2.5"
-          >Projetos</a
-        >
-        <a href="#servicos" class="cm-nav__link no-underline block py-2.5"
-          >Serviços</a
+        <a href="#projetos" class="cm-nav__link block py-2.5">Projetos</a>
+        <a href="#servicos" class="cm-nav__link block py-2.5">Serviços</a>
+        <a href="#sobre" class="cm-nav__link block py-2.5">Sobre</a>
+        <a href="#contato" class="cm-btn cm-btn-primary w-full mt-3"
+          >Falar sobre o projeto</a
         >
       </div>
     </header>
@@ -502,137 +954,114 @@
     <!-- ================================================== hero -->
     <section
       id="top"
-      class="cm-hero cm-section relative z-10 px-4 sm:px-6 py-16 sm:py-20 flex items-center"
+      class="cm-hero cm-section relative z-10 px-4 sm:px-6 py-14 sm:py-20"
+      aria-labelledby="hero-h"
     >
       <div
-        class="max-w-5xl lg:max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center"
+        class="max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center"
       >
         <div class="cm-rise-in min-w-0" style="animation-delay: 0ms">
-          <p class="text-sm text-white/70 mb-3">Olá, eu sou</p>
-          <h1
-            class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.1]"
-          >
-            Elton Marques
+          <!-- o nome saiu do <h1> e virou kicker: quem chega aqui precisa
+           saber em 5 segundos o que eu faço, não como eu me chamo. O nome
+           continua na nav, no <title>, no rodapé e no JSON-LD, então busca
+           por "Elton Marques" não perde nada. -->
+          <p class="cm-kicker">Elton Marques · Desenvolvedor de software</p>
+          <!-- o cap em ch só entra a partir de sm: abaixo disso ele é mais
+           estreito que a própria tela e só serve pra somar linhas -->
+          <h1 id="hero-h" class="cm-h1 mt-4 sm:max-w-[17ch]">
+            Ferramentas internas que tiram o trabalho manual da operação.
           </h1>
-          <p
-            class="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mt-2"
-            style="color: var(--accent)"
-          >
-            Desenvolvedor de Software
-          </p>
-          <p class="text-white/70 leading-relaxed mt-5 lg:mt-6 max-w-md lg:max-w-lg xl:max-w-xl lg:text-lg xl:text-xl">
-            Transformo processos manuais e dados dispersos em ferramentas que
-            as pessoas realmente usam — da interface ao servidor que a serve.
+          <p class="cm-lead mt-5 max-w-[48ch]">
+            Dashboards, automações e integrações sob medida — do desenho da
+            interface ao servidor que roda em produção. Uma pessoa só, do
+            começo ao fim.
           </p>
 
           <ul
-            class="flex flex-wrap gap-2 mt-5 lg:mt-6 list-none"
+            class="flex flex-wrap gap-2 mt-6 list-none"
             aria-label="Foco atual"
           >
-            <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs lg:text-sm">
-              dashboards
-            </li>
-            <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs lg:text-sm">
-              automação
-            </li>
-            <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs lg:text-sm">dados</li>
+            <li class="cm-chip">dashboards</li>
+            <li class="cm-chip">automação</li>
+            <li class="cm-chip">dados</li>
           </ul>
 
-          <div class="flex flex-wrap items-center gap-3 mt-6 lg:mt-8">
-            <a
-              href="#projetos"
-              class="cm-btn-primary rounded-full px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold text-white no-underline"
-              >Ver projetos</a
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-4 mt-8">
+            <a href="#contato" class="cm-btn cm-btn-primary"
+              >Falar sobre o projeto</a
             >
-            <a
-              href="#contato"
-              class="cm-btn-secondary cm-glass rounded-full px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold text-white no-underline"
-              >Entrar em contato</a
-            >
-          </div>
-
-          <div class="flex items-center gap-2 mt-8 lg:mt-10">
-            <a
-              href="mailto:contato@eltonmarques.com"
-              class="cm-social cm-glass rounded-full w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center"
-              aria-label="E-mail"
-              title="contato@eltonmarques.com"
-            >
+            <a href="#projetos" class="cm-link cm-link--down">
+              Ver projetos
               <svg
-                width="16"
-                height="16"
+                width="15"
+                height="15"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="2.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                aria-hidden="true"
               >
-                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                <path d="m22 7-10 6L2 7"></path>
+                <path d="M12 5v14M6 13l6 6 6-6"></path>
+              </svg>
+            </a>
+          </div>
+
+          <div class="flex items-center gap-2 mt-10">
+            <a
+              href="mailto:contato@eltonmarques.com"
+              class="cm-social"
+              aria-label="Enviar e-mail para contato@eltonmarques.com"
+            >
+              <svg width="16" height="16" aria-hidden="true">
+                <use href="#i-mail"></use>
               </svg>
             </a>
             <a
               href="https://github.com/elton-marques"
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-social cm-glass rounded-full w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center"
-              aria-label="GitHub"
-              title="github.com/elton-marques"
+              class="cm-social"
+              aria-label="GitHub de Elton Marques"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.11 3.06.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.25 5.69.42.36.78 1.07.78 2.16 0 1.56-.01 2.81-.01 3.19 0 .31.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
-                ></path>
+              <svg width="16" height="16" aria-hidden="true">
+                <use href="#i-github"></use>
               </svg>
             </a>
             <a
               href="https://www.linkedin.com/in/elton-marques/"
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-social cm-glass rounded-full w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center"
-              aria-label="LinkedIn"
-              title="linkedin.com/in/elton-marques"
+              class="cm-social"
+              aria-label="LinkedIn de Elton Marques"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"
-                ></path>
+              <svg width="16" height="16" aria-hidden="true">
+                <use href="#i-linkedin"></use>
               </svg>
             </a>
           </div>
         </div>
 
-        <!-- mockup decorativo, sem lib de syntax highlight — só spans coloridos.
-         cm-hero-type.js "digita" este código no load (Cartão Mestre já não
-         tinha CodeBlockDemo/animate-ui aqui — motion reimplementada em JS
-         vanilla pra não puxar React só por causa disso). -->
+        <!-- mockup decorativo, sem lib de syntax highlight — só spans
+         coloridos. O script logo antes de </body> "digita" este código uma
+         vez no load. -->
         <div
           class="cm-rise-in min-w-0"
           style="animation-delay: 120ms"
           aria-hidden="true"
         >
-          <div class="cm-glass rounded-2xl overflow-hidden">
-            <div
-              class="flex items-center gap-1.5 px-4 py-3 lg:px-5 lg:py-4 border-b border-white/10"
-            >
+          <div class="cm-panel overflow-hidden">
+            <div class="flex items-center gap-1.5 px-4 py-3">
               <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
-              <span class="ml-2 text-xs text-white/65">perfil.js</span>
+              <span class="ml-2 text-xs" style="color: var(--text-3)"
+                >perfil.js</span
+              >
             </div>
             <pre
-              class="cm-code px-5 py-5 lg:px-6 lg:py-7 overflow-x-auto"
+              class="cm-code cm-rule px-5 py-5 lg:px-6 lg:py-6 overflow-x-auto"
             ><code data-cm-typecode><span class="tok-com">// eltonmarques.com</span>
 <span class="tok-kw">const</span> <span class="tok-prop">dev</span> <span class="tok-punc">=</span> <span class="tok-punc">{</span>
   <span class="tok-prop">nome</span><span class="tok-punc">:</span> <span class="tok-str">"Elton Marques"</span><span class="tok-punc">,</span>
@@ -646,144 +1075,122 @@
       </div>
     </section>
 
-    <!-- ================================================== sobre -->
-    <section
-      id="sobre"
-      class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
-    >
-      <div class="max-w-3xl mx-auto text-center">
-        <h2
-          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-4"
-        >
-          Sobre
-        </h2>
-        <p
-          data-cm-scroll-highlight
-          class="cm-reveal text-lg sm:text-xl leading-relaxed"
-          style="animation-delay: 40ms"
-        >
-          Desenvolvedor de software full-stack — da interface ao servidor.
-          Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
-          tirar trabalho manual do caminho de quem opera.
-        </p>
-        <ul
-          class="cm-reveal flex flex-wrap justify-center gap-2.5 mt-7 list-none"
-          style="animation-delay: 80ms"
-          aria-label="Tecnologias que uso"
-        >
-          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">
-            JavaScript
-          </li>
-          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">Python</li>
-          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">SQL</li>
-          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">Nginx</li>
-          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">Systemd</li>
-          <li class="cm-chip rounded-full px-3.5 py-1.5 text-xs">
-            Tailwind CSS
-          </li>
-        </ul>
-      </div>
-    </section>
-
     <!-- ================================================== projetos -->
+    <!-- Subiu pra logo depois do hero (antes vinha depois do "Sobre"): a
+     prova tem que vir imediatamente atrás da promessa. Os id= das âncoras
+     não mudaram, então nenhum link externo quebra. -->
     <section
       id="projetos"
-      class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
+      class="cm-section relative z-10 px-4 sm:px-6 py-20 sm:py-28"
+      aria-labelledby="projetos-h"
     >
       <div class="max-w-5xl mx-auto">
+        <p class="cm-kicker cm-reveal">Projetos</p>
         <h2
-          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-6"
+          id="projetos-h"
+          class="cm-h2 cm-reveal mt-3"
+          style="animation-delay: 40ms"
         >
-          Projetos
+          Três sistemas no ar agora.
         </h2>
+        <p
+          class="cm-lead cm-reveal mt-4 max-w-[52ch]"
+          style="animation-delay: 70ms"
+        >
+          Construídos do zero — interface, back-end e o servidor que serve.
+          Estão publicados nestes endereços; dá pra abrir e conferir.
+        </p>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <a
-            href="/cartaomestre/"
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
-            style="animation-delay: 40ms"
-          >
-            <div
-              class="cm-card__glow"
-              style="
-                background: radial-gradient(
-                  circle,
-                  var(--brand-blue-hover),
-                  transparent 70%
-                );
-              "
-            ></div>
-            <div class="flex items-center justify-between">
-              <span
-                class="rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-blue-300/80"
-                >Dashboard</span
-              >
-              <span class="flex items-center gap-1 text-[11px] text-white/65">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Protegido
-              </span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect width="20" height="14" x="2" y="5" rx="2"></rect>
-                  <line x1="2" y1="10" x2="22" y2="10"></line>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-white">Cartão Mestre</h3>
-            </div>
-            <p class="text-sm text-white/70 leading-relaxed">
-              Dashboard de controle de acesso pela portaria — acompanha as
-              liberações do cartão mestre com login por sessão, filtros e
-              exportação de relatórios, reunindo tudo em KPIs e insights
-              operacionais.
-            </p>
-            <span
-              class="cm-card__arrow mt-auto flex items-center gap-1 text-xs text-white/70"
-            >
-              Acessar
+        <!-- Card destaque em largura total + dois menores lado a lado, em vez
+         de três caixas idênticas em grid-cols-3. Composição assimétrica dá
+         hierarquia (o Cartão Mestre é o projeto mais completo) e quebra o
+         padrão de "grade de cards" sem inventar conteúdo novo. -->
+        <a
+          href="/cartaomestre/"
+          class="cm-card cm-reveal p-6 sm:p-8 mt-10"
+          style="animation-delay: 100ms"
+        >
+          <div
+            class="cm-card__glow"
+            style="
+              background: radial-gradient(
+                circle,
+                var(--brand-blue-hover),
+                transparent 70%
+              );
+            "
+          ></div>
+          <!-- ícone à esquerda / categoria à direita, e o título só na linha
+           de baixo — mesma estrutura dos dois cards menores. Ter o título na
+           mesma linha da categoria obrigava a truncar "Cartão Mestre" em tela
+           de 320px. -->
+          <div class="flex items-start justify-between gap-3">
+            <span class="cm-icon cm-tag-blue">
               <svg
-                width="13"
-                height="13"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+            </span>
+            <span class="cm-badge cm-badge--tag cm-tag-blue shrink-0"
+              >Dashboard</span
+            >
+          </div>
+          <h3 class="text-xl sm:text-2xl font-semibold mt-4">Cartão Mestre</h3>
+
+          <p class="cm-lead mt-4 max-w-[62ch]">
+            Dashboard de controle de acesso pela portaria — acompanha as
+            liberações do cartão mestre com login por sessão, filtros e
+            exportação de relatórios, reunindo tudo em KPIs e insights
+            operacionais.
+          </p>
+
+          <div
+            class="cm-rule flex flex-wrap items-center justify-between gap-4 mt-6 pt-5"
+          >
+            <span class="cm-addr cm-mono">
+              <svg
+                width="12"
+                height="12"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                aria-hidden="true"
+                class="shrink-0"
               >
-                <path d="M5 12h14M13 6l6 6-6 6"></path>
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span class="cm-addr__url"
+                >eltonmarques.com/cartaomestre · acesso restrito</span
+              >
+            </span>
+            <span class="cm-card__arrow">
+              Acessar
+              <svg width="14" height="14" aria-hidden="true">
+                <use href="#i-arrow-right"></use>
               </svg>
             </span>
-          </a>
+          </div>
+        </a>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           <a
             href="/leitor"
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
-            style="animation-delay: 90ms"
+            class="cm-card cm-card--stack cm-reveal p-6"
+            style="animation-delay: 140ms"
           >
             <div
               class="cm-card__glow"
@@ -795,32 +1202,8 @@
                 );
               "
             ></div>
-            <div class="flex items-center justify-between">
-              <span
-                class="rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-emerald-300/80"
-                >Ferramenta</span
-              >
-              <span class="flex items-center gap-1 text-[11px] text-white/65">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 3"></path>
-                </svg>
-                Público
-              </span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-emerald-300/90"
-              >
+            <div class="flex items-start justify-between gap-3">
+              <span class="cm-icon cm-tag-emerald">
                 <svg
                   width="18"
                   height="18"
@@ -830,45 +1213,41 @@
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
+                  aria-hidden="true"
                 >
                   <path d="M12 20h9"></path>
-                  <path
-                    d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"
-                  ></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
                 </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-white">
-                Leitor de Matrículas
-              </h3>
+              </span>
+              <span class="cm-badge cm-badge--tag cm-tag-emerald shrink-0"
+                >Ferramenta</span
+              >
             </div>
-            <p class="text-sm text-white/70 leading-relaxed">
+            <h3 class="text-lg font-semibold mt-4">Leitor de Matrículas</h3>
+            <p class="cm-lead cm-lead--sm mt-3">
               Lê as folhas manuscritas de liberação do cartão mestre via OCR,
               valida os dados automaticamente e exporta tudo pronto pra
               planilha — sem digitação manual.
             </p>
-            <span
-              class="cm-card__arrow mt-auto flex items-center gap-1 text-xs text-white/70"
+            <div
+              class="cm-rule cm-card__foot flex items-center justify-between gap-3"
             >
-              Acessar
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6"></path>
-              </svg>
-            </span>
+              <span class="cm-addr cm-mono">
+                <span class="cm-addr__url">eltonmarques.com/leitor</span>
+              </span>
+              <span class="cm-card__arrow">
+                Acessar
+                <svg width="14" height="14" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg>
+              </span>
+            </div>
           </a>
 
           <a
             href="/calc/"
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3 no-underline"
-            style="animation-delay: 140ms"
+            class="cm-card cm-card--stack cm-reveal p-6"
+            style="animation-delay: 180ms"
           >
             <div
               class="cm-card__glow"
@@ -880,32 +1259,8 @@
                 );
               "
             ></div>
-            <div class="flex items-center justify-between">
-              <span
-                class="rounded-full cm-glass px-3 py-1 text-[11px] uppercase tracking-wide text-amber-300/80"
-                >Sátira</span
-              >
-              <span class="flex items-center gap-1 text-[11px] text-white/65">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 3"></path>
-                </svg>
-                Público
-              </span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-amber-300/90"
-              >
+            <div class="flex items-start justify-between gap-3">
+              <span class="cm-icon cm-tag-amber">
                 <svg
                   width="18"
                   height="18"
@@ -915,11 +1270,11 @@
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
+                  aria-hidden="true"
                 >
                   <rect x="4" y="2" width="16" height="20" rx="2"></rect>
                   <line x1="8" y1="6" x2="16" y2="6"></line>
                   <line x1="16" y1="14" x2="16" y2="18"></line>
-                  <path d="M16 10h.01"></path>
                   <path d="M12 10h.01"></path>
                   <path d="M8 10h.01"></path>
                   <path d="M12 14h.01"></path>
@@ -927,31 +1282,30 @@
                   <path d="M12 18h.01"></path>
                   <path d="M8 18h.01"></path>
                 </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-white">Calculadora Pro</h3>
+              </span>
+              <span class="cm-badge cm-badge--tag cm-tag-amber shrink-0"
+                >Sátira</span
+              >
             </div>
-            <p class="text-sm text-white/70 leading-relaxed">
+            <h3 class="text-lg font-semibold mt-4">Calculadora Pro</h3>
+            <p class="cm-lead cm-lead--sm mt-3">
               Uma calculadora "premium" com cara de SaaS de verdade — até você
               apertar "=" e esbarrar num paywall pedindo assinatura pra ver o
               resultado de qualquer conta. Sátira, não produto.
             </p>
-            <span
-              class="cm-card__arrow mt-auto flex items-center gap-1 text-xs text-white/70"
+            <div
+              class="cm-rule cm-card__foot flex items-center justify-between gap-3"
             >
-              Acessar
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6"></path>
-              </svg>
-            </span>
+              <span class="cm-addr cm-mono">
+                <span class="cm-addr__url">eltonmarques.com/calc</span>
+              </span>
+              <span class="cm-card__arrow">
+                Acessar
+                <svg width="14" height="14" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg>
+              </span>
+            </div>
           </a>
         </div>
       </div>
@@ -959,218 +1313,104 @@
 
     <!-- ================================================== serviços -->
     <!-- Copy gerada a partir do que os projetos acima já provam na prática,
-     não uma lista genérica de serviços. -->
+     não uma lista genérica de serviços. Mesma copy de antes, palavra por
+     palavra — o que mudou foi sair de cinco cards idênticos pra uma lista
+     editorial (ver .cm-dl no CSS). -->
     <section
       id="servicos"
-      class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
+      class="cm-section cm-rule relative z-10 px-4 sm:px-6 py-16 sm:py-20"
+      aria-labelledby="servicos-h"
     >
       <div class="max-w-5xl mx-auto">
+        <p class="cm-kicker cm-reveal">Serviços</p>
         <h2
-          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-6"
+          id="servicos-h"
+          class="cm-h2 cm-reveal mt-3"
+          style="animation-delay: 40ms"
         >
-          Serviços
+          O que eu construo.
         </h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <div
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
-            style="animation-delay: 40ms"
-          >
-            <div
-              class="cm-card__glow"
-              style="
-                background: radial-gradient(
-                  circle,
-                  var(--brand-blue-hover),
-                  transparent 70%
-                );
-              "
-            ></div>
-            <div
-              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-              </svg>
-            </div>
-            <h3 class="text-base font-semibold text-white">Automação</h3>
-            <p class="text-sm text-white/70 leading-relaxed">
+        <dl class="cm-dl cm-reveal mt-10" style="animation-delay: 80ms">
+          <div>
+            <dt>Automação</dt>
+            <dd>
               Rotinas e integrações que tiram tarefa repetitiva do caminho:
               leitura de formulários, jobs agendados, dados fluindo sozinhos
               entre sistemas.
-            </p>
+            </dd>
           </div>
-
-          <div
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
-            style="animation-delay: 70ms"
-          >
-            <div
-              class="cm-card__glow"
-              style="
-                background: radial-gradient(
-                  circle,
-                  var(--brand-blue-hover),
-                  transparent 70%
-                );
-              "
-            ></div>
-            <div
-              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M3 3v18h18"></path>
-                <path d="M18 17V9"></path>
-                <path d="M13 17V5"></path>
-                <path d="M8 17v-3"></path>
-              </svg>
-            </div>
-            <h3 class="text-base font-semibold text-white">BI</h3>
-            <p class="text-sm text-white/70 leading-relaxed">
+          <div>
+            <dt>BI</dt>
+            <dd>
               Dashboards e relatórios que juntam dado espalhado em indicador
               claro — pra decisão rápida, não planilha manual.
-            </p>
+            </dd>
           </div>
+          <div>
+            <dt>Ciência de dados</dt>
+            <dd>
+              Dado bruto virando padrão e tendência legível — do tratamento à
+              análise, sem ruído.
+            </dd>
+          </div>
+          <div>
+            <dt>Desenvolvimento web</dt>
+            <dd>
+              Aplicações do zero — interface, back-end e o servidor que serve
+              tudo, sem depender de plataforma terceirizada.
+            </dd>
+          </div>
+          <div>
+            <dt>IA</dt>
+            <dd>
+              Modelos aplicados a problema real — OCR, classificação, automação
+              inteligente.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
 
-          <div
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
+    <!-- ================================================== sobre -->
+    <section
+      id="sobre"
+      class="cm-section relative z-10 px-4 sm:px-6 py-14 sm:py-16"
+      aria-labelledby="sobre-h"
+    >
+      <div
+        class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[8rem_1fr] gap-4 md:gap-12"
+      >
+        <p class="cm-kicker cm-reveal md:pt-2">Sobre</p>
+        <div class="min-w-0">
+          <h2
+            id="sobre-h"
+            class="cm-h2 cm-reveal max-w-[20ch]"
+            style="animation-delay: 40ms"
+          >
+            Full-stack de verdade — da interface ao servidor.
+          </h2>
+          <p
+            class="cm-lead cm-reveal mt-5 max-w-[56ch]"
+            style="animation-delay: 70ms"
+          >
+            Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
+            tirar trabalho manual do caminho de quem opera. Os três sistemas
+            acima estão em produção numa VPS que eu mesmo configurei — nginx,
+            systemd e deploy inclusos.
+          </p>
+          <ul
+            class="cm-reveal flex flex-wrap gap-2 mt-7 list-none"
             style="animation-delay: 100ms"
+            aria-label="Tecnologias que uso"
           >
-            <div
-              class="cm-card__glow"
-              style="
-                background: radial-gradient(
-                  circle,
-                  var(--brand-blue-hover),
-                  transparent 70%
-                );
-              "
-            ></div>
-            <div
-              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M3 3v18h18"></path>
-                <path d="m19 9-5 5-4-4-3 3"></path>
-              </svg>
-            </div>
-            <h3 class="text-base font-semibold text-white">Ciência de Dados</h3>
-            <p class="text-sm text-white/70 leading-relaxed">
-              Dado bruto virando padrão e tendência legível — do tratamento
-              à análise, sem ruído.
-            </p>
-          </div>
-
-          <div
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
-            style="animation-delay: 130ms"
-          >
-            <div
-              class="cm-card__glow"
-              style="
-                background: radial-gradient(
-                  circle,
-                  var(--brand-blue-hover),
-                  transparent 70%
-                );
-              "
-            ></div>
-            <div
-              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-              </svg>
-            </div>
-            <h3 class="text-base font-semibold text-white">Dev. Web</h3>
-            <p class="text-sm text-white/70 leading-relaxed">
-              Aplicações do zero — interface, back-end e o servidor que
-              serve tudo, sem depender de plataforma terceirizada.
-            </p>
-          </div>
-
-          <div
-            class="cm-card cm-glass cm-reveal rounded-3xl p-6 flex flex-col gap-3"
-            style="animation-delay: 160ms"
-          >
-            <div
-              class="cm-card__glow"
-              style="
-                background: radial-gradient(
-                  circle,
-                  var(--brand-blue-hover),
-                  transparent 70%
-                );
-              "
-            ></div>
-            <div
-              class="w-9 h-9 rounded-xl cm-glass flex items-center justify-center text-blue-300/90"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-                <rect x="9" y="9" width="6" height="6"></rect>
-                <path d="M9 2v2"></path>
-                <path d="M15 2v2"></path>
-                <path d="M9 20v2"></path>
-                <path d="M15 20v2"></path>
-                <path d="M2 9h2"></path>
-                <path d="M2 15h2"></path>
-                <path d="M20 9h2"></path>
-                <path d="M20 15h2"></path>
-              </svg>
-            </div>
-            <h3 class="text-base font-semibold text-white">IA</h3>
-            <p class="text-sm text-white/70 leading-relaxed">
-              Modelos aplicados a problema real — OCR, classificação,
-              automação inteligente.
-            </p>
-          </div>
+            <li class="cm-chip">JavaScript</li>
+            <li class="cm-chip">Python</li>
+            <li class="cm-chip">SQL</li>
+            <li class="cm-chip">Nginx</li>
+            <li class="cm-chip">Systemd</li>
+            <li class="cm-chip">Tailwind CSS</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -1178,116 +1418,136 @@
     <!-- ================================================== contato -->
     <section
       id="contato"
-      class="cm-section relative z-10 px-4 sm:px-6 py-16 border-t border-white/5"
+      class="cm-section cm-rule relative z-10 px-4 sm:px-6 py-20 sm:py-28"
+      aria-labelledby="contato-h"
     >
-      <div class="max-w-2xl mx-auto text-center">
-        <p
-          class="cm-reveal text-xs uppercase tracking-[0.2em] text-white/65 mb-4"
-        >
-          Contato
-        </p>
-        <h2
-          class="cm-reveal text-2xl sm:text-3xl font-bold text-white"
-          style="animation-delay: 40ms"
-        >
-          Tem um projeto em mente?
-        </h2>
-        <p class="cm-reveal text-white/70 mt-3" style="animation-delay: 70ms">
-          Me manda uma mensagem — respondo por e-mail ou LinkedIn.
-        </p>
-        <div
-          class="cm-reveal flex flex-wrap justify-center gap-3 mt-7"
-          style="animation-delay: 100ms"
-        >
-          <a
-            href="mailto:contato@eltonmarques.com"
-            class="cm-btn-primary rounded-full px-6 py-3 text-sm font-semibold text-white no-underline flex items-center gap-2"
+      <div class="max-w-5xl mx-auto">
+        <div class="max-w-[46ch]">
+          <p class="cm-kicker cm-reveal">Contato</p>
+          <h2
+            id="contato-h"
+            class="cm-h2 cm-reveal mt-3"
+            style="animation-delay: 40ms"
           >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+            Tem um processo manual travando a operação?
+          </h2>
+          <p class="cm-lead cm-reveal mt-4" style="animation-delay: 70ms">
+            Me manda o problema em duas linhas. Respondo com o que dá pra fazer
+            e em quanto tempo.
+          </p>
+
+          <div
+            class="cm-reveal flex flex-wrap items-center gap-3 mt-8"
+            style="animation-delay: 100ms"
+          >
+            <a
+              href="mailto:contato@eltonmarques.com"
+              class="cm-btn cm-btn-primary"
             >
-              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-              <path d="m22 7-10 6L2 7"></path>
-            </svg>
-            contato@eltonmarques.com
-          </a>
-          <a
-            href="https://www.linkedin.com/in/elton-marques/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="cm-btn-secondary cm-glass rounded-full px-6 py-3 text-sm font-semibold text-white no-underline flex items-center gap-2"
+              <svg width="15" height="15" aria-hidden="true">
+                <use href="#i-mail"></use>
+              </svg>
+              Falar sobre o projeto
+            </a>
+            <!-- mailto: sozinho perde muita gente no desktop sem cliente de
+             e-mail configurado. O botão só aparece se navigator.clipboard
+             existir (o script logo antes de </body> tira o display:none) —
+             sem API, sem botão morto na tela. -->
+            <button
+              type="button"
+              class="cm-btn cm-btn-ghost"
+              data-cm-copy="contato@eltonmarques.com"
+              style="display: none"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span data-cm-copy-label>Copiar e-mail</span>
+            </button>
+            <a
+              href="https://www.linkedin.com/in/elton-marques/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cm-link"
+            >
+              LinkedIn
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M14 4h6v6"></path>
+                <path d="M20 4 10 14"></path>
+                <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
+              </svg>
+            </a>
+          </div>
+
+          <p
+            class="cm-reveal cm-mono mt-6"
+            style="animation-delay: 130ms; color: var(--text-3)"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"
-              ></path>
-            </svg>
-            LinkedIn
-          </a>
+            contato@eltonmarques.com
+          </p>
         </div>
       </div>
     </section>
 
     <!-- ================================================== rodapé -->
-    <footer class="relative z-10 px-4 sm:px-6 py-10 border-t border-white/5">
+    <footer class="cm-rule relative z-10 px-4 sm:px-6 py-10">
       <div
         class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
       >
-        <p class="text-xs text-white/65">
-          © <span id="cm-year">2026</span> Elton Marques · Todos os direitos
-          reservados · eltonmarques.com
+        <p class="text-xs" style="color: var(--text-3)">
+          © <span id="cm-year">2026</span> Elton Marques · eltonmarques.com
         </p>
         <div class="flex items-center gap-2">
           <a
             href="mailto:contato@eltonmarques.com"
-            class="cm-social cm-glass rounded-full w-8 h-8 flex items-center justify-center"
-            aria-label="E-mail"
+            class="cm-social cm-social--sm"
+            aria-label="Enviar e-mail para contato@eltonmarques.com"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-              <path d="m22 7-10 6L2 7"></path>
+            <svg width="14" height="14" aria-hidden="true">
+              <use href="#i-mail"></use>
             </svg>
           </a>
           <a
             href="https://github.com/elton-marques"
             target="_blank"
             rel="noopener noreferrer"
-            class="cm-social cm-glass rounded-full w-8 h-8 flex items-center justify-center"
-            aria-label="GitHub"
+            class="cm-social cm-social--sm"
+            aria-label="GitHub de Elton Marques"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.11 3.06.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.25 5.69.42.36.78 1.07.78 2.16 0 1.56-.01 2.81-.01 3.19 0 .31.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
-              ></path>
+            <svg width="14" height="14" aria-hidden="true">
+              <use href="#i-github"></use>
             </svg>
           </a>
           <a
             href="https://www.linkedin.com/in/elton-marques/"
             target="_blank"
             rel="noopener noreferrer"
-            class="cm-social cm-glass rounded-full w-8 h-8 flex items-center justify-center"
-            aria-label="LinkedIn"
+            class="cm-social cm-social--sm"
+            aria-label="LinkedIn de Elton Marques"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"
-              ></path>
+            <svg width="14" height="14" aria-hidden="true">
+              <use href="#i-linkedin"></use>
             </svg>
           </a>
         </div>
@@ -1298,14 +1558,19 @@
      grade de pontos em canvas que se deforma perto do cursor e ondula ao
      clique/toque. Porta pra JS vanilla de um componente React (canvas +
      rAF, sem estado de framework nenhum) — não fazia sentido puxar
-     Next.js/shadcn pra um site estático de uma página só. Mesma lógica e
-     constantes do original; cor lida de --brand-navy/--accent (CSS, fonte
-     única da paleta — muda lá, muda aqui sem precisar duplicar hex), com
-     devicePixelRatio pra não borrar em tela retina. Intensidade um pouco
-     mais baixa que a primeira versão (linhas/pontos/glow) porque estava
-     competindo demais com o conteúdo dos cards por cima. Em
+     Next.js/shadcn pra um site estático de uma página só. Cor lida de
+     --brand-navy/--accent (CSS, fonte única da paleta), com
+     devicePixelRatio pra não borrar em tela retina. Em
      prefers-reduced-motion desenha só um frame estático, sem loop nem
-     listeners de ponteiro. -->
+     listeners de ponteiro.
+
+     PARADA EM REPOUSO (mudança de performance, zero mudança visual): antes
+     o rAF rodava 60fps pra sempre — com o mouse parado, com a aba em
+     segundo plano, no celular, dreno constante de CPU e bateria. Agora o
+     loop só continua enquanto há algo se movendo (o mouse ainda
+     interpolando até o alvo, ou um ripple vivo); quando assenta, desenha o
+     frame final e para. Volta a rodar em mousemove/click/touch/resize.
+     visibilitychange cancela o loop com a aba escondida. -->
     <script>
       (function () {
         var canvas = document.getElementById("cm-kinetic-grid");
@@ -1327,11 +1592,9 @@
         var DOT_SPACING = 28;
         var LERP_SPEED = 0.08;
 
-        // segunda rodada de redução de intensidade (a primeira já está
-        // documentada acima, no comentário do bloco todo) — multiplica
-        // todas as opacidades do efeito (linhas, pontos, glow, ripple) pra
-        // ele brigar ainda menos com o texto por cima. Um só número pra
-        // ajustar em vez de mexer em cada alpha espalhado pelo arquivo.
+        // multiplica todas as opacidades do efeito (linhas, pontos, glow,
+        // ripple) pra ele brigar menos com o texto por cima. Um só número
+        // pra ajustar em vez de mexer em cada alpha espalhado pelo arquivo.
         var BG_INTENSITY = 0.75;
 
         var LINE_BASE = { r: 255, g: 255, b: 255, a: 0.1 * BG_INTENSITY };
@@ -1399,6 +1662,8 @@
         var ripples = [];
         var size = { w: 0, h: 0 };
         var rafId = 0;
+        var running = false;
+        var resizeRaf = 0;
 
         function setSize() {
           var w = window.innerWidth;
@@ -1481,7 +1746,8 @@
           // ponto — em tela cheia isso são milhares de chamadas de desenho
           // por frame, o maior custo do efeito em hardware fraco; cor é fixa
           // e não reage ao cursor, então agrupar não muda nada visualmente)
-          ctx.fillStyle = "rgba(255,255,255," + (0.04 * BG_INTENSITY).toFixed(3) + ")";
+          ctx.fillStyle =
+            "rgba(255,255,255," + (0.04 * BG_INTENSITY).toFixed(3) + ")";
           ctx.beginPath();
           for (var x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
             for (var y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
@@ -1541,8 +1807,7 @@
           // influência é pequeno perto da tela toda) vão pra um path/fill
           // único cada, na cor base; só os poucos afetados são desenhados um
           // a um com a cor/gradiente interpolados. Idle isso troca milhares
-          // de stroke()/fill() por frame por 2, sem mudar o efeito visual —
-          // era o maior custo do fundo animado em hardware fraco.
+          // de stroke()/fill() por frame por 2, sem mudar o efeito visual.
           var ACTIVE_EPS = 0.01;
           var activeSegs = [];
           var activeNodes = [];
@@ -1675,26 +1940,70 @@
           }
         }
 
+        // ainda há algo se movendo? (mouse convergindo pro alvo ou ripple
+        // vivo). É isto que decide se o rAF continua ou para.
+        function needsFrame() {
+          return (
+            ripples.length > 0 ||
+            Math.abs(mouse.x - targetMouse.x) > 0.5 ||
+            Math.abs(mouse.y - targetMouse.y) > 0.5
+          );
+        }
+
         function animate(now) {
           mouse.x = lerpN(mouse.x, targetMouse.x, LERP_SPEED);
           mouse.y = lerpN(mouse.y, targetMouse.y, LERP_SPEED);
           draw(now);
+          if (needsFrame()) {
+            rafId = window.requestAnimationFrame(animate);
+          } else {
+            // encosta o mouse no alvo pra não ficar um resto de deslocamento
+            // sub-pixel congelado, desenha o frame final e para o loop
+            mouse.x = targetMouse.x;
+            mouse.y = targetMouse.y;
+            draw(now);
+            running = false;
+            rafId = 0;
+          }
+        }
+
+        function kick() {
+          if (running || document.hidden) return;
+          running = true;
           rafId = window.requestAnimationFrame(animate);
         }
 
         setSize();
-        window.addEventListener("resize", setSize);
 
         if (reduced) {
           // sem loop de animação nem listeners de ponteiro — só a grade
           // parada (mouse fica em -9999, ou seja, sem warp nenhum)
           draw(performance.now());
+          window.addEventListener("resize", function () {
+            setSize();
+            draw(performance.now());
+          });
           return;
         }
+
+        draw(performance.now());
+
+        // resize throttlado por rAF: redimensionar uma janela dispara dezenas
+        // de eventos por segundo, e setSize() realoca o buffer do canvas
+        window.addEventListener("resize", function () {
+          if (resizeRaf) return;
+          resizeRaf = window.requestAnimationFrame(function () {
+            resizeRaf = 0;
+            setSize();
+            draw(performance.now());
+            kick();
+          });
+        });
 
         window.addEventListener("mousemove", function (e) {
           targetMouse.x = e.clientX;
           targetMouse.y = e.clientY;
+          kick();
         });
         window.addEventListener(
           "touchmove",
@@ -1702,6 +2011,7 @@
             if (e.touches[0]) {
               targetMouse.x = e.touches[0].clientX;
               targetMouse.y = e.touches[0].clientY;
+              kick();
             }
           },
           { passive: true },
@@ -1715,6 +2025,7 @@
             opacity: 1,
             born: performance.now(),
           });
+          kick();
         }
         window.addEventListener("click", function (e) {
           addRipple(e.clientX, e.clientY);
@@ -1729,18 +2040,26 @@
           { passive: true },
         );
 
-        rafId = window.requestAnimationFrame(animate);
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) {
+            if (rafId) window.cancelAnimationFrame(rafId);
+            rafId = 0;
+            running = false;
+          } else {
+            kick();
+          }
+        });
       })();
     </script>
 
-    <!-- cm-hero-type.js — digita o mockup de código do hero (perfil.js) em
-     loop: escreve, pausa alguns segundos com o resultado final parado na
-     tela (tempo de leitura), apaga e reinicia — preservando a coloração
-     por token (tok-kw/tok-str/...) a cada rodada. Vanilla JS pra não puxar
-     React/animate-ui só por causa de um card decorativo; se
-     prefers-reduced-motion estiver ligado, ou algo falhar no meio, o
-     código volta a aparecer inteiro e estático, sem loop (o markup
-     original nunca é perdido). -->
+    <!-- cm-hero-type.js — digita o mockup de código do hero (perfil.js) UMA
+     vez no load, preservando a coloração por token (tok-kw/tok-str/...).
+     Antes isso rodava em loop infinito (escreve, pausa, apaga, repete a cada
+     ~8s pra sempre): movimento constante na visão periférica de quem está
+     tentando ler a manchete ao lado. Vanilla JS pra não puxar React só por
+     causa de um card decorativo; se prefers-reduced-motion estiver ligado,
+     ou algo falhar no meio, o código volta a aparecer inteiro e estático (o
+     markup original nunca é perdido). -->
     <script>
       (function () {
         var codeEl = document.querySelector("[data-cm-typecode]");
@@ -1752,22 +2071,20 @@
         if (reduced) return;
 
         var original = codeEl.innerHTML;
-        var LOOP_PAUSE_MS = 3200; // tempo parado no resultado final antes de reiniciar
-        var ERASE_PAUSE_MS = 450; // pausa depois de apagar tudo, antes de digitar de novo
+        var CARET_LINGER_MS = 2400; // quanto o cursor fica piscando no fim
 
         try {
           // trava a altura do bloco no tamanho do conteúdo já digitado (medido
-          // antes de qualquer alteração), senão digitar/apagar caractere a
-          // caractere encolhe/estica o <pre> e empurra o resto da página
-          // (hero, "Sobre" etc.) junto a cada volta do loop
+          // antes de qualquer alteração), senão digitar caractere a caractere
+          // estica o <pre> e empurra o resto da página junto
           var codeBox = codeEl.closest("pre");
           if (codeBox) {
-            codeBox.style.minHeight = codeBox.getBoundingClientRect().height + "px";
+            codeBox.style.minHeight =
+              codeBox.getBoundingClientRect().height + "px";
           }
 
           // achata o markup existente (spans tok-* + texto) numa lista de
-          // caracteres com a classe do token a que cada um pertence —
-          // calculado uma vez só e reaproveitado a cada volta do loop
+          // caracteres com a classe do token a que cada um pertence
           var chars = [];
           (function flatten(node, cls) {
             node.childNodes.forEach(function (child) {
@@ -1785,51 +2102,18 @@
           caret.className = "cm-caret";
           caret.textContent = "|";
 
-          var i, openSpan, openCls;
-
-          function startLoop() {
-            codeEl.textContent = "";
-            i = 0;
-            openSpan = null;
-            openCls = undefined;
-            window.setTimeout(tick, 550);
-          }
-
-          // acha o último nó de texto (a última letra ainda na tela), descendo
-          // até a folha mais profunda — pode estar direto em codeEl ou dentro
-          // de um span de token (tok-kw/tok-str/...)
-          function lastLeaf(node) {
-            while (node && node.lastChild) node = node.lastChild;
-            return node;
-          }
-
-          function eraseTick() {
-            caret.remove();
-            var leaf = lastLeaf(codeEl);
-            if (!leaf || leaf === codeEl) {
-              // já apagou tudo (codeEl sem filhos) — pausa curta e começa a
-              // digitar de novo
-              window.setTimeout(startLoop, ERASE_PAUSE_MS);
-              return;
-            }
-            var parent = leaf.parentNode;
-            leaf.remove();
-            // limpa o span de token que ficou vazio depois de perder a letra
-            if (parent !== codeEl && !parent.hasChildNodes()) parent.remove();
-
-            codeEl.appendChild(caret);
-
-            // apagar é mais rápido que digitar, mesma lógica de setTimeout
-            // puro (não pausa em aba em segundo plano)
-            window.setTimeout(eraseTick, 8 + Math.random() * 10);
-          }
+          var i = 0;
+          var openSpan = null;
+          var openCls;
 
           function tick() {
             if (i >= chars.length) {
               codeEl.appendChild(caret);
-              // resultado final fica parado na tela por um tempo antes de
-              // começar a apagar (animado, letra a letra) e digitar de novo
-              window.setTimeout(eraseTick, LOOP_PAUSE_MS);
+              // acabou: o cursor pisca mais um pouco e some. Nada de loop —
+              // o mockup fica parado com o resultado final na tela.
+              window.setTimeout(function () {
+                caret.remove();
+              }, CARET_LINGER_MS);
               return;
             }
             var item = chars[i++];
@@ -1854,7 +2138,8 @@
             window.setTimeout(tick, delay);
           }
 
-          startLoop();
+          codeEl.textContent = "";
+          window.setTimeout(tick, 550);
         } catch (e) {
           codeEl.innerHTML = original;
         }
@@ -1867,11 +2152,14 @@
       if (cmYearEl) cmYearEl.textContent = new Date().getFullYear();
     </script>
 
-    <!-- menu mobile: abaixo de md a nav horizontal (Sobre/Projetos/Serviços)
-     some e vira este painel, escondido por padrão. Sem framework, só
-     toggle de classes — "hidden" (display:none) trocado por "flex
-     flex-col" quando aberto. Fecha ao clicar num link (a página já rola
-     até a âncora) ou fora do painel/header. -->
+    <!-- menu mobile: abaixo de md a nav horizontal some e vira este painel,
+     escondido por padrão. Sem framework, só toggle de classes — "hidden"
+     (display:none) trocado por "flex flex-col" quando aberto. Fecha ao
+     clicar num link (a página já rola até a âncora), ao clicar fora, ou com
+     Escape. Gestão de foco: abrir joga o foco no primeiro link do painel;
+     Escape devolve o foco pro botão. Fechar clicando num link NÃO devolve o
+     foco pro botão de propósito — quem clicou quer chegar na seção, não
+     voltar pro topo. -->
     <script>
       (function () {
         var toggle = document.getElementById("cm-nav-toggle");
@@ -1880,7 +2168,11 @@
         var iconClose = document.getElementById("cm-nav-toggle-icon-close");
         if (!toggle || !panel) return;
 
-        function setOpen(open) {
+        function isOpen() {
+          return !panel.classList.contains("hidden");
+        }
+
+        function setOpen(open, restoreFocus) {
           panel.classList.toggle("hidden", !open);
           panel.classList.toggle("flex", open);
           panel.classList.toggle("flex-col", open);
@@ -1888,28 +2180,39 @@
           toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
           if (iconOpen) iconOpen.classList.toggle("hidden", open);
           if (iconClose) iconClose.classList.toggle("hidden", !open);
+
+          if (open) {
+            var first = panel.querySelector("a, button");
+            if (first) first.focus();
+          } else if (
+            restoreFocus &&
+            document.activeElement &&
+            panel.contains(document.activeElement)
+          ) {
+            toggle.focus();
+          }
         }
 
         toggle.addEventListener("click", function () {
-          setOpen(panel.classList.contains("hidden"));
+          setOpen(!isOpen(), true);
         });
 
         panel.addEventListener("click", function (e) {
-          if (e.target.closest("a")) setOpen(false);
+          if (e.target.closest("a")) setOpen(false, false);
         });
 
         document.addEventListener("click", function (e) {
           if (
-            !panel.classList.contains("hidden") &&
+            isOpen() &&
             !panel.contains(e.target) &&
             !toggle.contains(e.target)
           ) {
-            setOpen(false);
+            setOpen(false, false);
           }
         });
 
         document.addEventListener("keydown", function (e) {
-          if (e.key === "Escape") setOpen(false);
+          if (e.key === "Escape" && isOpen()) setOpen(false, true);
         });
 
         // fecha o painel se a tela crescer pra md+ (nav horizontal volta)
@@ -1917,19 +2220,17 @@
         (mq.addEventListener
           ? mq.addEventListener.bind(mq)
           : mq.addListener.bind(mq))("change", function (e) {
-          if (e.matches) setOpen(false);
+          if (e.matches) setOpen(false, false);
         });
       })();
     </script>
 
-    <!-- cm-scroll-reveal.js — os blocos abaixo do herói (Sobre/Projetos/
-     Serviços/Contato, marcados com .cm-reveal) só entram (fade + subida)
-     quando cruzam a viewport ao rolar, em vez de já aparecerem prontos no
-     load como o herói (que usa .cm-rise-in, sem relação com rolagem).
-     IntersectionObserver, unobserve após revelar (dispara uma vez só, não
-     fica escondendo de novo ao rolar pra cima). Sem prefers-reduced-motion:
-     o CSS de .cm-reveal já cai pra opacity:1 direto, então nem precisa
-     rodar isso. -->
+    <!-- cm-scroll-reveal.js — os blocos abaixo do herói (marcados com
+     .cm-reveal) só entram (fade + subida) quando cruzam a viewport ao rolar,
+     em vez de já aparecerem prontos no load como o herói (que usa
+     .cm-rise-in, sem relação com rolagem). IntersectionObserver, unobserve
+     após revelar (dispara uma vez só). Sem prefers-reduced-motion: o CSS de
+     .cm-reveal já cai pra opacity:1 direto, então nem precisa rodar isso. -->
     <script>
       (function () {
         var els = document.querySelectorAll(".cm-reveal");
@@ -1976,111 +2277,21 @@
       })();
     </script>
 
-    <!-- cm-scroll-highlight.js — porta vanilla de um efeito de "Scroll Text
-     Highlight" (Originkit, GSAP/ScrollTrigger no original): cada palavra do
-     parágrafo nasce apagada e acende conforme o parágrafo cruza o centro
-     da viewport ao rolar. Não puxamos GSAP pra um efeito que é só
-     interpolar opacidade por palavra em função do scroll — mesmo raciocínio
-     de sempre neste arquivo (canvas do fundo, digitação do código): JS
-     vanilla, zero dependência nova, nada de build step. Progressive
-     enhancement de verdade: o HTML já traz o parágrafo legível (branco
-     sólido) antes do script rodar; se algo falhar no meio, ele fica assim
-     mesmo, nunca em branco. Sem prefers-reduced-motion: pula o efeito e
-     deixa o texto na cor final. -->
-    <script>
-      (function () {
-        var els = document.querySelectorAll("[data-cm-scroll-highlight]");
-        if (!els.length) return;
-
-        var reduced =
-          window.matchMedia &&
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reduced) return;
-
-        var DIM_A = 0.22;
-        var LIT_A = 0.95;
-
-        function colorAt(t) {
-          var a = DIM_A + (LIT_A - DIM_A) * t;
-          return "rgba(255,255,255," + a.toFixed(3) + ")";
-        }
-
-        var entries = [];
-
-        els.forEach(function (el) {
-          try {
-            var text = el.textContent.trim();
-            var words = text.split(/\s+/).filter(Boolean);
-            if (!words.length) return;
-
-            el.textContent = "";
-            var spans = [];
-            words.forEach(function (word, i) {
-              var span = document.createElement("span");
-              span.textContent = word;
-              span.style.color = colorAt(0);
-              el.appendChild(span);
-              if (i < words.length - 1) {
-                el.appendChild(document.createTextNode(" "));
-              }
-              spans.push(span);
-            });
-            entries.push({ el: el, spans: spans });
-          } catch (e) {
-            // parágrafo fica como texto normal se algo falhar aqui
-          }
-        });
-
-        if (!entries.length) return;
-
-        function update() {
-          var center = window.innerHeight / 2;
-          entries.forEach(function (entry) {
-            var rect = entry.el.getBoundingClientRect();
-            var n = entry.spans.length;
-            var progress = rect.height ? (center - rect.top) / rect.height : 0;
-            progress = Math.max(0, Math.min(1, progress));
-            var band = Math.max(1 / n, 0.06);
-            entry.spans.forEach(function (span, i) {
-              var t = (progress - i / n) / band;
-              t = Math.max(0, Math.min(1, t));
-              span.style.color = colorAt(t);
-            });
-          });
-        }
-
-        var scheduled = false;
-        function requestUpdate() {
-          if (scheduled) return;
-          scheduled = true;
-          window.requestAnimationFrame(function () {
-            scheduled = false;
-            update();
-          });
-        }
-
-        window.addEventListener("scroll", requestUpdate, { passive: true });
-        window.addEventListener("resize", requestUpdate);
-        requestUpdate();
-      })();
-    </script>
-
     <!-- cm-card-tilt.js — porta vanilla, bem contida, do tilt 3D do HoloCard
      (Motiq, https://motiq.dev/components/holo-card): só a inclinação que
-     segue o ponteiro, sem o foil holográfico nem o glare do original —
-     aqui é usado nos cards de Projetos (.cm-card), que já têm identidade
-     visual própria (vidro fosco monocromático), então o efeito fica restrito
-     a dar profundidade, não a chamar atenção pra si. Sem rAF/spring manual:
-     o próprio .cm-card já declara "transition: transform 200ms
+     segue o ponteiro, sem o foil holográfico nem o glare do original. O
+     seletor é restrito aos cards de Projetos: antes pegava .cm-card em
+     qualquer lugar, e com oito cards na página (três projetos + cinco
+     serviços) o efeito virava efeito por efeito. Sem rAF/spring manual: o
+     próprio .cm-card já declara "transition: transform 200ms
      cubic-bezier(...)" pro hover (ver CSS acima), então só reatribuir o
      transform a cada pointermove (throttlado por rAF) já anima suave — zero
-     dependência nova, nada de build step, mesmo raciocínio do resto deste
-     arquivo. Só roda em ponteiro fino (mouse/trackpad): em touch o gesto de
-     arrastar não é "olhar de lado" pro card, é rolar a página, e
-     prefers-reduced-motion desliga o efeito inteiro. -->
+     dependência nova, nada de build step. Só roda em ponteiro fino
+     (mouse/trackpad): em touch o gesto de arrastar não é "olhar de lado" pro
+     card, é rolar a página; prefers-reduced-motion desliga tudo. -->
     <script>
       (function () {
-        var cards = document.querySelectorAll(".cm-card");
+        var cards = document.querySelectorAll("#projetos .cm-card");
         if (!cards.length) return;
 
         var reduced =
@@ -2090,8 +2301,8 @@
           window.matchMedia && window.matchMedia("(pointer: fine)").matches;
         if (reduced || !pointerFine) return;
 
-        var MAX_RX = 4; // grau, eixo X (inclina pra cima/baixo)
-        var MAX_RY = 6; // grau, eixo Y (inclina pra esquerda/direita)
+        var MAX_RX = 3; // grau, eixo X (inclina pra cima/baixo)
+        var MAX_RY = 4.5; // grau, eixo Y (inclina pra esquerda/direita)
         var LIFT = "-4px"; // mesmo translateY do .cm-card:hover em CSS —
         // precisa repetir aqui porque o transform inline sobrepõe o da regra
 
@@ -2131,6 +2342,42 @@
 
           card.addEventListener("pointermove", onMove);
           card.addEventListener("pointerleave", onLeave);
+        });
+      })();
+    </script>
+
+    <!-- copiar e-mail — mailto: sozinho perde quem está no desktop sem
+     cliente de e-mail configurado (o clique não faz nada visível e a pessoa
+     desiste). O botão nasce com display:none no HTML e só aparece se a API
+     existir: sem Clipboard API, nenhum botão morto na tela. -->
+    <script>
+      (function () {
+        var btns = document.querySelectorAll("[data-cm-copy]");
+        if (!btns.length || !navigator.clipboard) return;
+
+        btns.forEach(function (btn) {
+          btn.style.display = "";
+          var label = btn.querySelector("[data-cm-copy-label]");
+          if (label) label.setAttribute("aria-live", "polite");
+          var original = label ? label.textContent : "";
+          var timer = 0;
+
+          btn.addEventListener("click", function () {
+            navigator.clipboard
+              .writeText(btn.getAttribute("data-cm-copy"))
+              .then(function () {
+                if (!label) return;
+                label.textContent = "E-mail copiado";
+                window.clearTimeout(timer);
+                timer = window.setTimeout(function () {
+                  label.textContent = original;
+                }, 2000);
+              })
+              .catch(function () {
+                // permissão negada / contexto inseguro: o mailto: ao lado
+                // continua sendo o caminho, não precisa avisar nada
+              });
+          });
         });
       })();
     </script>
