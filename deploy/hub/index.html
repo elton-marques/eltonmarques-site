@@ -180,6 +180,14 @@
         /* elevação — 2 níveis, não uma sombra genérica em tudo */
         --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
         --elev-2: 0 16px 40px -20px rgba(0, 0, 0, 0.75);
+
+        /* bandas de seção — dão ritmo vertical à página sem introduzir cor
+         nova na paleta monocromática: uma sobe, outra afunda em relação ao
+         navy de base. As duas são TRANSLÚCIDAS de propósito, pra a grade
+         cinética continuar passando por trás (fundo opaco mataria o efeito
+         naquela faixa). */
+        --band-up: rgba(255, 255, 255, 0.025);
+        --band-down: rgba(4, 10, 18, 0.55);
       }
 
       html {
@@ -447,6 +455,17 @@
       }
       .cm-rule {
         border-top: 1px solid var(--line-1);
+      }
+
+      /* Ritmo A-A-B-A-C: hero, Projetos e Sobre ficam no fundo base; Serviços
+       sobe uma banda e Contato + rodapé afundam, fechando a página. O filete
+       de .cm-rule fica junto de propósito — a troca de tom sozinha deixa a
+       borda da banda mole, com o filete a quebra lê como intencional. */
+      .cm-band-up {
+        background: var(--band-up);
+      }
+      .cm-band-down {
+        background: var(--band-down);
       }
 
       /* ---------------------------------------- fundo ambiente (grade) */
@@ -1318,7 +1337,7 @@
      editorial (ver .cm-dl no CSS). -->
     <section
       id="servicos"
-      class="cm-section cm-rule relative z-10 px-4 sm:px-6 py-16 sm:py-20"
+      class="cm-section cm-rule cm-band-up relative z-10 px-4 sm:px-6 py-16 sm:py-20"
       aria-labelledby="servicos-h"
     >
       <div class="max-w-5xl mx-auto">
@@ -1418,7 +1437,7 @@
     <!-- ================================================== contato -->
     <section
       id="contato"
-      class="cm-section cm-rule relative z-10 px-4 sm:px-6 py-20 sm:py-28"
+      class="cm-section cm-rule cm-band-down relative z-10 px-4 sm:px-6 py-20 sm:py-28"
       aria-labelledby="contato-h"
     >
       <div class="max-w-5xl mx-auto">
@@ -1511,7 +1530,7 @@
     </section>
 
     <!-- ================================================== rodapé -->
-    <footer class="cm-rule relative z-10 px-4 sm:px-6 py-10">
+    <footer class="cm-rule cm-band-down relative z-10 px-4 sm:px-6 py-10">
       <div
         class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
       >
