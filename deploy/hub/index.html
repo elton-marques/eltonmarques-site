@@ -335,13 +335,40 @@
         flex: none;
       }
       .cm-btn-primary {
+        position: relative;
+        /* isolation + z-index:-1 no ::after: dentro deste contexto de
+         empilhamento o pseudo pinta ACIMA do background do botão e ABAIXO do
+         texto, que é conteúdo em fluxo. É o que permite o wipe passar por
+         trás do rótulo sem envolver o rótulo num <span> extra em cada um dos
+         seis botões primários da página. */
+        isolation: isolate;
+        overflow: hidden;
         background: var(--brand-blue);
         color: #fff;
         border: 1px solid transparent;
         box-shadow: var(--elev-1);
       }
-      .cm-btn-primary:hover {
+      /* radial-reveal-button (Originkit) — o preenchimento do hover cresce a
+       partir do ponto exato onde o cursor entrou, em vez de trocar de cor de
+       uma vez. Porta em CSS puro: o original anima clip-path com
+       framer-motion, aqui é uma transition e duas custom properties que o
+       script no fim do <body> escreve no pointerenter/pointerleave. 150% é o
+       raio que cobre o botão a partir de qualquer canto (circle() resolve
+       porcentagem contra a diagonal/√2). */
+      .cm-btn-primary::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
         background: var(--brand-blue-hover);
+        clip-path: circle(0% at var(--cm-rx, 50%) var(--cm-ry, 50%));
+        transition: clip-path 450ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .cm-btn-primary:hover::after,
+      .cm-btn-primary:focus-visible::after {
+        clip-path: circle(150% at var(--cm-rx, 50%) var(--cm-ry, 50%));
+      }
+      .cm-btn-primary:hover {
         transform: translateY(-1px);
       }
       .cm-btn-ghost {
@@ -356,6 +383,9 @@
       @media (prefers-reduced-motion: reduce) {
         .cm-btn-primary:hover {
           transform: none;
+        }
+        .cm-btn-primary::after {
+          transition: none;
         }
       }
 
@@ -543,6 +573,100 @@
         filter: blur(50px);
         opacity: 0.16;
         pointer-events: none;
+      }
+
+      /* --------------------------------------- shine-card (Originkit) */
+      /* O original é um shader WebGL: um campo hexagonal de discos metálicos
+       que inclinam por ruído e refletem a luz do cursor. Um contexto WebGL
+       POR CARD — três aqui, mais o canvas 2D do fundo — é caro demais pro que
+       entrega numa página com três cards de texto, e o shader foi desenhado
+       pra ser a superfície inteira do card, não um véu por cima de conteúdo.
+       Portado como intenção, não como implementação: um brilho que segue o
+       cursor pela superfície, alimentado pelo MESMO pointermove que o tilt 3D
+       já escuta (ver cm-card-tilt no fim do <body>). Zero canvas novo, zero
+       rAF novo, zero listener novo. */
+      .cm-sheen {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 300ms ease;
+        background: radial-gradient(
+          200px circle at var(--cm-sx, 50%) var(--cm-sy, 50%),
+          rgba(255, 255, 255, 0.09),
+          rgba(147, 197, 253, 0.05) 40%,
+          rgba(255, 255, 255, 0) 65%
+        );
+      }
+      .cm-card:hover .cm-sheen {
+        opacity: 1;
+      }
+
+      /* --------------------------------------- glow-border (Originkit) */
+      /* Cometa de luz percorrendo a borda: gradiente cônico girando atrás do
+       quadro, mascarado até sobrar só o anel (mask-composite recorta o miolo
+       da content-box, deixando o padding de 1px). Usado UMA vez na página, no
+       card destaque.
+       O original gira com um loop de rAF em JS; aqui a rotação é uma custom
+       property registrada com @property e animada pelo próprio CSS — mais
+       barato, sem JS nenhum, e o navegador para a animação sozinho quando o
+       elemento sai de vista. Só roda no hover, então em repouso não há
+       movimento permanente na página.
+       Sem suporte a @property o ângulo não anima e sobra um anel estático com
+       um ponto de luz — degradação aceitável pra um efeito de hover. */
+      @property --cm-glow-angle {
+        syntax: "<angle>";
+        initial-value: 0deg;
+        inherits: false;
+      }
+      .cm-glow {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 300ms ease;
+        background: conic-gradient(
+          from var(--cm-glow-angle) at 50% 50%,
+          #93c5fd 0deg,
+          rgba(147, 197, 253, 0.35) 30deg,
+          rgba(255, 255, 255, 0.05) 61deg,
+          rgba(255, 255, 255, 0.05) 78deg,
+          rgba(147, 197, 253, 0.35) 145deg,
+          #93c5fd 180deg,
+          rgba(147, 197, 253, 0.35) 210deg,
+          rgba(255, 255, 255, 0.05) 241deg,
+          rgba(255, 255, 255, 0.05) 258deg,
+          rgba(147, 197, 253, 0.35) 325deg,
+          #93c5fd 360deg
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+      }
+      .cm-card:hover .cm-glow {
+        opacity: 1;
+        animation: cm-glow-spin 4s linear infinite;
+      }
+      @keyframes cm-glow-spin {
+        to {
+          --cm-glow-angle: 360deg;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-card:hover .cm-glow {
+          animation: none;
+        }
+        .cm-sheen {
+          transition: none;
+        }
       }
       @media (prefers-reduced-motion: reduce) {
         .cm-card:hover {
@@ -802,6 +926,49 @@
         animation: none;
         opacity: 1;
       }
+      /* mesma ideia pros títulos: sem isso o "animation: ... both" segura um
+       clip-path no elemento pra sempre, e clip-path cria bloco contentor —
+       herança de problema desnecessária num <h2> que já terminou de entrar */
+      .cm-mask-reveal.is-visible.cm-reveal-settled {
+        animation: none;
+        clip-path: none;
+      }
+
+      /* ------------------------------ mask-text-reveal (Originkit) */
+      /* Títulos sobem por trás de uma máscara em vez de fazer fade genérico.
+       O original anima clip-path com framer-motion; a técnica é a mesma
+       (inset() do estado escondido até o descoberto), aqui como keyframe CSS.
+       Substitui o .cm-reveal nos títulos — não soma sistema de animação
+       novo, o mesmo IntersectionObserver dispara os dois.
+       O estado final é inset NEGATIVO, não 0: em 0 o clip encosta exatamente
+       na border-box e o antialiasing come a ponta de descendentes (g, p, q) e
+       de acentos. Negativo solta o recorte de vez. */
+      .cm-mask-reveal {
+        clip-path: inset(105% 0% -25% 0%);
+      }
+      .cm-mask-reveal.is-visible,
+      .cm-mask-load {
+        animation: cm-mask-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      @keyframes cm-mask-in {
+        from {
+          clip-path: inset(105% 0% -25% 0%);
+          transform: translateY(0.16em);
+        }
+        to {
+          clip-path: inset(-25% -5% -25% -5%);
+          transform: translateY(0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-mask-reveal {
+          clip-path: none;
+        }
+        .cm-mask-reveal.is-visible,
+        .cm-mask-load {
+          animation: none;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen antialiased">
@@ -987,13 +1154,17 @@
           <p class="cm-kicker">Elton Marques · Desenvolvedor de software</p>
           <!-- o cap em ch só entra a partir de sm: abaixo disso ele é mais
            estreito que a própria tela e só serve pra somar linhas -->
-          <h1 id="hero-h" class="cm-h1 mt-4 sm:max-w-[17ch]">
+          <h1
+            id="hero-h"
+            class="cm-h1 cm-mask-reveal cm-mask-load mt-4 sm:max-w-[17ch]"
+            style="animation-delay: 260ms"
+          >
             Ferramentas internas que tiram o trabalho manual da operação.
           </h1>
           <p class="cm-lead mt-5 max-w-[48ch]">
             Dashboards, automações e integrações sob medida — do desenho da
-            interface ao servidor que roda em produção. Uma pessoa só, do
-            começo ao fim.
+            interface ao servidor que roda em produção. Uma pessoa só, do começo
+            ao fim.
           </p>
 
           <ul
@@ -1107,7 +1278,7 @@
         <p class="cm-kicker cm-reveal">Projetos</p>
         <h2
           id="projetos-h"
-          class="cm-h2 cm-reveal mt-3"
+          class="cm-h2 cm-mask-reveal mt-3"
           style="animation-delay: 40ms"
         >
           Três sistemas no ar agora.
@@ -1129,6 +1300,8 @@
           class="cm-card cm-reveal p-6 sm:p-8 mt-10"
           style="animation-delay: 100ms"
         >
+          <div class="cm-sheen"></div>
+          <div class="cm-glow"></div>
           <div
             class="cm-card__glow"
             style="
@@ -1211,6 +1384,7 @@
             class="cm-card cm-card--stack cm-reveal p-6"
             style="animation-delay: 140ms"
           >
+            <div class="cm-sheen"></div>
             <div
               class="cm-card__glow"
               style="
@@ -1235,7 +1409,9 @@
                   aria-hidden="true"
                 >
                   <path d="M12 20h9"></path>
-                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                  <path
+                    d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"
+                  ></path>
                 </svg>
               </span>
               <span class="cm-badge cm-badge--tag cm-tag-emerald shrink-0"
@@ -1245,8 +1421,8 @@
             <h3 class="text-lg font-semibold mt-4">Leitor de Matrículas</h3>
             <p class="cm-lead cm-lead--sm mt-3">
               Lê as folhas manuscritas de liberação do cartão mestre via OCR,
-              valida os dados automaticamente e exporta tudo pronto pra
-              planilha — sem digitação manual.
+              valida os dados automaticamente e exporta tudo pronto pra planilha
+              — sem digitação manual.
             </p>
             <div
               class="cm-rule cm-card__foot flex items-center justify-between gap-3"
@@ -1268,6 +1444,7 @@
             class="cm-card cm-card--stack cm-reveal p-6"
             style="animation-delay: 180ms"
           >
+            <div class="cm-sheen"></div>
             <div
               class="cm-card__glow"
               style="
@@ -1344,7 +1521,7 @@
         <p class="cm-kicker cm-reveal">Serviços</p>
         <h2
           id="servicos-h"
-          class="cm-h2 cm-reveal mt-3"
+          class="cm-h2 cm-mask-reveal mt-3"
           style="animation-delay: 40ms"
         >
           O que eu construo.
@@ -1404,7 +1581,7 @@
         <div class="min-w-0">
           <h2
             id="sobre-h"
-            class="cm-h2 cm-reveal max-w-[20ch]"
+            class="cm-h2 cm-mask-reveal max-w-[20ch]"
             style="animation-delay: 40ms"
           >
             Full-stack de verdade — da interface ao servidor.
@@ -1445,7 +1622,7 @@
           <p class="cm-kicker cm-reveal">Contato</p>
           <h2
             id="contato-h"
-            class="cm-h2 cm-reveal mt-3"
+            class="cm-h2 cm-mask-reveal mt-3"
             style="animation-delay: 40ms"
           >
             Tem um processo manual travando a operação?
@@ -1490,7 +1667,9 @@
                 aria-hidden="true"
               >
                 <rect x="9" y="9" width="13" height="13" rx="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                ></path>
               </svg>
               <span data-cm-copy-label>Copiar e-mail</span>
             </button>
@@ -1514,7 +1693,9 @@
               >
                 <path d="M14 4h6v6"></path>
                 <path d="M20 4 10 14"></path>
-                <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
+                <path
+                  d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"
+                ></path>
               </svg>
             </a>
           </div>
@@ -2196,7 +2377,10 @@
           panel.classList.toggle("flex", open);
           panel.classList.toggle("flex-col", open);
           toggle.setAttribute("aria-expanded", open ? "true" : "false");
-          toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+          toggle.setAttribute(
+            "aria-label",
+            open ? "Fechar menu" : "Abrir menu",
+          );
           if (iconOpen) iconOpen.classList.toggle("hidden", open);
           if (iconClose) iconClose.classList.toggle("hidden", !open);
 
@@ -2252,7 +2436,12 @@
      .cm-reveal já cai pra opacity:1 direto, então nem precisa rodar isso. -->
     <script>
       (function () {
-        var els = document.querySelectorAll(".cm-reveal");
+        // .cm-mask-load é o <h1>: entra no load, não na rolagem, então fica
+        // de fora do observer (senão o is-visible reaplicaria a mesma
+        // animação que o load já disparou)
+        var els = document.querySelectorAll(
+          ".cm-reveal, .cm-mask-reveal:not(.cm-mask-load)",
+        );
         if (!els.length) return;
 
         var reduced =
@@ -2340,6 +2529,18 @@
               "deg) translateY(" +
               LIFT +
               ")";
+            // shine-card (Originkit), porta CSS: a mesma posição normalizada
+            // do ponteiro que gera o tilt também move o brilho da superfície
+            // (.cm-sheen). Escrito aqui dentro, e não no onMove, pra herdar
+            // o throttle de rAF que já existe.
+            card.style.setProperty(
+              "--cm-sx",
+              (pending.px * 100).toFixed(1) + "%",
+            );
+            card.style.setProperty(
+              "--cm-sy",
+              (pending.py * 100).toFixed(1) + "%",
+            );
           }
 
           function onMove(e) {
@@ -2350,6 +2551,8 @@
             pending = {
               rx: (0.5 - py) * 2 * MAX_RX,
               ry: (px - 0.5) * 2 * MAX_RY,
+              px: px,
+              py: py,
             };
             if (!raf) raf = requestAnimationFrame(apply);
           }
@@ -2361,6 +2564,47 @@
 
           card.addEventListener("pointermove", onMove);
           card.addEventListener("pointerleave", onLeave);
+        });
+      })();
+    </script>
+
+    <!-- radial-reveal-button (Originkit), porta vanilla — o CSS de
+     .cm-btn-primary::after já faz o wipe circular inteiro sozinho; este
+     script só existe pra ancorar o círculo no ponto onde o cursor entrou (e
+     recolher pro ponto onde saiu), escrevendo --cm-rx/--cm-ry. Sem
+     framer-motion, sem rAF: a transition do CSS anima. Só ponteiro fino —
+     em touch não existe "ponto de entrada", o dedo já chega em cima. -->
+    <script>
+      (function () {
+        var btns = document.querySelectorAll(".cm-btn-primary");
+        if (!btns.length) return;
+        if (!(
+          window.matchMedia && window.matchMedia("(pointer: fine)").matches
+        ))
+          return;
+
+        function anchor(btn, e) {
+          var r = btn.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          btn.style.setProperty(
+            "--cm-rx",
+            (((e.clientX - r.left) / r.width) * 100).toFixed(1) + "%",
+          );
+          btn.style.setProperty(
+            "--cm-ry",
+            (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%",
+          );
+        }
+
+        btns.forEach(function (btn) {
+          btn.addEventListener("pointerenter", function (e) {
+            anchor(btn, e);
+          });
+          // reancorar na saída faz o círculo recolher na direção de onde o
+          // cursor saiu, não de volta pro ponto de entrada
+          btn.addEventListener("pointerleave", function (e) {
+            anchor(btn, e);
+          });
         });
       })();
     </script>
