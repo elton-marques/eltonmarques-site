@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta
       name="description"
-      content="Dashboards, automações e integrações sob medida para tirar trabalho manual da operação. Da interface ao servidor — por Elton Marques, desenvolvedor de software."
+      content="Aplicações web, dashboards e automações sob medida para tirar trabalho manual da operação. Da interface ao servidor — por Elton Marques, desenvolvedor de software."
     />
     <meta name="author" content="Elton Marques" />
     <meta name="theme-color" content="#0d1b2a" />
@@ -16,9 +16,10 @@
     <!-- og:image/twitter:image precisam ser URL absoluta: quem lê essas tags é
      um scraper externo (WhatsApp, LinkedIn, Slack), que não tem base pra
      resolver caminho relativo — com caminho relativo o preview do link
-     simplesmente não carrega imagem. Pelo mesmo motivo o card é "summary" e
-     não "summary_large_image": o asset é um quadrado de 256px, e o formato
-     grande espera 1200x630 (ficaria cortado ou seria descartado). -->
+     simplesmente não carrega imagem. og-image.png é 1200x630 (gerado a partir
+     do logo + paleta da página), então o card já pode ser
+     "summary_large_image" em vez do antigo "summary" (que existia só porque o
+     asset disponível era um quadrado de 256px). -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://eltonmarques.com/" />
     <meta property="og:site_name" content="Elton Marques" />
@@ -29,24 +30,26 @@
     />
     <meta
       property="og:description"
-      content="Dashboards, automações e integrações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
+      content="Aplicações web, dashboards e automações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
     />
     <meta
       property="og:image"
-      content="https://eltonmarques.com/design-system/assets/logo/logo-em-256.png"
+      content="https://eltonmarques.com/design-system/assets/og-image.png"
     />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
       content="Elton Marques — Ferramentas internas sob medida"
     />
     <meta
       name="twitter:description"
-      content="Dashboards, automações e integrações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
+      content="Aplicações web, dashboards e automações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
     />
     <meta
       name="twitter:image"
-      content="https://eltonmarques.com/design-system/assets/logo/logo-em-256.png"
+      content="https://eltonmarques.com/design-system/assets/og-image.png"
     />
 
     <!-- dados estruturados (schema.org/Person) — mesmos fatos já publicados
@@ -61,7 +64,7 @@
         "url": "https://eltonmarques.com/",
         "image": "https://eltonmarques.com/design-system/assets/logo/logo-em-256.png",
         "jobTitle": "Desenvolvedor de Software",
-        "description": "Desenvolvedor de software full-stack. Constrói dashboards, automações e integrações sob medida, da interface ao servidor.",
+        "description": "Desenvolvedor de software full-stack. Constrói aplicações web, dashboards e automações sob medida, da interface ao servidor.",
         "email": "mailto:contato@eltonmarques.com",
         "knowsAbout": [
           "Automação de processos",
@@ -559,6 +562,7 @@
         font-size: 0.875rem;
         font-weight: 500;
         color: var(--text-2);
+        text-decoration: none;
         transition: color 200ms ease;
       }
       .cm-card__arrow svg {
@@ -1058,8 +1062,8 @@
 
         <div class="hidden md:flex items-center gap-8">
           <a href="#projetos" class="cm-nav__link">Projetos</a>
-          <a href="#servicos" class="cm-nav__link">Serviços</a>
           <a href="#sobre" class="cm-nav__link">Sobre</a>
+          <a href="#servicos" class="cm-nav__link">Serviços</a>
           <a href="#contato" class="cm-btn cm-btn-primary cm-btn-sm"
             >Falar sobre o projeto</a
           >
@@ -1129,8 +1133,8 @@
         class="md:hidden hidden px-4 sm:px-6 pb-4 pt-1 cm-rule"
       >
         <a href="#projetos" class="cm-nav__link block py-2.5">Projetos</a>
-        <a href="#servicos" class="cm-nav__link block py-2.5">Serviços</a>
         <a href="#sobre" class="cm-nav__link block py-2.5">Sobre</a>
+        <a href="#servicos" class="cm-nav__link block py-2.5">Serviços</a>
         <a href="#contato" class="cm-btn cm-btn-primary w-full mt-3"
           >Falar sobre o projeto</a
         >
@@ -1162,7 +1166,7 @@
             Ferramentas internas que tiram o trabalho manual da operação.
           </h1>
           <p class="cm-lead mt-5 max-w-[48ch]">
-            Dashboards, automações e integrações sob medida — do desenho da
+            Aplicações web, dashboards e automações sob medida — do desenho da
             interface ao servidor que roda em produção. Uma pessoa só, do começo
             ao fim.
           </p>
@@ -1295,8 +1299,7 @@
          de três caixas idênticas em grid-cols-3. Composição assimétrica dá
          hierarquia (o Cartão Mestre é o projeto mais completo) e quebra o
          padrão de "grade de cards" sem inventar conteúdo novo. -->
-        <a
-          href="/cartaomestre/"
+        <div
           class="cm-card cm-reveal p-6 sm:p-8 mt-10"
           style="animation-delay: 100ms"
         >
@@ -1340,47 +1343,77 @@
           <h3 class="text-xl sm:text-2xl font-semibold mt-4">Cartão Mestre</h3>
 
           <p class="cm-lead mt-4 max-w-[62ch]">
-            Dashboard de controle de acesso pela portaria — acompanha as
-            liberações do cartão mestre com login por sessão, filtros e
-            exportação de relatórios, reunindo tudo em KPIs e insights
-            operacionais.
+            A portaria registrava as liberações do cartão mestre em papel, sem
+            nenhuma visão consolidada da operação. Construí um dashboard com
+            login por sessão, filtros e exportação de relatório — hoje cada
+            liberação vira KPI e insight operacional, sem planilha manual.
           </p>
 
-          <div
-            class="cm-rule flex flex-wrap items-center justify-between gap-4 mt-6 pt-5"
-          >
-            <span class="cm-addr cm-mono">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                class="shrink-0"
+          <div class="cm-rule flex flex-col gap-3 mt-6 pt-5">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <span class="cm-addr cm-mono">
+                <span class="cm-addr__url"
+                  >eltonmarques.com/cartaomestre-demo · dados fictícios</span
+                >
+              </span>
+              <a
+                href="https://eltonmarques.com/cartaomestre-demo/app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="cm-card__arrow"
               >
-                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <span class="cm-addr__url"
-                >eltonmarques.com/cartaomestre · acesso restrito</span
-              >
-            </span>
-            <span class="cm-card__arrow">
-              Acessar
-              <svg width="14" height="14" aria-hidden="true">
-                <use href="#i-arrow-right"></use>
-              </svg>
-            </span>
+                Ver demo
+                <svg width="14" height="14" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg>
+              </a>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <span class="cm-addr cm-mono">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  class="shrink-0"
+                >
+                  <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span class="cm-addr__url"
+                  >eltonmarques.com/cartaomestre · acesso restrito</span
+                >
+              </span>
+              <div class="flex items-center gap-4">
+                <a
+                  href="https://github.com/elton-marques/cartao-mestre"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="cm-social cm-social--sm"
+                  aria-label="Repositório no GitHub — Cartão Mestre"
+                >
+                  <svg width="14" height="14" aria-hidden="true">
+                    <use href="#i-github"></use>
+                  </svg>
+                </a>
+                <a href="/cartaomestre/" class="cm-card__arrow">
+                  Acessar
+                  <svg width="14" height="14" aria-hidden="true">
+                    <use href="#i-arrow-right"></use>
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
-        </a>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          <a
-            href="/leitor"
+          <div
             class="cm-card cm-card--stack cm-reveal p-6"
             style="animation-delay: 140ms"
           >
@@ -1420,9 +1453,13 @@
             </div>
             <h3 class="text-lg font-semibold mt-4">Leitor de Matrículas</h3>
             <p class="cm-lead cm-lead--sm mt-3">
-              Lê as folhas manuscritas de liberação do cartão mestre via OCR,
-              valida os dados automaticamente e exporta tudo pronto pra planilha
-              — sem digitação manual.
+              Cada liberação do cartão mestre virava digitação manual a partir
+              de folha escrita à mão — lento e sujeito a erro de transcrição.
+              Construí um leitor via OCR que valida os dados e exporta pronto
+              pra planilha. Em teste com 5 folhas reais, as 40 liberações
+              esperadas foram todas detectadas, sem registro perdido ou
+              duplicado — validação desse conjunto de folhas, não uma taxa
+              geral de acurácia do OCR.
             </p>
             <div
               class="cm-rule cm-card__foot flex items-center justify-between gap-3"
@@ -1430,17 +1467,29 @@
               <span class="cm-addr cm-mono">
                 <span class="cm-addr__url">eltonmarques.com/leitor</span>
               </span>
-              <span class="cm-card__arrow">
-                Acessar
-                <svg width="14" height="14" aria-hidden="true">
-                  <use href="#i-arrow-right"></use>
-                </svg>
-              </span>
+              <div class="flex items-center gap-3">
+                <a
+                  href="https://github.com/elton-marques/leitor-matriculas"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="cm-social cm-social--sm"
+                  aria-label="Repositório no GitHub — Leitor de Matrículas"
+                >
+                  <svg width="14" height="14" aria-hidden="true">
+                    <use href="#i-github"></use>
+                  </svg>
+                </a>
+                <a href="/leitor" class="cm-card__arrow">
+                  Acessar
+                  <svg width="14" height="14" aria-hidden="true">
+                    <use href="#i-arrow-right"></use>
+                  </svg>
+                </a>
+              </div>
             </div>
-          </a>
+          </div>
 
-          <a
-            href="/calc/"
+          <div
             class="cm-card cm-card--stack cm-reveal p-6"
             style="animation-delay: 180ms"
           >
@@ -1485,9 +1534,10 @@
             </div>
             <h3 class="text-lg font-semibold mt-4">Calculadora Pro</h3>
             <p class="cm-lead cm-lead--sm mt-3">
-              Uma calculadora "premium" com cara de SaaS de verdade — até você
-              apertar "=" e esbarrar num paywall pedindo assinatura pra ver o
-              resultado de qualquer conta. Sátira, não produto.
+              Uma calculadora com cara de SaaS premium de verdade — até você
+              apertar "=" e esbarrar numa assinatura pedida pra ver o
+              resultado de qualquer conta. Existe pra mostrar UI polida e
+              fluxo de paywall na prática, com humor. Sátira, não produto.
             </p>
             <div
               class="cm-rule cm-card__foot flex items-center justify-between gap-3"
@@ -1495,14 +1545,73 @@
               <span class="cm-addr cm-mono">
                 <span class="cm-addr__url">eltonmarques.com/calc</span>
               </span>
-              <span class="cm-card__arrow">
-                Acessar
-                <svg width="14" height="14" aria-hidden="true">
-                  <use href="#i-arrow-right"></use>
-                </svg>
-              </span>
+              <div class="flex items-center gap-3">
+                <a
+                  href="https://github.com/elton-marques/calc-premium"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="cm-social cm-social--sm"
+                  aria-label="Repositório no GitHub — Calculadora Pro"
+                >
+                  <svg width="14" height="14" aria-hidden="true">
+                    <use href="#i-github"></use>
+                  </svg>
+                </a>
+                <a href="/calc/" class="cm-card__arrow">
+                  Acessar
+                  <svg width="14" height="14" aria-hidden="true">
+                    <use href="#i-arrow-right"></use>
+                  </svg>
+                </a>
+              </div>
             </div>
-          </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================== sobre -->
+    <!-- Antes vinha depois de Serviços; subiu pra antes: autoridade (quem
+     sou, por que confiar) rende mais logo após a prova de Projetos, antes de
+     pedir que o visitante avalie o cardápio de Serviços. -->
+    <section
+      id="sobre"
+      class="cm-section relative z-10 px-4 sm:px-6 py-14 sm:py-16"
+      aria-labelledby="sobre-h"
+    >
+      <div
+        class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[8rem_1fr] gap-4 md:gap-12"
+      >
+        <p class="cm-kicker cm-reveal md:pt-2">Sobre</p>
+        <div class="min-w-0">
+          <h2
+            id="sobre-h"
+            class="cm-h2 cm-mask-reveal max-w-[20ch]"
+            style="animation-delay: 40ms"
+          >
+            Full-stack de verdade — da interface ao servidor.
+          </h2>
+          <p
+            class="cm-lead cm-reveal mt-5 max-w-[56ch]"
+            style="animation-delay: 70ms"
+          >
+            Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
+            tirar trabalho manual do caminho de quem opera. Os três sistemas
+            acima estão em produção numa VPS que eu mesmo configurei — nginx,
+            systemd e deploy inclusos.
+          </p>
+          <ul
+            class="cm-reveal flex flex-wrap gap-2 mt-7 list-none"
+            style="animation-delay: 100ms"
+            aria-label="Tecnologias que uso"
+          >
+            <li class="cm-chip">JavaScript</li>
+            <li class="cm-chip">Python</li>
+            <li class="cm-chip">SQL</li>
+            <li class="cm-chip">Nginx</li>
+            <li class="cm-chip">Systemd</li>
+            <li class="cm-chip">Tailwind CSS</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -1553,8 +1662,9 @@
           <div>
             <dt>Desenvolvimento web</dt>
             <dd>
-              Aplicações do zero — interface, back-end e o servidor que serve
-              tudo, sem depender de plataforma terceirizada.
+              Sites institucionais, landing pages e aplicações sob medida —
+              interface, back-end e o servidor que serve tudo, sem depender de
+              plataforma terceirizada.
             </dd>
           </div>
           <div>
@@ -1565,49 +1675,6 @@
             </dd>
           </div>
         </dl>
-      </div>
-    </section>
-
-    <!-- ================================================== sobre -->
-    <section
-      id="sobre"
-      class="cm-section relative z-10 px-4 sm:px-6 py-14 sm:py-16"
-      aria-labelledby="sobre-h"
-    >
-      <div
-        class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[8rem_1fr] gap-4 md:gap-12"
-      >
-        <p class="cm-kicker cm-reveal md:pt-2">Sobre</p>
-        <div class="min-w-0">
-          <h2
-            id="sobre-h"
-            class="cm-h2 cm-mask-reveal max-w-[20ch]"
-            style="animation-delay: 40ms"
-          >
-            Full-stack de verdade — da interface ao servidor.
-          </h2>
-          <p
-            class="cm-lead cm-reveal mt-5 max-w-[56ch]"
-            style="animation-delay: 70ms"
-          >
-            Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
-            tirar trabalho manual do caminho de quem opera. Os três sistemas
-            acima estão em produção numa VPS que eu mesmo configurei — nginx,
-            systemd e deploy inclusos.
-          </p>
-          <ul
-            class="cm-reveal flex flex-wrap gap-2 mt-7 list-none"
-            style="animation-delay: 100ms"
-            aria-label="Tecnologias que uso"
-          >
-            <li class="cm-chip">JavaScript</li>
-            <li class="cm-chip">Python</li>
-            <li class="cm-chip">SQL</li>
-            <li class="cm-chip">Nginx</li>
-            <li class="cm-chip">Systemd</li>
-            <li class="cm-chip">Tailwind CSS</li>
-          </ul>
-        </div>
       </div>
     </section>
 
