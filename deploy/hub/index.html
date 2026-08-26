@@ -1849,13 +1849,13 @@
             </p>
           </form>
 
-          <!-- Um botão dominante só (o submit do form acima). Todo o resto
-           são .cm-link — texto leve, sem pílula — numa linha só, pra não
-           empilhar 3-4 botões de mesmo peso visual competindo entre si
-           (era o que tava acontecendo antes: WhatsApp + e-mail + copiar +
-           LinkedIn em pílulas, quebrando em duas linhas desalinhadas). -->
+          <!-- Ícone redondo pequeno, igual ao herói/rodapé (.cm-social) —
+           não a pílula de texto de antes, que quebrava em duas linhas
+           desalinhadas por baixo do form. Um dominante só (o submit
+           acima); o resto é rota alternativa compacta, mesma linguagem
+           visual do resto da página. -->
           <div
-            class="cm-reveal flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8"
+            class="cm-reveal flex items-center justify-center gap-2 mt-8"
             style="animation-delay: 130ms"
           >
             <!-- WhatsApp é pessoal e de trabalho ao mesmo tempo: a mensagem
@@ -1866,32 +1866,39 @@
               href="https://wa.me/5587991206520?text=Ol%C3%A1!%20Vim%20pelo%20site%20eltonmarques.com%20e%20quero%20falar%20sobre%20um%20projeto."
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-link"
+              class="cm-social"
+              aria-label="Chamar Elton Marques no WhatsApp"
             >
-              <svg width="15" height="15" aria-hidden="true">
+              <svg width="16" height="16" aria-hidden="true">
                 <use href="#i-whatsapp"></use>
               </svg>
-              WhatsApp
             </a>
-            <a href="mailto:contato@eltonmarques.com" class="cm-link">
-              <svg width="15" height="15" aria-hidden="true">
+            <a
+              href="mailto:contato@eltonmarques.com"
+              class="cm-social"
+              aria-label="Enviar e-mail para contato@eltonmarques.com"
+            >
+              <svg width="16" height="16" aria-hidden="true">
                 <use href="#i-mail"></use>
               </svg>
-              contato@eltonmarques.com
             </a>
             <!-- mailto: sozinho perde muita gente no desktop sem cliente de
              e-mail configurado. O botão só aparece se navigator.clipboard
-             existir (o script logo antes de </body> tira o display:none)
-             sem API, sem botão morto na tela. -->
+             existir (o script logo antes de </body> tira o display:none
+             sem API, sem botão morto na tela). Feedback de sucesso troca o
+             ícone pro check — igual ao par abrir/fechar do menu mobile,
+             não dá pra trocar texto porque o botão não tem texto visível. -->
             <button
               type="button"
-              class="cm-link"
+              class="cm-social"
               data-cm-copy="contato@eltonmarques.com"
+              aria-label="Copiar e-mail"
               style="display: none"
             >
               <svg
-                width="14"
-                height="14"
+                data-cm-copy-icon
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -1905,31 +1912,34 @@
                   d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
                 ></path>
               </svg>
-              <span data-cm-copy-label>Copiar e-mail</span>
+              <svg
+                data-cm-copy-check
+                class="hidden"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg>
+              <span data-cm-copy-label class="sr-only" aria-live="polite"
+                >Copiar e-mail</span
+              >
             </button>
             <a
               href="https://www.linkedin.com/in/elton-marques/"
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-link"
+              class="cm-social"
+              aria-label="LinkedIn de Elton Marques"
             >
-              LinkedIn
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M14 4h6v6"></path>
-                <path d="M20 4 10 14"></path>
-                <path
-                  d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"
-                ></path>
+              <svg width="16" height="16" aria-hidden="true">
+                <use href="#i-linkedin"></use>
               </svg>
             </a>
           </div>
@@ -2904,19 +2914,26 @@
         btns.forEach(function (btn) {
           btn.style.display = "";
           var label = btn.querySelector("[data-cm-copy-label]");
-          if (label) label.setAttribute("aria-live", "polite");
           var original = label ? label.textContent : "";
+          // botão virou ícone redondo sem texto visível (cm-social): o
+          // feedback de sucesso troca qual dos dois <svg> aparece, o texto
+          // em label só existe pra leitor de tela (aria-live já no HTML)
+          var iconCopy = btn.querySelector("[data-cm-copy-icon]");
+          var iconCheck = btn.querySelector("[data-cm-copy-check]");
           var timer = 0;
 
           btn.addEventListener("click", function () {
             navigator.clipboard
               .writeText(btn.getAttribute("data-cm-copy"))
               .then(function () {
-                if (!label) return;
-                label.textContent = "E-mail copiado";
+                if (label) label.textContent = "E-mail copiado";
+                if (iconCopy) iconCopy.classList.add("hidden");
+                if (iconCheck) iconCheck.classList.remove("hidden");
                 window.clearTimeout(timer);
                 timer = window.setTimeout(function () {
-                  label.textContent = original;
+                  if (label) label.textContent = original;
+                  if (iconCopy) iconCopy.classList.remove("hidden");
+                  if (iconCheck) iconCheck.classList.add("hidden");
                 }, 2000);
               })
               .catch(function () {
