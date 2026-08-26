@@ -404,6 +404,15 @@
         font-size: 0.9375rem;
         text-decoration: none;
         transition: color 150ms ease;
+        /* reset de <button> — cm-link também é usado no botão "Copiar
+         e-mail" (sem href, precisa ser <button>), então zera o chrome
+         nativo pra ficar idêntico ao <a>. Inerte em âncora (que já não
+         tem nada disso). */
+        background: none;
+        border: none;
+        padding: 0;
+        font-family: inherit;
+        cursor: pointer;
       }
       .cm-link:hover {
         color: var(--text-1);
@@ -1840,8 +1849,13 @@
             </p>
           </form>
 
+          <!-- Um botão dominante só (o submit do form acima). Todo o resto
+           são .cm-link — texto leve, sem pílula — numa linha só, pra não
+           empilhar 3-4 botões de mesmo peso visual competindo entre si
+           (era o que tava acontecendo antes: WhatsApp + e-mail + copiar +
+           LinkedIn em pílulas, quebrando em duas linhas desalinhadas). -->
           <div
-            class="cm-reveal flex flex-wrap items-center justify-center gap-3 mt-6"
+            class="cm-reveal flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8"
             style="animation-delay: 130ms"
           >
             <!-- WhatsApp é pessoal e de trabalho ao mesmo tempo: a mensagem
@@ -1852,21 +1866,18 @@
               href="https://wa.me/5587991206520?text=Ol%C3%A1!%20Vim%20pelo%20site%20eltonmarques.com%20e%20quero%20falar%20sobre%20um%20projeto."
               target="_blank"
               rel="noopener noreferrer"
-              class="cm-btn cm-btn-ghost cm-btn-sm"
+              class="cm-link"
             >
               <svg width="15" height="15" aria-hidden="true">
                 <use href="#i-whatsapp"></use>
               </svg>
-              Chamar no WhatsApp
+              WhatsApp
             </a>
-            <a
-              href="mailto:contato@eltonmarques.com"
-              class="cm-btn cm-btn-ghost cm-btn-sm"
-            >
+            <a href="mailto:contato@eltonmarques.com" class="cm-link">
               <svg width="15" height="15" aria-hidden="true">
                 <use href="#i-mail"></use>
               </svg>
-              Ou escreve direto pro e-mail
+              contato@eltonmarques.com
             </a>
             <!-- mailto: sozinho perde muita gente no desktop sem cliente de
              e-mail configurado. O botão só aparece se navigator.clipboard
@@ -1874,13 +1885,13 @@
              sem API, sem botão morto na tela. -->
             <button
               type="button"
-              class="cm-btn cm-btn-ghost cm-btn-sm"
+              class="cm-link"
               data-cm-copy="contato@eltonmarques.com"
               style="display: none"
             >
               <svg
-                width="15"
-                height="15"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -1922,13 +1933,6 @@
               </svg>
             </a>
           </div>
-
-          <p
-            class="cm-reveal cm-mono mt-6"
-            style="animation-delay: 130ms; color: var(--text-3)"
-          >
-            contato@eltonmarques.com
-          </p>
         </div>
       </div>
     </section>
