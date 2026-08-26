@@ -816,6 +816,30 @@
         }
       }
 
+      /* -------------------------------------------- hero-parallax-glow */
+      /* Camada de aura atrás do conteúdo do herói (z-index:-1 no contexto de
+       empilhamento do próprio .cm-hero, que já é "relative z-10" — fica
+       acima da grade cinética fixa (z-index:0 global) e atrás do texto).
+       cm-hero-parallax.js move essa camada a ~35% da velocidade da rolagem
+       enquanto o herói está visível, dando profundidade (o resto da página
+       não ganha listener nenhum — desliga via IntersectionObserver). Sem
+       prefers-reduced-motion o script nem inicia: a camada fica parada,
+       ainda visível como brilho ambiente. */
+      .cm-hero-glow {
+        position: absolute;
+        inset: -15% -10% auto -10%;
+        height: 130%;
+        z-index: -1;
+        pointer-events: none;
+        background: radial-gradient(
+          620px circle at 50% 30%,
+          rgba(147, 197, 253, 0.16),
+          rgba(147, 197, 253, 0.05) 45%,
+          rgba(147, 197, 253, 0) 72%
+        );
+        will-change: transform;
+      }
+
       /* ------------------------------------------- lista de serviços */
       /* Antes: cinco cards idênticos em lg:grid-cols-5 (~180px de largura
        com parágrafo de três linhas dentro), cada um com o mesmo glow azul e
@@ -914,11 +938,11 @@
       @keyframes cm-rise-in {
         from {
           opacity: 0;
-          transform: translateY(10px);
+          transform: perspective(800px) translateY(10px) rotateX(6deg) scale(0.98);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: perspective(800px) translateY(0) rotateX(0deg) scale(1);
         }
       }
       .cm-rise-in {
@@ -1006,11 +1030,11 @@
       @keyframes cm-mask-in {
         from {
           clip-path: inset(105% 0% -25% 0%);
-          transform: translateY(0.16em);
+          transform: perspective(700px) translateY(0.16em) rotateX(5deg);
         }
         to {
           clip-path: inset(-25% -5% -25% -5%);
-          transform: translateY(0);
+          transform: perspective(700px) translateY(0) rotateX(0deg);
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -1196,6 +1220,7 @@
       class="cm-hero cm-section relative z-10 px-4 sm:px-6 py-14 sm:py-20"
       aria-labelledby="hero-h"
     >
+      <div class="cm-hero-glow" aria-hidden="true"></div>
       <div
         class="max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center"
       >
@@ -2648,6 +2673,51 @@
         els.forEach(function (el) {
           io.observe(el);
         });
+      })();
+    </script>
+
+    <!-- cm-hero-parallax.js — move .cm-hero-glow (ver CSS) a uma fração da
+     velocidade da rolagem, dando profundidade ao herói (camada de fundo
+     "atrasada" em relação ao conteúdo). Listener de scroll só fica ativo
+     enquanto o herói está na viewport (IntersectionObserver liga/desliga),
+     então o resto da rolagem da página não paga custo nenhum. Throttle por
+     rAF, mesmo padrão do cm-card-tilt logo abaixo. -->
+    <script>
+      (function () {
+        var hero = document.getElementById("top");
+        var glow = hero && hero.querySelector(".cm-hero-glow");
+        if (!hero || !glow) return;
+
+        var reduced =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduced || !("IntersectionObserver" in window)) return;
+
+        var SPEED = 0.35; // fração da velocidade de rolagem — <1 = mais lento que o conteúdo
+        var raf = null;
+
+        function apply() {
+          raf = null;
+          glow.style.transform = "translateY(" + window.scrollY * SPEED + "px)";
+        }
+
+        function onScroll() {
+          if (!raf) raf = requestAnimationFrame(apply);
+        }
+
+        var io = new IntersectionObserver(
+          function (entries) {
+            var visible = entries[0].isIntersecting;
+            if (visible) {
+              onScroll();
+              window.addEventListener("scroll", onScroll, { passive: true });
+            } else {
+              window.removeEventListener("scroll", onScroll);
+            }
+          },
+          { threshold: 0 },
+        );
+        io.observe(hero);
       })();
     </script>
 
