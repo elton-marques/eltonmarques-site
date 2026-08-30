@@ -50,6 +50,8 @@ def test_contar_por_ip_so_conta_o_mesmo_ip(db):
     )
 
     assert storage.contar_por_ip(db, "ip-1", "2000-01-01T00:00:00+00:00") == 3
+    # limiar no futuro: se o filtro de data sumir de contar_por_ip, isto quebra
+    assert storage.contar_por_ip(db, "ip-1", "2999-01-01T00:00:00+00:00") == 0
 
 
 def test_contar_desde_ignora_o_que_e_mais_antigo(db):
