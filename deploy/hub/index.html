@@ -839,6 +839,54 @@
         height: 2rem;
       }
 
+      /* voltar ao topo: aparece só depois que o herói sai da tela. Quem
+       chegou no rodapé leu a página inteira e o caminho de volta pro CTA do
+       topo é rolagem longa no celular. Fica escondido com visibility, não
+       só com opacity, pra não virar alvo de tab invisível. */
+      .cm-totop {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        z-index: 40;
+        width: 2.75rem;
+        height: 2.75rem;
+        background: var(--surface-2);
+        border-color: var(--line-2);
+        color: var(--text-2);
+        box-shadow: var(--elev-2);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(0.5rem);
+        transition:
+          opacity 200ms ease,
+          transform 200ms ease,
+          visibility 200ms ease,
+          color 150ms ease,
+          border-color 150ms ease,
+          background 150ms ease;
+      }
+      .cm-totop:hover {
+        background: var(--surface-2-hover);
+        border-color: var(--line-3);
+        color: var(--text-1);
+      }
+      .cm-totop.is-visible {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+      }
+      @media (min-width: 640px) {
+        .cm-totop {
+          right: 1.5rem;
+          bottom: 1.5rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-totop {
+          transition: none;
+        }
+      }
+
       /* ----------------------------------------------------- navegação */
       /* Fundo quase opaco (não translúcido de verdade) porque fica fixa no
        topo por cima de conteúdo que rola por baixo — sem backdrop-filter em
@@ -1254,7 +1302,7 @@
           <a href="#sobre" class="cm-nav__link">Sobre</a>
           <a href="#servicos" class="cm-nav__link">Serviços</a>
           <a href="#contato" class="cm-btn cm-btn-primary cm-btn-sm"
-            >Falar comigo</a
+            >Quero um orçamento</a
           >
         </div>
 
@@ -1267,7 +1315,7 @@
           <a
             href="#contato"
             class="cm-btn cm-btn-primary cm-btn-icon"
-            aria-label="Falar comigo"
+            aria-label="Pedir um orçamento"
           >
             <svg width="16" height="16" aria-hidden="true">
               <use href="#i-mail"></use>
@@ -1325,7 +1373,7 @@
         <a href="#sobre" class="cm-nav__link block py-2.5">Sobre</a>
         <a href="#servicos" class="cm-nav__link block py-2.5">Serviços</a>
         <a href="#contato" class="cm-btn cm-btn-primary w-full mt-3"
-          >Falar comigo</a
+          >Quero um orçamento</a
         >
       </div>
     </header>
@@ -1373,12 +1421,12 @@
 
           <div class="flex flex-wrap items-center gap-x-6 gap-y-4 mt-8">
             <!-- "Falar sobre o projeto": qual projeto? O visitante acabou de
-             chegar e não tem projeto nenhum ainda. O botão nomeia a ação
-             real em vez de um objeto que não existe, e em primeira pessoa:
-             o resto da página fala "eu"/"me conta", então "falar com o
-             Elton" soava como se outra pessoa tivesse escrito o site. -->
+             chegar e não tem projeto nenhum ainda. O rótulo agora é a
+             frase do VISITANTE, não a descrição da ação ("falar comigo"):
+             quem clica já se ouve dizendo o que quer, e o clique passa a
+             carregar intenção de compra em vez de curiosidade. -->
             <a href="#contato" class="cm-btn cm-btn-primary"
-              >Falar comigo</a
+              >Quero automatizar isso</a
             >
             <a href="#projetos" class="cm-link cm-link--down">
               Ver projetos
@@ -1970,7 +2018,7 @@
           style="animation-delay: 140ms"
         >
           <a href="#contato" class="cm-btn cm-btn-primary"
-            >Ver se o meu caso encaixa</a
+            >Quero um orçamento</a
           >
           <p class="cm-lead cm-lead--sm" style="color: var(--text-3)">
             Resposta com escopo e prazo, sem compromisso.
@@ -2164,7 +2212,7 @@
             style="animation-delay: 160ms"
           >
             <div class="cm-sheen"></div>
-            <p class="cm-svc__title" style="margin-top: 0">Enviar meu caso</p>
+            <p class="cm-svc__title" style="margin-top: 0">Pedir meu orçamento</p>
             <p class="cm-form-note mt-2">
               Leva um minuto. Três campos, sem cadastro.
             </p>
@@ -2209,7 +2257,7 @@
                 <svg width="15" height="15" aria-hidden="true">
                   <use href="#i-mail"></use>
                 </svg>
-                Enviar meu caso
+                Quero meu orçamento
               </button>
               <p class="cm-form-note mt-3">
                 O botão abre seu programa de e-mail com a mensagem pronta, no
@@ -3224,6 +3272,26 @@
      submit monta um mailto: com os três campos e entrega pro cliente de
      e-mail do visitante abrir. required + type="email" no HTML já bloqueiam
      o submit com campo vazio ou e-mail inválido antes daqui. -->
+    <!-- ============================================ voltar ao topo -->
+    <!-- <a href="#top"> e não <button>: com o href o link funciona mesmo
+     sem JS (a rolagem suave é do html{scroll-behavior}), e o script só
+     decide QUANDO ele aparece. -->
+    <a href="#top" class="cm-social cm-totop" aria-label="Voltar ao topo">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 19V5M6 11l6-6 6 6"></path>
+      </svg>
+    </a>
+
     <script>
       (function () {
         var form = document.getElementById("cm-contact-form");
@@ -3246,6 +3314,28 @@
             "&body=" +
             encodeURIComponent(body);
         });
+      })();
+
+      /* voltar ao topo: IntersectionObserver no herói em vez de listener de
+       scroll (a página já tem dois consumidores de scroll com rAF; um
+       terceiro seria trabalho por quadro pra decidir uma classe). Sem
+       IntersectionObserver, o botão simplesmente fica sempre visível. */
+      (function () {
+        var btn = document.querySelector(".cm-totop");
+        var hero = document.getElementById("top");
+        if (!btn || !hero) return;
+
+        if (!("IntersectionObserver" in window)) {
+          btn.classList.add("is-visible");
+          return;
+        }
+
+        new IntersectionObserver(
+          function (entries) {
+            btn.classList.toggle("is-visible", !entries[0].isIntersecting);
+          },
+          { rootMargin: "-120px 0px 0px 0px" }
+        ).observe(hero);
       })();
     </script>
   </body>
