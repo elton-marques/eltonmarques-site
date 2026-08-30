@@ -1514,19 +1514,20 @@
               <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
               <span class="ml-2 text-xs" style="color: var(--text-3)"
-                >perfil.js</span
+                >elton.js</span
               >
             </div>
             <pre
               class="cm-code cm-rule px-5 py-5 lg:px-6 lg:py-6 overflow-x-auto"
             ><code data-cm-typecode><span class="tok-com">// eltonmarques.com</span>
-<span class="tok-kw">const</span> <span class="tok-prop">dev</span> <span class="tok-punc">=</span> <span class="tok-punc">{</span>
-  <span class="tok-prop">nome</span><span class="tok-punc">:</span> <span class="tok-str">"Elton Marques"</span><span class="tok-punc">,</span>
-  <span class="tok-prop">foco</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">"dashboards"</span><span class="tok-punc">,</span> <span class="tok-str">"automação"</span><span class="tok-punc">,</span> <span class="tok-str">"dados"</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
-  <span class="tok-prop">stack</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">"JS"</span><span class="tok-punc">,</span> <span class="tok-str">"Python"</span><span class="tok-punc">,</span> <span class="tok-str">"SQL"</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
+<span class="tok-kw">const</span> <span class="tok-prop">elton</span> <span class="tok-punc">=</span> <span class="tok-punc">{</span>
+  <span class="tok-prop">resolve</span><span class="tok-punc">:</span> <span class="tok-str">"trabalho manual"</span><span class="tok-punc">,</span>
+  <span class="tok-prop">entrega</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">"automação"</span><span class="tok-punc">,</span> <span class="tok-str">"BI"</span><span class="tok-punc">,</span> <span class="tok-str">"dados"</span><span class="tok-punc">,</span> <span class="tok-str">"IA"</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
+  <span class="tok-prop">constrói</span><span class="tok-punc">:</span> <span class="tok-str">"app web, do zero ao servidor"</span><span class="tok-punc">,</span>
+  <span class="tok-prop">prazo</span><span class="tok-punc">:</span> <span class="tok-str">"resposta em 1 dia útil"</span><span class="tok-punc">,</span>
 <span class="tok-punc">}</span><span class="tok-punc">;</span>
 
-<span class="tok-kw">console</span><span class="tok-punc">.</span><span class="tok-prop">log</span><span class="tok-punc">(</span><span class="tok-prop">dev</span><span class="tok-punc">)</span><span class="tok-punc">;</span></code></pre>
+<span class="tok-kw">automatizar</span><span class="tok-punc">(</span><span class="tok-prop">suaOperacao</span><span class="tok-punc">)</span><span class="tok-punc">;</span></code></pre>
           </div>
         </div>
       </div>
@@ -2319,6 +2320,26 @@
         </div>
       </div>
     </footer>
+
+    <!-- ============================================ voltar ao topo -->
+    <!-- <a href="#top"> e não <button>: com o href o link funciona mesmo
+     sem JS (a rolagem suave é do html{scroll-behavior}), e o script só
+     decide QUANDO ele aparece. -->
+    <a href="#top" class="cm-social cm-totop" aria-label="Voltar ao topo">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 19V5M6 11l6-6 6 6"></path>
+      </svg>
+    </a>
 
     <!-- cm-kinetic-grid.js — fundo do site inteiro (fixed, atrás de tudo):
      grade de pontos em canvas que se deforma perto do cursor e ondula ao
@@ -3267,26 +3288,6 @@
      submit monta um mailto: com os três campos e entrega pro cliente de
      e-mail do visitante abrir. required + type="email" no HTML já bloqueiam
      o submit com campo vazio ou e-mail inválido antes daqui. -->
-    <!-- ============================================ voltar ao topo -->
-    <!-- <a href="#top"> e não <button>: com o href o link funciona mesmo
-     sem JS (a rolagem suave é do html{scroll-behavior}), e o script só
-     decide QUANDO ele aparece. -->
-    <a href="#top" class="cm-social cm-totop" aria-label="Voltar ao topo">
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M12 19V5M6 11l6-6 6 6"></path>
-      </svg>
-    </a>
-
     <script>
       (function () {
         var form = document.getElementById("cm-contact-form");
