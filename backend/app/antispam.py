@@ -1,15 +1,18 @@
 """Barreiras contra bot: Turnstile, hash de IP e limites de volume.
 
-O honeypot nao mora aqui: ele e uma checagem de uma linha no handler,
-porque depende do corpo da requisicao e nao de estado nenhum.
+O honeypot não mora aqui: ele é uma checagem de uma linha no handler,
+porque depende do corpo da requisição e não de estado nenhum.
 """
 
 import hashlib
+import logging
 from datetime import datetime, timedelta, timezone
 
 import httpx
 
 from app import storage
+
+logger = logging.getLogger(__name__)
 
 VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 LIMITE_POR_IP_HORA = 5
@@ -17,7 +20,7 @@ LIMITE_DIARIO = 100
 
 
 def hash_ip(ip: str, sal: str) -> str:
-    """Guardar o IP inteiro nao e necessario pra limitar por origem."""
+    """Guardar o IP inteiro não é necessário pra limitar por origem."""
     return hashlib.sha256(f"{sal}:{ip}".encode()).hexdigest()
 
 
@@ -25,8 +28,8 @@ def verificar_turnstile(token: str, ip: str, segredo: str) -> bool:
     """Valida o token no servidor.
 
     Sem segredo configurado (desenvolvimento local), libera sem tocar na
-    rede. Qualquer falha de rede REPROVA: numa pagina de contato, deixar
-    passar durante uma instabilidade da Cloudflare e convite pra bot.
+    rede. Qualquer falha de rede REPROVA: numa página de contato, deixar
+    passar durante uma instabilidade da Cloudflare é convite pra bot.
     """
     if not segredo:
         return True
@@ -38,6 +41,9 @@ def verificar_turnstile(token: str, ip: str, segredo: str) -> bool:
         )
         return bool(resposta.json().get("success"))
     except Exception:
+        # reprova, mas deixa rastro: sem isso, um bug no chamador vira
+        # "todo mundo reprovado" sem nenhuma linha de log explicando
+        logger.warning("falha ao verificar o Turnstile", exc_info=True)
         return False
 
 
