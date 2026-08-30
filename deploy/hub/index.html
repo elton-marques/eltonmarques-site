@@ -258,11 +258,14 @@
         line-height: 1.05;
         color: var(--text-1);
       }
+      /* o h2 vinha topando em 36px contra um h1 de 60px: a diferença era
+       pequena demais pra o título de seção parecer título e grande demais
+       pra parecer subtítulo — ficava só "pequeno". Agora vai até 46px. */
       .cm-h2 {
-        font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.25rem);
+        font-size: clamp(1.75rem, 1.25rem + 2.2vw, 2.875rem);
         font-weight: 700;
-        letter-spacing: -0.025em;
-        line-height: 1.15;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
         color: var(--text-1);
       }
       /* rótulo de seção. Continua pequeno — mas agora é um <p>, e o <h2>
@@ -275,6 +278,30 @@
         letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--text-3);
+      }
+      /* rótulo de seção (Projetos / Sobre / Serviços / Contato). Antes o
+       "Sobre" jogava o rótulo numa coluna de 8rem à esquerda e as outras
+       seções empilhavam rótulo sobre título: dois alinhamentos diferentes
+       na mesma página, e nenhum dos dois lia como início de seção. Agora é
+       um bloco só, com filete e cor de acento pra marcar o começo. */
+      .cm-kicker--sec {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.625rem;
+        font-size: 0.8125rem;
+        color: var(--accent);
+      }
+      .cm-kicker--sec::before {
+        content: "";
+        width: 1.75rem;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.6;
+      }
+      /* âncora de alinhamento do cabeçalho: rótulo, título e linha de apoio
+       compartilham a mesma borda esquerda e o mesmo teto de medida. */
+      .cm-head {
+        max-width: 60ch;
       }
       .cm-lead {
         color: var(--text-2);
@@ -850,39 +877,84 @@
       }
 
       /* ------------------------------------------- lista de serviços */
-      /* Antes: cinco cards idênticos em lg:grid-cols-5 (~180px de largura
-       com parágrafo de três linhas dentro), cada um com o mesmo glow azul e
-       o mesmo ícone-chip, e um card órfão no breakpoint do meio. A copy é a
-       mesma, palavra por palavra — só a apresentação virou lista editorial:
-       <dl> semântico, filete entre as linhas, zero caixa. */
-      .cm-dl > div {
-        display: grid;
-        gap: 0.375rem;
-        padding: 1.25rem 0;
+      /* Duas versões atrás eram cinco cards idênticos em lg:grid-cols-5; a
+       versão seguinte virou <dl> com uma linha de texto por item, e o
+       problema mudou de forma: cinco rótulos de uma palavra ("Automação",
+       "BI", "IA") não dizem o que o visitante leva pra casa. Agora cada
+       linha tem número, nome com verbo, o resultado em uma frase e as
+       entregas concretas em chips. Continua lista editorial, sem caixa. */
+      .cm-svc {
+        list-style: none;
+        margin: 0;
+        padding: 0;
         border-top: 1px solid var(--line-1);
       }
-      .cm-dl > div:last-child {
+      .cm-svc__item {
+        position: relative;
+        display: grid;
+        gap: 0.75rem;
+        padding: 1.75rem 0;
         border-bottom: 1px solid var(--line-1);
       }
       @media (min-width: 768px) {
-        .cm-dl > div {
-          grid-template-columns: 13rem 1fr;
+        .cm-svc__item {
+          grid-template-columns: 17rem 1fr;
           gap: 0 3rem;
-          padding: 1.5rem 0;
-          align-items: baseline;
+          padding: 2rem 0;
         }
       }
-      .cm-dl dt {
-        color: var(--text-1);
-        font-weight: 600;
-        font-size: 1rem;
+      /* o filete de baixo acende da esquerda pra direita no hover: dá
+       resposta ao ponteiro sem empurrar nenhum texto de lugar (translate
+       aqui faria a linha inteira tremer a cada passada do mouse). */
+      .cm-svc__item::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        width: 0;
+        height: 1px;
+        background: var(--accent);
+        transition: width 0.4s ease;
       }
-      .cm-dl dd {
+      .cm-svc__item:hover::after {
+        width: 100%;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cm-svc__item::after {
+          transition: none;
+        }
+      }
+      .cm-svc__num {
+        display: block;
+        color: var(--text-3);
+        letter-spacing: 0.1em;
+      }
+      .cm-svc__title {
+        margin-top: 0.5rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        color: var(--text-1);
+      }
+      @media (min-width: 768px) {
+        .cm-svc__title {
+          font-size: 1.25rem;
+        }
+      }
+      .cm-svc__desc {
         margin: 0;
         color: var(--text-2);
         font-size: 0.9375rem;
         line-height: 1.65;
         max-width: 58ch;
+      }
+      .cm-svc__tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        margin: 0.875rem 0 0;
+        padding: 0;
+        list-style: none;
       }
 
       /* ------------------------------------- mockup de código (hero) */
@@ -1153,20 +1225,20 @@
           <a href="#sobre" class="cm-nav__link">Sobre</a>
           <a href="#servicos" class="cm-nav__link">Serviços</a>
           <a href="#contato" class="cm-btn cm-btn-primary cm-btn-sm"
-            >Falar sobre o projeto</a
+            >Falar com o Elton</a
           >
         </div>
 
-        <!-- Abaixo de md o CTA vira só o ícone de e-mail: "Falar sobre o
-         projeto" por extenso não cabe ao lado do logo e do hambúrguer num
-         aparelho de 360px, e encurtar o rótulo só no celular quebraria a
+        <!-- Abaixo de md o CTA vira só o ícone de e-mail: o rótulo por
+         extenso não cabe ao lado do logo e do hambúrguer num aparelho de
+         360px, e encurtar o rótulo só no celular quebraria a
          consistência do CTA. O botão por extenso reaparece dentro do painel
          do menu, em largura total. -->
         <div class="md:hidden flex items-center gap-2 shrink-0">
           <a
             href="#contato"
             class="cm-btn cm-btn-primary cm-btn-icon"
-            aria-label="Falar sobre o projeto"
+            aria-label="Falar com o Elton"
           >
             <svg width="16" height="16" aria-hidden="true">
               <use href="#i-mail"></use>
@@ -1224,7 +1296,7 @@
         <a href="#sobre" class="cm-nav__link block py-2.5">Sobre</a>
         <a href="#servicos" class="cm-nav__link block py-2.5">Serviços</a>
         <a href="#contato" class="cm-btn cm-btn-primary w-full mt-3"
-          >Falar sobre o projeto</a
+          >Falar com o Elton</a
         >
       </div>
     </header>
@@ -1252,12 +1324,12 @@
             class="cm-h1 cm-mask-reveal cm-mask-load mt-4 sm:max-w-[17ch]"
             style="animation-delay: 260ms"
           >
-            Ferramentas internas que tiram o trabalho manual da operação.
+            O trabalho manual da sua operação vira software.
           </h1>
           <p class="cm-lead mt-5 max-w-[48ch]">
-            Aplicações web, dashboards e automações sob medida, do desenho da
-            interface ao servidor que roda em produção. Uma pessoa só, do começo
-            ao fim.
+            Aplicações web, dashboards e automações sob medida — do desenho da
+            interface ao servidor que roda em produção. Você fala direto com
+            quem constrói, do primeiro rascunho ao sistema no ar.
           </p>
 
           <ul
@@ -1270,8 +1342,11 @@
           </ul>
 
           <div class="flex flex-wrap items-center gap-x-6 gap-y-4 mt-8">
+            <!-- "Falar sobre o projeto": qual projeto? O visitante acabou de
+             chegar e não tem projeto nenhum ainda. O botão agora nomeia a
+             ação real — falar comigo — em vez de um objeto que não existe. -->
             <a href="#contato" class="cm-btn cm-btn-primary"
-              >Falar sobre o projeto</a
+              >Falar com o Elton</a
             >
             <a href="#projetos" class="cm-link cm-link--down">
               Ver projetos
@@ -1379,21 +1454,23 @@
       aria-labelledby="projetos-h"
     >
       <div class="max-w-5xl mx-auto">
-        <p class="cm-kicker cm-reveal">Projetos</p>
-        <h2
-          id="projetos-h"
-          class="cm-h2 cm-mask-reveal mt-3"
-          style="animation-delay: 40ms"
-        >
-          Três sistemas no ar agora.
-        </h2>
-        <p
-          class="cm-lead cm-reveal mt-4 max-w-[52ch]"
-          style="animation-delay: 70ms"
-        >
-          Construídos do zero: interface, back-end e o servidor que serve.
-          Estão publicados nestes endereços; dá pra abrir e conferir.
-        </p>
+        <div class="cm-head">
+          <p class="cm-kicker cm-kicker--sec cm-reveal">Projetos</p>
+          <h2
+            id="projetos-h"
+            class="cm-h2 cm-mask-reveal mt-4"
+            style="animation-delay: 40ms"
+          >
+            Três sistemas no ar agora.
+          </h2>
+          <p
+            class="cm-lead cm-reveal mt-4 max-w-[52ch]"
+            style="animation-delay: 70ms"
+          >
+            Construídos do zero: interface, back-end e o servidor que serve.
+            Estão publicados nestes endereços; dá pra abrir e conferir.
+          </p>
+        </div>
 
         <!-- Card destaque em largura total + dois menores lado a lado, em vez
          de três caixas idênticas em grid-cols-3. Composição assimétrica dá
@@ -1551,11 +1628,11 @@
                 >Ferramenta</span
               >
             </div>
-            <h3 class="text-lg font-semibold mt-4">Leitor de Matrículas</h3>
+            <h3 class="text-lg font-semibold mt-4">MestreCheck</h3>
             <p class="cm-lead cm-lead--sm mt-3">
               Cada liberação do cartão mestre virava digitação manual a partir
-              de folha escrita à mão, lento e sujeito a erro de transcrição.
-              Construí um leitor via OCR que valida os dados e exporta pronto
+              de folha escrita à mão, lento e sujeito a erro de transcrição. O
+              MestreCheck lê a folha por OCR, valida os dados e exporta pronto
               pra planilha. Em teste com 5 folhas reais, as 40 liberações
               esperadas foram todas detectadas, sem registro perdido ou
               duplicado: validação desse conjunto de folhas, não uma taxa
@@ -1573,7 +1650,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="cm-social cm-social--sm"
-                  aria-label="Repositório no GitHub: Leitor de Matrículas"
+                  aria-label="Repositório no GitHub: MestreCheck"
                 >
                   <svg width="14" height="14" aria-hidden="true">
                     <use href="#i-github"></use>
@@ -1676,23 +1753,21 @@
      pedir que o visitante avalie o cardápio de Serviços. -->
     <section
       id="sobre"
-      class="cm-section relative z-10 px-4 sm:px-6 py-14 sm:py-16"
+      class="cm-section relative z-10 px-4 sm:px-6 py-20 sm:py-24"
       aria-labelledby="sobre-h"
     >
-      <div
-        class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[8rem_1fr] gap-4 md:gap-12"
-      >
-        <p class="cm-kicker cm-reveal md:pt-2">Sobre</p>
-        <div class="min-w-0">
+      <div class="max-w-5xl mx-auto">
+        <div class="cm-head">
+          <p class="cm-kicker cm-kicker--sec cm-reveal">Sobre</p>
           <h2
             id="sobre-h"
-            class="cm-h2 cm-mask-reveal max-w-[20ch]"
+            class="cm-h2 cm-mask-reveal mt-4 max-w-[22ch]"
             style="animation-delay: 40ms"
           >
             Full-stack de verdade: da interface ao servidor.
           </h2>
           <p
-            class="cm-lead cm-reveal mt-5 max-w-[56ch]"
+            class="cm-lead cm-reveal mt-4 max-w-[56ch]"
             style="animation-delay: 70ms"
           >
             Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
@@ -1700,81 +1775,163 @@
             acima estão em produção numa VPS que eu mesmo configurei: nginx,
             systemd e deploy inclusos.
           </p>
-          <ul
-            class="cm-reveal flex flex-wrap gap-2 mt-7 list-none"
-            style="animation-delay: 100ms"
-            aria-label="Tecnologias que uso"
-          >
-            <li class="cm-chip">JavaScript</li>
-            <li class="cm-chip">Python</li>
-            <li class="cm-chip">SQL</li>
-            <li class="cm-chip">Nginx</li>
-            <li class="cm-chip">Systemd</li>
-            <li class="cm-chip">Tailwind CSS</li>
-          </ul>
         </div>
+        <ul
+          class="cm-reveal flex flex-wrap gap-2 mt-7 list-none"
+          style="animation-delay: 100ms"
+          aria-label="Tecnologias que uso"
+        >
+          <li class="cm-chip">JavaScript</li>
+          <li class="cm-chip">Python</li>
+          <li class="cm-chip">SQL</li>
+          <li class="cm-chip">Nginx</li>
+          <li class="cm-chip">Systemd</li>
+          <li class="cm-chip">Tailwind CSS</li>
+        </ul>
       </div>
     </section>
 
     <!-- ================================================== serviços -->
-    <!-- Copy gerada a partir do que os projetos acima já provam na prática,
-     não uma lista genérica de serviços. Mesma copy de antes, palavra por
-     palavra — o que mudou foi sair de cinco cards idênticos pra uma lista
-     editorial (ver .cm-dl no CSS). -->
+    <!-- Copy escrita a partir do que os projetos acima já provam na prática,
+     não uma lista genérica de serviços. Cada linha diz o problema que
+     resolve e termina nas entregas concretas — o rótulo de uma palavra
+     ("BI", "IA") virava adivinhação pra quem não é da área. -->
     <section
       id="servicos"
-      class="cm-section cm-rule cm-band-up relative z-10 px-4 sm:px-6 py-16 sm:py-20"
+      class="cm-section cm-rule cm-band-up relative z-10 px-4 sm:px-6 py-20 sm:py-28"
       aria-labelledby="servicos-h"
     >
       <div class="max-w-5xl mx-auto">
-        <p class="cm-kicker cm-reveal">Serviços</p>
-        <h2
-          id="servicos-h"
-          class="cm-h2 cm-mask-reveal mt-3"
-          style="animation-delay: 40ms"
-        >
-          O que eu construo.
-        </h2>
+        <div class="cm-head">
+          <p class="cm-kicker cm-kicker--sec cm-reveal">Serviços</p>
+          <h2
+            id="servicos-h"
+            class="cm-h2 cm-mask-reveal mt-4"
+            style="animation-delay: 40ms"
+          >
+            Cinco frentes, um objetivo: menos trabalho manual.
+          </h2>
+          <p
+            class="cm-lead cm-reveal mt-4 max-w-[54ch]"
+            style="animation-delay: 70ms"
+          >
+            Todo projeto começa pelo processo que está travando a operação hoje
+            — não pela tecnologia. A escolha da ferramenta vem depois, e o
+            escopo cabe no que resolve.
+          </p>
+        </div>
 
-        <dl class="cm-dl cm-reveal mt-10" style="animation-delay: 80ms">
-          <div>
-            <dt>Automação</dt>
-            <dd>
-              Rotinas e integrações que tiram tarefa repetitiva do caminho:
-              leitura de formulários, jobs agendados, dados fluindo sozinhos
-              entre sistemas.
-            </dd>
-          </div>
-          <div>
-            <dt>BI</dt>
-            <dd>
-              Dashboards e relatórios que juntam dado espalhado em indicador
-              claro, pra decisão rápida, não planilha manual.
-            </dd>
-          </div>
-          <div>
-            <dt>Ciência de dados</dt>
-            <dd>
-              Dado bruto virando padrão e tendência legível: do tratamento à
-              análise, sem ruído.
-            </dd>
-          </div>
-          <div>
-            <dt>Desenvolvimento web</dt>
-            <dd>
-              Sites institucionais, landing pages e aplicações sob medida:
-              interface, back-end e o servidor que serve tudo, sem depender de
-              plataforma terceirizada.
-            </dd>
-          </div>
-          <div>
-            <dt>IA</dt>
-            <dd>
-              Modelos aplicados a problema real: OCR, classificação, automação
-              inteligente.
-            </dd>
-          </div>
-        </dl>
+        <ul class="cm-svc cm-reveal mt-12" style="animation-delay: 100ms">
+          <li class="cm-svc__item">
+            <div>
+              <span class="cm-svc__num cm-mono">01</span>
+              <h3 class="cm-svc__title">Automação de processos</h3>
+            </div>
+            <div class="min-w-0">
+              <p class="cm-svc__desc">
+                Aquela etapa que alguém repete toda semana passa a rodar
+                sozinha: papel virando dado, arquivo indo de um sistema pro
+                outro, rotina disparando no horário sem ninguém lembrar dela.
+              </p>
+              <ul class="cm-svc__tags" aria-label="Entregas típicas">
+                <li class="cm-chip">OCR de documentos</li>
+                <li class="cm-chip">jobs agendados</li>
+                <li class="cm-chip">integração entre sistemas</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="cm-svc__item">
+            <div>
+              <span class="cm-svc__num cm-mono">02</span>
+              <h3 class="cm-svc__title">Dashboards e BI</h3>
+            </div>
+            <div class="min-w-0">
+              <p class="cm-svc__desc">
+                O número que hoje mora em três planilhas e num caderno vira um
+                painel só, com filtro, histórico e relatório que dá pra exportar
+                e mandar pra frente — sem consolidar nada na mão.
+              </p>
+              <ul class="cm-svc__tags" aria-label="Entregas típicas">
+                <li class="cm-chip">indicadores</li>
+                <li class="cm-chip">filtros e histórico</li>
+                <li class="cm-chip">exportação de relatório</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="cm-svc__item">
+            <div>
+              <span class="cm-svc__num cm-mono">03</span>
+              <h3 class="cm-svc__title">Aplicações web sob medida</h3>
+            </div>
+            <div class="min-w-0">
+              <p class="cm-svc__desc">
+                Sistema interno, portal ou site institucional feito do zero:
+                interface, back-end e o servidor que serve tudo. Sem mensalidade
+                de plataforma e sem ficar preso ao construtor de sites de
+                alguém.
+              </p>
+              <ul class="cm-svc__tags" aria-label="Entregas típicas">
+                <li class="cm-chip">sistemas internos</li>
+                <li class="cm-chip">landing pages</li>
+                <li class="cm-chip">deploy em VPS própria</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="cm-svc__item">
+            <div>
+              <span class="cm-svc__num cm-mono">04</span>
+              <h3 class="cm-svc__title">Análise e ciência de dados</h3>
+            </div>
+            <div class="min-w-0">
+              <p class="cm-svc__desc">
+                Base bagunçada virando resposta: limpeza, cruzamento e análise
+                até sobrar o padrão que explica o que está acontecendo na
+                operação — em linguagem de gente, não de estatística.
+              </p>
+              <ul class="cm-svc__tags" aria-label="Entregas típicas">
+                <li class="cm-chip">tratamento de base</li>
+                <li class="cm-chip">análise exploratória</li>
+                <li class="cm-chip">modelos preditivos</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="cm-svc__item">
+            <div>
+              <span class="cm-svc__num cm-mono">05</span>
+              <h3 class="cm-svc__title">IA aplicada</h3>
+            </div>
+            <div class="min-w-0">
+              <p class="cm-svc__desc">
+                Modelo colocado onde resolve um problema concreto — como o
+                MestreCheck lendo folha escrita à mão aqui em cima. IA como peça
+                do sistema, não como enfeite de tela.
+              </p>
+              <ul class="cm-svc__tags" aria-label="Entregas típicas">
+                <li class="cm-chip">leitura de documentos</li>
+                <li class="cm-chip">classificação automática</li>
+                <li class="cm-chip">assistentes com dados próprios</li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+
+        <!-- fecho da seção: o visitante acabou de ler cinco frentes e a
+         próxima pergunta natural é "e o meu caso, entra em qual?" -->
+        <div
+          class="cm-reveal flex flex-wrap items-center gap-x-6 gap-y-3 mt-10"
+          style="animation-delay: 140ms"
+        >
+          <a href="#contato" class="cm-btn cm-btn-primary"
+            >Ver se o meu caso encaixa</a
+          >
+          <p class="cm-lead cm-lead--sm" style="color: var(--text-3)">
+            Resposta com escopo e prazo, sem compromisso.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -1786,10 +1943,10 @@
     >
       <div class="max-w-5xl mx-auto">
         <div class="max-w-[46ch] mx-auto text-center">
-          <p class="cm-kicker cm-reveal">Contato</p>
+          <p class="cm-kicker cm-kicker--sec cm-reveal">Contato</p>
           <h2
             id="contato-h"
-            class="cm-h2 cm-mask-reveal mt-3"
+            class="cm-h2 cm-mask-reveal mt-4"
             style="animation-delay: 40ms"
           >
             Tem um processo manual travando a operação?
