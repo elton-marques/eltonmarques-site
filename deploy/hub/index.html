@@ -2259,11 +2259,6 @@
                 </svg>
                 Quero meu orçamento
               </button>
-              <p class="cm-form-note mt-3">
-                O botão abre seu programa de e-mail com a mensagem pronta, no
-                endereço contato@eltonmarques.com. Se preferir, chame no
-                WhatsApp ao lado.
-              </p>
             </form>
           </div>
         </div>
@@ -3336,6 +3331,65 @@
           },
           { rootMargin: "-120px 0px 0px 0px" }
         ).observe(hero);
+      })();
+
+      /* âncoras sem "#" na barra de endereços. O link continua sendo
+       <a href="#secao"> no HTML (funciona sem JS, o browser entende, o
+       Google segue), mas aqui o clique é interceptado: rola até a seção e
+       nunca escreve o fragmento na URL nem empilha entrada no histórico,
+       então o botão "voltar" leva pra página anterior de verdade em vez de
+       desfazer rolagem. Como o browser não move o foco sozinho sem o
+       fragmento, o foco é movido na mão: sem isso, quem navega por teclado
+       clicava em "Projetos" e continuava com o foco preso na nav. */
+      (function () {
+        function go(target, smooth) {
+          target.scrollIntoView({
+            behavior: smooth ? "smooth" : "auto",
+            block: "start",
+          });
+          if (!target.hasAttribute("tabindex")) {
+            target.setAttribute("tabindex", "-1");
+          }
+          target.focus({ preventScroll: true });
+        }
+
+        document.addEventListener("click", function (e) {
+          if (e.defaultPrevented || e.button !== 0) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          if (!e.target || !e.target.closest) return;
+
+          var link = e.target.closest('a[href^="#"]');
+          if (!link || link.target === "_blank") return;
+
+          var id = link.getAttribute("href").slice(1);
+          if (!id) return;
+          var target = document.getElementById(id);
+          if (!target) return;
+
+          e.preventDefault();
+          var reduce = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+          go(target, !reduce);
+        });
+
+        /* link antigo com fragmento (eltonmarques.com/#contato) ainda tem que
+         cair na seção certa: rola na mão e só então limpa a URL. Limpar
+         antes cancelaria o salto nativo do browser. */
+        var hash = window.location.hash.slice(1);
+        if (hash && document.getElementById(hash)) {
+          window.addEventListener("load", function () {
+            var target = document.getElementById(hash);
+            if (target) go(target, false);
+            if (window.history.replaceState) {
+              window.history.replaceState(
+                null,
+                "",
+                window.location.pathname + window.location.search,
+              );
+            }
+          });
+        }
       })();
     </script>
   </body>
