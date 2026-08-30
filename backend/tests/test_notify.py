@@ -112,3 +112,18 @@ def test_notificar_registra_falha_sem_derrubar_o_outro_canal(db, monkeypatch):
     assert lead["email_enviado"] == 0
     assert lead["telegram_enviado"] == 1
     assert "timeout" in lead["erro_notificacao"]
+
+
+def test_erro_do_telegram_nao_vaza_o_token(monkeypatch):
+    def cair(*a, **k):
+        raise httpx.ConnectError(
+            "erro ao conectar em https://api.telegram.org/bottoken/sendMessage"
+        )
+
+    monkeypatch.setattr(httpx, "post", cair)
+
+    ok, erro = notify.enviar_telegram(LEAD, CFG)
+
+    assert ok is False
+    assert "token" not in erro
+    assert "<omitido>" in erro

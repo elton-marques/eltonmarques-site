@@ -14,6 +14,20 @@ from app.config import Config
 RESEND_URL = "https://api.resend.com/emails"
 
 
+def _sem_segredo(texto: str, cfg: Config) -> str:
+    """Tira token e chave de qualquer texto que va parar no banco.
+
+    A URL do Telegram carrega o token do bot no caminho, e mensagem de
+    excecao do httpx as vezes inclui a URL. Sem isto, o token acabaria
+    gravado em texto puro na coluna erro_notificacao.
+    """
+    limpo = texto
+    for segredo in (cfg.telegram_token, cfg.resend_api_key):
+        if segredo:
+            limpo = limpo.replace(segredo, "<omitido>")
+    return limpo
+
+
 def enviar_email(lead: dict, cfg: Config):
     if not cfg.resend_api_key:
         return False, "nao configurado: RESEND_API_KEY vazio"
@@ -39,10 +53,10 @@ def enviar_email(lead: dict, cfg: Config):
             timeout=5,
         )
         if resposta.status_code >= 300:
-            return False, f"HTTP {resposta.status_code}: {resposta.text[:200]}"
+            return False, _sem_segredo(f"HTTP {resposta.status_code}: {resposta.text}", cfg)[:200]
         return True, ""
     except Exception as erro:
-        return False, str(erro)[:200]
+        return False, _sem_segredo(str(erro), cfg)[:200]
 
 
 def enviar_telegram(lead: dict, cfg: Config):
@@ -61,10 +75,10 @@ def enviar_telegram(lead: dict, cfg: Config):
             timeout=5,
         )
         if resposta.status_code >= 300:
-            return False, f"HTTP {resposta.status_code}: {resposta.text[:200]}"
+            return False, _sem_segredo(f"HTTP {resposta.status_code}: {resposta.text}", cfg)[:200]
         return True, ""
     except Exception as erro:
-        return False, str(erro)[:200]
+        return False, _sem_segredo(str(erro), cfg)[:200]
 
 
 def notificar(db_path: str, lead_id: str, cfg: Config) -> None:
