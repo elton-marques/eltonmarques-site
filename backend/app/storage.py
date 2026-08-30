@@ -5,6 +5,7 @@ conexão de vida longa em SQLite sob servidor web é fonte clássica de
 "database is locked". WAL ligado pra leitura não travar escrita.
 """
 
+import contextlib
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -31,11 +32,22 @@ def agora_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _conectar(db_path: str) -> sqlite3.Connection:
+@contextlib.contextmanager
+def _conectar(db_path: str):
+    """Conexao por operacao, sempre fechada.
+
+    `with sqlite3.connect(...)` sozinho faz commit mas nao fecha, entao o
+    fechamento fica explicito aqui: e o unico lugar do modulo que precisa
+    saber disso.
+    """
     conexao = sqlite3.connect(db_path, timeout=5)
     conexao.row_factory = sqlite3.Row
     conexao.execute("PRAGMA journal_mode=WAL")
-    return conexao
+    try:
+        with conexao:
+            yield conexao
+    finally:
+        conexao.close()
 
 
 def criar_schema(db_path: str) -> None:
