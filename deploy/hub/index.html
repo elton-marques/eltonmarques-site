@@ -2,11 +2,11 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>Elton Marques: Ferramentas internas sob medida</title>
+    <title>Elton Marques: automação, dashboards e sistemas sob medida</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta
       name="description"
-      content="Aplicações web, dashboards e automações sob medida para tirar trabalho manual da operação, da interface ao servidor. Por Elton Marques, desenvolvedor de software."
+      content="Desenvolvedor de software. Crio dashboards, automações e sistemas web sob medida pra tirar o trabalho manual da sua operação. Me conte o gargalo e receba escopo, prazo e preço em até 1 dia útil."
     />
     <meta name="author" content="Elton Marques" />
     <meta name="theme-color" content="#0d1b2a" />
@@ -26,11 +26,11 @@
     <meta property="og:locale" content="pt_BR" />
     <meta
       property="og:title"
-      content="Elton Marques: Ferramentas internas sob medida"
+      content="Elton Marques: automação, dashboards e sistemas sob medida"
     />
     <meta
       property="og:description"
-      content="Aplicações web, dashboards e automações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
+      content="Dashboards, automações e sistemas web sob medida pra tirar o trabalho manual da sua operação. Da interface ao servidor, com uma pessoa só."
     />
     <meta
       property="og:image"
@@ -41,11 +41,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="Elton Marques: Ferramentas internas sob medida"
+      content="Elton Marques: automação, dashboards e sistemas sob medida"
     />
     <meta
       name="twitter:description"
-      content="Aplicações web, dashboards e automações sob medida para tirar trabalho manual da operação. Da interface ao servidor."
+      content="Dashboards, automações e sistemas web sob medida pra tirar o trabalho manual da sua operação. Da interface ao servidor, com uma pessoa só."
     />
     <meta
       name="twitter:image"
@@ -166,12 +166,14 @@
         --line-2: rgba(255, 255, 255, 0.16);
         --line-3: rgba(255, 255, 255, 0.28);
 
-        /* texto — 3 níveis: declaração, corpo, meta. --text-3 dá 6.9:1
-         sobre --brand-navy (passa AA com folga), então serve pro texto
-         pequeno de badge/URL/rodapé sem virar cinza ilegível. */
+        /* texto: 3 níveis (declaração, corpo, meta). Os dois níveis de baixo
+         subiram de 0.78/0.6 pra 0.88/0.74 sobre o navy: passar no AA é o
+         piso, não a meta, e em tela de celular no sol o corpo em 78% já
+         começava a sumir. Agora --text-2 dá ~14:1 e --text-3 ~9,6:1 contra
+         --brand-navy, e a hierarquia entre os três continua visível. */
         --text-1: #ffffff;
-        --text-2: rgba(255, 255, 255, 0.78);
-        --text-3: rgba(255, 255, 255, 0.6);
+        --text-2: rgba(255, 255, 255, 0.88);
+        --text-3: rgba(255, 255, 255, 0.74);
 
         /* raio — 3 valores. --r-pill só em botão e chip; card e painel usam
          --r-md (14px, não 24px: raio muito grande em caixa grande é o que
@@ -273,7 +275,7 @@
        12px, ou seja, a hierarquia semântica existia sem nenhum peso
        visual e sem dizer nada. */
       .cm-kicker {
-        font-size: 0.75rem;
+        font-size: 0.8125rem;
         font-weight: 600;
         letter-spacing: 0.18em;
         text-transform: uppercase;
@@ -288,7 +290,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.625rem;
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
         color: var(--accent);
       }
       .cm-kicker--sec::before {
@@ -303,14 +305,17 @@
       .cm-head {
         max-width: 60ch;
       }
+      /* corpo: subiu um degrau inteiro (16/17px para 17/18px). Texto de
+       venda que o visitante precisa ler inteiro não pode competir em
+       tamanho com legenda de card. */
       .cm-lead {
         color: var(--text-2);
         line-height: 1.65;
-        font-size: 1rem;
+        font-size: 1.0625rem;
       }
       @media (min-width: 640px) {
         .cm-lead {
-          font-size: 1.0625rem;
+          font-size: 1.125rem;
         }
       }
       /* corpo menor, dentro de card. Classe própria em vez de text-[...] do
@@ -318,18 +323,18 @@
        de .cm-lead, e a ordem do CSS injetado pelo Play CDN não é garantida —
        aqui a decisão fica no arquivo, não no acaso. */
       .cm-lead--sm {
-        font-size: 0.9375rem;
+        font-size: 1rem;
       }
       @media (min-width: 640px) {
         .cm-lead--sm {
-          font-size: 0.9375rem;
+          font-size: 1rem;
         }
       }
       .cm-mono {
         font-family:
           ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas,
           monospace;
-        font-size: 0.75rem;
+        font-size: 0.8125rem;
         letter-spacing: -0.01em;
       }
 
@@ -341,7 +346,7 @@
         gap: 0.5rem;
         border-radius: var(--r-pill);
         font-weight: 600;
-        font-size: 0.9375rem;
+        font-size: 1rem;
         line-height: 1.2;
         padding: 0.8125rem 1.5rem;
         text-decoration: none;
@@ -355,7 +360,7 @@
       }
       .cm-btn-sm {
         padding: 0.5rem 1.125rem;
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
       }
       /* variante quadrada, só ícone — o CTA do topo no mobile */
       .cm-btn-icon {
@@ -428,7 +433,7 @@
         gap: 0.4rem;
         color: var(--text-2);
         font-weight: 500;
-        font-size: 0.9375rem;
+        font-size: 1rem;
         text-decoration: none;
         transition: color 150ms ease;
         /* reset de <button> — cm-link também é usado no botão "Copiar
@@ -473,9 +478,9 @@
       }
       .cm-label {
         display: block;
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
         font-weight: 600;
-        color: var(--text-2);
+        color: var(--text-1);
         margin-bottom: 0.5rem;
       }
       .cm-input {
@@ -485,9 +490,9 @@
         border: 1px solid var(--line-1);
         border-radius: var(--r-sm);
         color: var(--text-1);
-        font-size: 0.9375rem;
+        font-size: 1rem;
         font-family: inherit;
-        padding: 0.75rem 1rem;
+        padding: 0.8125rem 1rem;
         transition:
           border-color 150ms ease,
           background 150ms ease;
@@ -508,7 +513,31 @@
       }
       .cm-form-note {
         color: var(--text-3);
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+
+      /* lista de garantias do contato: o que o visitante recebe se mandar a
+       mensagem. Fica ao lado do formulário, não abaixo, pra ser lida ANTES
+       de o cursor chegar no primeiro campo. */
+      .cm-list {
+        list-style: none;
+        margin: 1.75rem 0 0;
+        padding: 0;
+        display: grid;
+        gap: 0.875rem;
+      }
+      .cm-list li {
+        display: grid;
+        grid-template-columns: 1.125rem 1fr;
+        gap: 0.75rem;
+        color: var(--text-2);
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+      .cm-list svg {
+        margin-top: 0.3125rem;
+        color: var(--accent);
       }
 
       /* ---------------------------------------------------- chip / badge */
@@ -518,17 +547,17 @@
         border-radius: var(--r-pill);
         background: var(--surface-3);
         border: 1px solid var(--line-1);
-        color: var(--text-3);
-        font-size: 0.75rem;
+        color: var(--text-2);
+        font-size: 0.8125rem;
         font-weight: 500;
         line-height: 1.2;
-        padding: 0.375rem 0.8125rem;
+        padding: 0.4375rem 0.875rem;
       }
       .cm-badge {
         display: inline-flex;
         align-items: center;
         gap: 0.375rem;
-        font-size: 0.6875rem;
+        font-size: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -644,7 +673,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
         font-weight: 500;
         color: var(--text-2);
         text-decoration: none;
@@ -819,8 +848,8 @@
         border-bottom: 1px solid var(--line-1);
       }
       .cm-nav__link {
-        color: var(--text-3);
-        font-size: 0.875rem;
+        color: var(--text-2);
+        font-size: 0.9375rem;
         font-weight: 500;
         text-decoration: none;
         transition: color 150ms ease;
@@ -944,7 +973,7 @@
       .cm-svc__desc {
         margin: 0;
         color: var(--text-2);
-        font-size: 0.9375rem;
+        font-size: 1rem;
         line-height: 1.65;
         max-width: 58ch;
       }
@@ -1327,9 +1356,10 @@
             O trabalho manual da sua operação vira software.
           </h1>
           <p class="cm-lead mt-5 max-w-[48ch]">
-            Aplicações web, dashboards e automações sob medida — do desenho da
-            interface ao servidor que roda em produção. Você fala direto com
-            quem constrói, do primeiro rascunho ao sistema no ar.
+            Construo aplicações web, dashboards e automações sob medida para
+            empresas que ainda resolvem no papel, na planilha e no WhatsApp.
+            Você fala direto com quem programa, do primeiro rascunho ao sistema
+            rodando.
           </p>
 
           <ul
@@ -1344,7 +1374,7 @@
           <div class="flex flex-wrap items-center gap-x-6 gap-y-4 mt-8">
             <!-- "Falar sobre o projeto": qual projeto? O visitante acabou de
              chegar e não tem projeto nenhum ainda. O botão agora nomeia a
-             ação real — falar comigo — em vez de um objeto que não existe. -->
+             ação real, falar comigo, em vez de um objeto que não existe. -->
             <a href="#contato" class="cm-btn cm-btn-primary"
               >Falar com o Elton</a
             >
@@ -1366,7 +1396,15 @@
             </a>
           </div>
 
-          <div class="flex items-center gap-2 mt-10">
+          <!-- linha de segurança logo abaixo do CTA: responde as duas dúvidas
+           que seguram o clique (isso existe mesmo? vou ter resposta?) antes
+           de o visitante rolar pra procurar prova. -->
+          <p class="cm-form-note mt-5">
+            3 sistemas em produção. Primeira conversa sem custo, resposta em
+            até 1 dia útil.
+          </p>
+
+          <div class="flex items-center gap-2 mt-8">
             <a
               href="https://wa.me/5587991206520?text=Ol%C3%A1!%20Vim%20pelo%20site%20eltonmarques.com%20e%20quero%20falar%20sobre%20um%20projeto."
               target="_blank"
@@ -1467,8 +1505,9 @@
             class="cm-lead cm-reveal mt-4 max-w-[52ch]"
             style="animation-delay: 70ms"
           >
-            Construídos do zero: interface, back-end e o servidor que serve.
-            Estão publicados nestes endereços; dá pra abrir e conferir.
+            Não é portfólio de tela bonita: os três estão publicados nos
+            endereços abaixo, rodando de verdade. Abra, teste e depois me
+            procure.
           </p>
         </div>
 
@@ -1770,10 +1809,12 @@
             class="cm-lead cm-reveal mt-4 max-w-[56ch]"
             style="animation-delay: 70ms"
           >
-            Atuo com automação, BI, ciência de dados, dev web e IA, sempre pra
-            tirar trabalho manual do caminho de quem opera. Os três sistemas
-            acima estão em produção numa VPS que eu mesmo configurei: nginx,
-            systemd e deploy inclusos.
+            Trabalho com automação, BI, ciência de dados, desenvolvimento web
+            e IA, sempre pra tirar tarefa manual do caminho de quem opera. Os
+            três sistemas acima rodam numa VPS que eu mesmo configurei: nginx,
+            systemd e deploy inclusos. Na prática, isso quer dizer que você
+            contrata uma pessoa só e não precisa de agência, de time terceiro
+            nem de mensalidade de plataforma.
           </p>
         </div>
         <ul
@@ -1809,15 +1850,16 @@
             class="cm-h2 cm-mask-reveal mt-4"
             style="animation-delay: 40ms"
           >
-            Cinco frentes, um objetivo: menos trabalho manual.
+            Cinco frentes, um objetivo: menos trabalho manual na sua
+            empresa.
           </h2>
           <p
             class="cm-lead cm-reveal mt-4 max-w-[54ch]"
             style="animation-delay: 70ms"
           >
-            Todo projeto começa pelo processo que está travando a operação hoje
-            — não pela tecnologia. A escolha da ferramenta vem depois, e o
-            escopo cabe no que resolve.
+            Todo projeto começa pelo processo que está travando a operação
+            hoje, não pela tecnologia. A ferramenta vem depois, e o escopo
+            fica no tamanho do que resolve o seu problema.
           </p>
         </div>
 
@@ -1850,7 +1892,7 @@
               <p class="cm-svc__desc">
                 O número que hoje mora em três planilhas e num caderno vira um
                 painel só, com filtro, histórico e relatório que dá pra exportar
-                e mandar pra frente — sem consolidar nada na mão.
+                e mandar pra frente, sem consolidar nada na mão.
               </p>
               <ul class="cm-svc__tags" aria-label="Entregas típicas">
                 <li class="cm-chip">indicadores</li>
@@ -1889,7 +1931,7 @@
               <p class="cm-svc__desc">
                 Base bagunçada virando resposta: limpeza, cruzamento e análise
                 até sobrar o padrão que explica o que está acontecendo na
-                operação — em linguagem de gente, não de estatística.
+                operação, em linguagem de gente e não de estatística.
               </p>
               <ul class="cm-svc__tags" aria-label="Entregas típicas">
                 <li class="cm-chip">tratamento de base</li>
@@ -1906,9 +1948,9 @@
             </div>
             <div class="min-w-0">
               <p class="cm-svc__desc">
-                Modelo colocado onde resolve um problema concreto — como o
-                MestreCheck lendo folha escrita à mão aqui em cima. IA como peça
-                do sistema, não como enfeite de tela.
+                Modelo colocado onde resolve um problema concreto, como o
+                MestreCheck lendo folha escrita à mão aqui em cima. IA como
+                peça do sistema, não como enfeite de tela.
               </p>
               <ul class="cm-svc__tags" aria-label="Entregas típicas">
                 <li class="cm-chip">leitura de documentos</li>
@@ -1936,169 +1978,243 @@
     </section>
 
     <!-- ================================================== contato -->
+    <!-- Antes: coluna centrada de 46ch com título, uma linha de apoio e o
+     formulário solto embaixo. Agora o argumento fica à esquerda (o que o
+     visitante recebe ao mandar a mensagem) e o formulário à direita, dentro
+     de card: quem chega decidido vai direto no campo, quem chega em dúvida
+     lê as três garantias antes. O WhatsApp saiu do ícone redondo de 32px e
+     virou botão com rótulo, porque no Brasil é por onde a maioria prefere
+     abrir conversa. -->
     <section
       id="contato"
       class="cm-section cm-rule cm-band-down relative z-10 px-4 sm:px-6 py-20 sm:py-28"
       aria-labelledby="contato-h"
     >
       <div class="max-w-5xl mx-auto">
-        <div class="max-w-[46ch] mx-auto text-center">
-          <p class="cm-kicker cm-kicker--sec cm-reveal">Contato</p>
-          <h2
-            id="contato-h"
-            class="cm-h2 cm-mask-reveal mt-4"
-            style="animation-delay: 40ms"
-          >
-            Tem um processo manual travando a operação?
-          </h2>
-          <p class="cm-lead cm-reveal mt-4" style="animation-delay: 70ms">
-            Me manda o problema em duas linhas. Respondo com o que dá pra fazer
-            e em quanto tempo.
-          </p>
+        <div
+          class="grid grid-cols-1 md:grid-cols-[1fr_minmax(0,25rem)] gap-10 md:gap-14 items-start"
+        >
+          <div class="min-w-0">
+            <p class="cm-kicker cm-kicker--sec cm-reveal">Contato</p>
+            <h2
+              id="contato-h"
+              class="cm-h2 cm-mask-reveal mt-4 max-w-[18ch]"
+              style="animation-delay: 40ms"
+            >
+              Me conta o gargalo. Eu digo se dá pra resolver.
+            </h2>
+            <p
+              class="cm-lead cm-reveal mt-5 max-w-[50ch]"
+              style="animation-delay: 70ms"
+            >
+              Descreva em duas linhas o processo que hoje é feito na mão na sua
+              empresa. Eu respondo dizendo o que dá pra automatizar, quanto
+              tempo leva e quanto custa. Se não for trabalho pra mim, falo na
+              hora e aponto outro caminho.
+            </p>
+
+            <ul
+              class="cm-list cm-reveal"
+              style="animation-delay: 100ms"
+              aria-label="O que você recebe"
+            >
+              <li>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+                <span
+                  >Resposta em até 1 dia útil, escrita por mim. Sem robô, sem
+                  time de vendas no meio.</span
+                >
+              </li>
+              <li>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+                <span
+                  >Primeira conversa sem custo e sem compromisso. Você sai dela
+                  com escopo, prazo e faixa de preço.</span
+                >
+              </li>
+              <li>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+                <span
+                  >Dá pra começar por um processo só, o mais caro de todos, e
+                  crescer depois que ele estiver funcionando.</span
+                >
+              </li>
+            </ul>
+
+            <div
+              class="cm-reveal flex flex-wrap items-center gap-3 mt-8"
+              style="animation-delay: 130ms"
+            >
+              <!-- WhatsApp é pessoal e de trabalho ao mesmo tempo: a mensagem
+               pré-preenchida ("Vim pelo site...") existe pra dar pra separar
+               lead do site de conversa pessoal assim que a notificação chega,
+               sem precisar de número ou app novo. -->
+              <a
+                href="https://wa.me/5587991206520?text=Ol%C3%A1!%20Vim%20pelo%20site%20eltonmarques.com%20e%20quero%20falar%20sobre%20um%20projeto."
+                target="_blank"
+                rel="noopener noreferrer"
+                class="cm-btn cm-btn-ghost"
+              >
+                <svg width="16" height="16" aria-hidden="true">
+                  <use href="#i-whatsapp"></use>
+                </svg>
+                Chamar no WhatsApp
+              </a>
+              <a href="mailto:contato@eltonmarques.com" class="cm-link">
+                contato@eltonmarques.com
+                <svg width="14" height="14" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg>
+              </a>
+              <!-- mailto: sozinho perde muita gente no desktop sem cliente de
+               e-mail configurado. O botão de copiar só aparece se
+               navigator.clipboard existir (o script no fim do documento tira
+               o display:none), sem API, sem botão morto na tela. O feedback
+               de sucesso troca o ícone pro check, igual ao par abrir/fechar
+               do menu mobile: não dá pra trocar texto porque o botão não tem
+               texto visível. -->
+              <button
+                type="button"
+                class="cm-social cm-social--sm"
+                data-cm-copy="contato@eltonmarques.com"
+                aria-label="Copiar e-mail"
+                style="display: none"
+              >
+                <svg
+                  data-cm-copy-icon
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                  <path
+                    d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                  ></path>
+                </svg>
+                <svg
+                  data-cm-copy-check
+                  class="hidden"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+                <span data-cm-copy-label class="sr-only" aria-live="polite"
+                  >Copiar e-mail</span
+                >
+              </button>
+            </div>
+          </div>
 
           <!-- Sem back-end pra receber o POST: o submit monta um mailto:
            com os três campos e abre o cliente de e-mail do visitante. -->
-          <form
-            id="cm-contact-form"
-            class="cm-reveal mt-10 text-left"
-            style="animation-delay: 100ms"
-          >
-            <div class="cm-field">
-              <label for="cm-name" class="cm-label">Nome</label>
-              <input
-                id="cm-name"
-                name="name"
-                type="text"
-                class="cm-input"
-                autocomplete="name"
-                required
-              />
-            </div>
-            <div class="cm-field mt-4">
-              <label for="cm-email" class="cm-label">E-mail</label>
-              <input
-                id="cm-email"
-                name="email"
-                type="email"
-                class="cm-input"
-                autocomplete="email"
-                required
-              />
-            </div>
-            <div class="cm-field mt-4">
-              <label for="cm-message" class="cm-label">Mensagem</label>
-              <textarea
-                id="cm-message"
-                name="message"
-                class="cm-input cm-textarea"
-                required
-              ></textarea>
-            </div>
-            <button type="submit" class="cm-btn cm-btn-primary w-full mt-5">
-              <svg width="15" height="15" aria-hidden="true">
-                <use href="#i-mail"></use>
-              </svg>
-              Enviar mensagem
-            </button>
-            <p class="cm-form-note mt-3">
-              Abre seu cliente de e-mail com a mensagem pronta pra enviar,
-              pro endereço contato@eltonmarques.com.
-            </p>
-          </form>
-
-          <!-- Ícone redondo pequeno, igual ao herói/rodapé (.cm-social) —
-           não a pílula de texto de antes, que quebrava em duas linhas
-           desalinhadas por baixo do form. Um dominante só (o submit
-           acima); o resto é rota alternativa compacta, mesma linguagem
-           visual do resto da página. -->
           <div
-            class="cm-reveal flex items-center justify-center gap-2 mt-8"
-            style="animation-delay: 130ms"
+            class="cm-card cm-reveal p-6 sm:p-7"
+            style="animation-delay: 160ms"
           >
-            <!-- WhatsApp é pessoal e de trabalho ao mesmo tempo: a mensagem
-             pré-preenchida ("Vim pelo site...") existe pra dar pra separar
-             lead do site de conversa pessoal assim que a notificação chega,
-             sem precisar de número/app novo. -->
-            <a
-              href="https://wa.me/5587991206520?text=Ol%C3%A1!%20Vim%20pelo%20site%20eltonmarques.com%20e%20quero%20falar%20sobre%20um%20projeto."
-              target="_blank"
-              rel="noopener noreferrer"
-              class="cm-social"
-              aria-label="Chamar Elton Marques no WhatsApp"
-            >
-              <svg width="16" height="16" aria-hidden="true">
-                <use href="#i-whatsapp"></use>
-              </svg>
-            </a>
-            <a
-              href="mailto:contato@eltonmarques.com"
-              class="cm-social"
-              aria-label="Enviar e-mail para contato@eltonmarques.com"
-            >
-              <svg width="16" height="16" aria-hidden="true">
-                <use href="#i-mail"></use>
-              </svg>
-            </a>
-            <!-- mailto: sozinho perde muita gente no desktop sem cliente de
-             e-mail configurado. O botão só aparece se navigator.clipboard
-             existir (o script logo antes de </body> tira o display:none
-             sem API, sem botão morto na tela). Feedback de sucesso troca o
-             ícone pro check — igual ao par abrir/fechar do menu mobile,
-             não dá pra trocar texto porque o botão não tem texto visível. -->
-            <button
-              type="button"
-              class="cm-social"
-              data-cm-copy="contato@eltonmarques.com"
-              aria-label="Copiar e-mail"
-              style="display: none"
-            >
-              <svg
-                data-cm-copy-icon
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2"></rect>
-                <path
-                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                ></path>
-              </svg>
-              <svg
-                data-cm-copy-check
-                class="hidden"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M20 6 9 17l-5-5"></path>
-              </svg>
-              <span data-cm-copy-label class="sr-only" aria-live="polite"
-                >Copiar e-mail</span
-              >
-            </button>
-            <a
-              href="https://www.linkedin.com/in/elton-marques/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="cm-social"
-              aria-label="LinkedIn de Elton Marques"
-            >
-              <svg width="16" height="16" aria-hidden="true">
-                <use href="#i-linkedin"></use>
-              </svg>
-            </a>
+            <div class="cm-sheen"></div>
+            <p class="cm-svc__title" style="margin-top: 0">Enviar meu caso</p>
+            <p class="cm-form-note mt-2">
+              Leva um minuto. Três campos, sem cadastro.
+            </p>
+            <form id="cm-contact-form" class="mt-6 text-left">
+              <div class="cm-field">
+                <label for="cm-name" class="cm-label">Seu nome</label>
+                <input
+                  id="cm-name"
+                  name="name"
+                  type="text"
+                  class="cm-input"
+                  autocomplete="name"
+                  placeholder="Como devo te chamar"
+                  required
+                />
+              </div>
+              <div class="cm-field mt-4">
+                <label for="cm-email" class="cm-label">Seu e-mail</label>
+                <input
+                  id="cm-email"
+                  name="email"
+                  type="email"
+                  class="cm-input"
+                  autocomplete="email"
+                  placeholder="Onde eu te respondo"
+                  required
+                />
+              </div>
+              <div class="cm-field mt-4">
+                <label for="cm-message" class="cm-label"
+                  >O que está travando hoje?</label
+                >
+                <textarea
+                  id="cm-message"
+                  name="message"
+                  class="cm-input cm-textarea"
+                  placeholder="Ex.: minha equipe gasta 3 horas por dia digitando pedido de papel em planilha."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="cm-btn cm-btn-primary w-full mt-5">
+                <svg width="15" height="15" aria-hidden="true">
+                  <use href="#i-mail"></use>
+                </svg>
+                Enviar meu caso
+              </button>
+              <p class="cm-form-note mt-3">
+                O botão abre seu programa de e-mail com a mensagem pronta, no
+                endereço contato@eltonmarques.com. Se preferir, chame no
+                WhatsApp ao lado.
+              </p>
+            </form>
           </div>
         </div>
       </div>
@@ -2109,7 +2225,7 @@
       <div
         class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
       >
-        <p class="text-xs" style="color: var(--text-3)">
+        <p class="text-sm" style="color: var(--text-3)">
           © <span id="cm-year">2026</span> Elton Marques · eltonmarques.com
         </p>
         <div class="flex items-center gap-2">
