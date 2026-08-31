@@ -82,17 +82,26 @@ def enviar_telegram(lead: dict, cfg: Config):
 
 
 def notificar(db_path: str, lead_id: str, cfg: Config) -> None:
-    """Dispara os dois canais e registra o resultado de cada um.
+    """Dispara os canais que ainda faltam e registra o resultado de cada um.
 
     Um canal nao derruba o outro: e-mail fora do ar ainda deixa o alerta
     do Telegram chegar, e vice-versa.
+
+    Canal ja marcado como enviado e pulado. Isso e o que torna o reenvio
+    seguro: sem a checagem, um lead com e-mail entregue e Telegram falho
+    mandaria o e-mail de novo a cada tentativa de reenvio, e o dono do
+    site receberia o mesmo lead varias vezes.
     """
     lead = storage.buscar_lead(db_path, lead_id)
     if not lead:
         return
 
-    ok_email, erro_email = enviar_email(lead, cfg)
-    storage.marcar_envio(db_path, lead_id, "email", ok_email, erro_email)
+    if not lead["email_enviado"]:
+        ok_email, erro_email = enviar_email(lead, cfg)
+        storage.marcar_envio(db_path, lead_id, "email", ok_email, erro_email)
 
-    ok_telegram, erro_telegram = enviar_telegram(lead, cfg)
-    storage.marcar_envio(db_path, lead_id, "telegram", ok_telegram, erro_telegram)
+    if not lead["telegram_enviado"]:
+        ok_telegram, erro_telegram = enviar_telegram(lead, cfg)
+        storage.marcar_envio(
+            db_path, lead_id, "telegram", ok_telegram, erro_telegram
+        )

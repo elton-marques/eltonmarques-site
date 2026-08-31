@@ -127,3 +127,27 @@ def test_erro_do_telegram_nao_vaza_o_token(monkeypatch):
     assert ok is False
     assert "token" not in erro
     assert "<omitido>" in erro
+
+
+def test_notificar_pula_canal_ja_enviado(db, monkeypatch):
+    """Reenvio nao pode mandar o e-mail de novo pra tentar so o Telegram."""
+    lead_id = storage.inserir_lead(
+        db, "Fulano", "f@e.com", "mensagem longa o bastante", "ip", "pytest"
+    )
+    storage.marcar_envio(db, lead_id, "email", True)
+
+    chamados = []
+    monkeypatch.setattr(
+        notify,
+        "enviar_email",
+        lambda lead, cfg: (chamados.append("email"), (True, ""))[1],
+    )
+    monkeypatch.setattr(
+        notify,
+        "enviar_telegram",
+        lambda lead, cfg: (chamados.append("telegram"), (True, ""))[1],
+    )
+
+    notify.notificar(db, lead_id, CFG)
+
+    assert chamados == ["telegram"]

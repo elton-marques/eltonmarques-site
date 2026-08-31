@@ -59,11 +59,19 @@ def erro_de_validacao(request: Request, exc: RequestValidationError):
 
 
 def ip_do_request(request: Request) -> str:
-    """Atrás do túnel e do nginx, o IP real vem em cabeçalho.
+    """Atrás do túnel, o IP real do visitante vem em cabeçalho.
 
-    CF-Connecting-IP é escrito pela Cloudflare e é o mais confiável aqui;
-    X-Forwarded-For fica como segundo, e o socket como último recurso,
-    que em produção seria sempre 127.0.0.1, ou seja, inútil pro limite.
+    O socket é sempre 127.0.0.1 aqui (o serviço só escuta em loopback e
+    quem chega é o nginx local), então limitar por ele bloquearia o site
+    inteiro por causa de um visitante só.
+
+    CF-Connecting-IP é o cabeçalho certo porque a Cloudflare o SOBRESCREVE
+    em tudo que ela encaminha: um valor forjado pelo cliente é descartado
+    na borda. Isso só vale enquanto a única porta de entrada for o túnel,
+    que é o caso hoje (o firewall da VPS libera apenas SSH e Tailscale, e
+    o serviço não escuta em interface pública). Se um dia este serviço
+    ficar alcançável por outro caminho, o cabeçalho volta a ser forjável e
+    esta função precisa passar a validar a origem.
     """
     cabecalho = request.headers.get("cf-connecting-ip") or request.headers.get(
         "x-forwarded-for", ""
@@ -87,11 +95,16 @@ def contato(dados: ContatoIn, request: Request, tarefas: BackgroundTasks):
     ):
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content=RECUSADO)
 
-    # Existe uma corrida conhecida entre esta checagem e o INSERT abaixo:
-    # dois envios simultâneos da mesma origem podem passar os dois. Fica
-    # assim de propósito. Fechar a janela exigiria transação cobrindo
-    # checagem e escrita, e o volume de uma landing pessoal não paga essa
-    # complexidade; o custo do caso raro é um lead a mais, não um a menos.
+    # Corrida conhecida e aceita entre esta checagem e o INSERT abaixo: a
+    # contagem é um SELECT fora de transação, então requisições simultâneas
+    # da mesma origem podem ler o mesmo total antes de qualquer uma
+    # inserir. O handler é síncrono, então o Starlette o roda no
+    # threadpool: um disparo em rajada não fura o limite em uma linha, e
+    # sim em até tantas quantas o threadpool atender de uma vez. Fica
+    # assim de propósito porque não há corrupção de dado (o excesso são
+    # linhas a mais, nunca lead perdido), o teto diário ainda segura o
+    # pior caso, e fechar a janela exigiria transação cobrindo leitura e
+    # escrita, complexidade que o volume de uma landing pessoal não paga.
     ip_hash = antispam.hash_ip(ip, CONFIG.ip_hash_salt)
     if not antispam.dentro_dos_limites(CONFIG.db_path, ip_hash):
         return JSONResponse(

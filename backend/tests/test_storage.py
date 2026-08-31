@@ -75,3 +75,29 @@ def test_pendentes_traz_so_quem_falta_notificar(db):
 
     ids = [lead["id"] for lead in storage.pendentes(db)]
     assert ids == [faltando]
+
+
+def test_sucesso_limpa_o_erro_anterior_do_mesmo_canal(db):
+    lead_id = storage.inserir_lead(
+        db, "A", "a@e.com", "mensagem longa o bastante", "ip", "pytest"
+    )
+    storage.marcar_envio(db, lead_id, "email", False, "timeout")
+
+    storage.marcar_envio(db, lead_id, "email", True)
+
+    lead = storage.buscar_lead(db, lead_id)
+    assert lead["email_enviado"] == 1
+    assert lead["erro_notificacao"] == ""
+
+
+def test_falha_de_um_canal_nao_apaga_a_do_outro(db):
+    lead_id = storage.inserir_lead(
+        db, "A", "a@e.com", "mensagem longa o bastante", "ip", "pytest"
+    )
+
+    storage.marcar_envio(db, lead_id, "email", False, "timeout")
+    storage.marcar_envio(db, lead_id, "telegram", False, "chat invalido")
+
+    erro = storage.buscar_lead(db, lead_id)["erro_notificacao"]
+    assert "timeout" in erro
+    assert "chat invalido" in erro

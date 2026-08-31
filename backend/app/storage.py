@@ -89,22 +89,51 @@ def buscar_lead(db_path: str, lead_id: str):
     return dict(linha) if linha else None
 
 
+SEPARADOR_ERRO = " | "
+
+
+def _erros_dos_outros_canais(atual: str, canal: str) -> list:
+    """Erros gravados que NÃO são deste canal.
+
+    A coluna erro_notificacao é uma só para os dois canais, então cada
+    escrita precisa preservar o que o outro canal deixou lá.
+    """
+    if not atual:
+        return []
+    prefixo = f"{canal}: "
+    return [
+        parte
+        for parte in atual.split(SEPARADOR_ERRO)
+        if parte and not parte.startswith(prefixo)
+    ]
+
+
 def marcar_envio(
     db_path: str, lead_id: str, canal: str, ok: bool, erro: str = ""
 ) -> None:
+    """Registra o resultado de um canal sem apagar o do outro.
+
+    Sucesso limpa o erro anterior DESTE canal: sem isso, um reenvio bem
+    sucedido deixaria uma mensagem de falha velha ao lado de enviado=1, e
+    quem lesse a tabela depois concluiria que o aviso falhou.
+    """
     if canal not in ("email", "telegram"):
         raise ValueError("canal precisa ser 'email' ou 'telegram'")
     coluna = "email_enviado" if canal == "email" else "telegram_enviado"
     with _conectar(db_path) as conexao:
-        if ok:
-            conexao.execute(
-                f"UPDATE leads SET {coluna} = 1 WHERE id = ?", (lead_id,)
-            )
-        else:
-            conexao.execute(
-                "UPDATE leads SET erro_notificacao = ? WHERE id = ?",
-                (f"{canal}: {erro}"[:500], lead_id),
-            )
+        linha = conexao.execute(
+            "SELECT erro_notificacao FROM leads WHERE id = ?", (lead_id,)
+        ).fetchone()
+        if linha is None:
+            return
+        partes = _erros_dos_outros_canais(linha[0], canal)
+        if not ok:
+            partes.append(f"{canal}: {erro}")
+        texto = SEPARADOR_ERRO.join(partes)[:500]
+        conexao.execute(
+            f"UPDATE leads SET {coluna} = ?, erro_notificacao = ? WHERE id = ?",
+            (1 if ok else 0, texto, lead_id),
+        )
 
 
 def contar_por_ip(db_path: str, ip_hash: str, desde_iso: str) -> int:
