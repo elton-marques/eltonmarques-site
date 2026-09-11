@@ -28,6 +28,7 @@ test("footer does not repeat the contact and social controls", () => {
 test("project section includes Invarly and omits the old OCR test report", () => {
   assert.match(hub, /Invarly/);
   assert.match(hub, /https:\/\/invarly\.eltonmarques\.com/);
+  assert.match(hub, /assets\/invarly-app-icon\.svg/);
   assert.doesNotMatch(hub, /Em teste com 5 folhas reais/);
 });
 
