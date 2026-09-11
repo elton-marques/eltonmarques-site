@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# banco local de desenvolvimento (o de producao fica em /var/lib/hub-api)
+leads.db
+leads.db-wal
+leads.db-shm
+# segredos reais: so o .env.example e versionado
+.env

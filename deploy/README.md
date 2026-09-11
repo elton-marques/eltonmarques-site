@@ -62,8 +62,18 @@ de `design-system/` só pra desenvolvimento local — na VPS, a rota
 
 ```
 /var/www/hub/
-└── index.html      ← deploy/hub/index.html deste repo
+├── index.html      ← deploy/hub/index.html deste repo
+├── 404.html        ← deploy/hub/404.html (error_page 404 no nginx)
+├── robots.txt      ← deploy/hub/robots.txt
+└── sitemap.xml     ← deploy/hub/sitemap.xml
 ```
+
+`deploy/nginx/hub.conf` (symlink em `/etc/nginx/sites-available/hub.conf`
+na VPS) manda os headers de segurança (HSTS, nosniff, X-Frame-Options,
+Referrer-Policy, Permissions-Policy) e aponta `error_page 404` pro
+`404.html` acima. Alterar esse arquivo exige `sudo nginx -t && sudo
+systemctl reload nginx` na VPS depois do `scp` — não é hot-reload
+automático como o `index.html`.
 
 (`/var/www/cartao-mestre/` e `/var/www/login/` também existem na mesma
 VPS, mas pertencem ao outro repo — ver `elton-marques/cartao-mestre`.)
