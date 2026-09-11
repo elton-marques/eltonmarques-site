@@ -65,7 +65,8 @@ test("project cards share one footer pattern and one desktop height", () => {
   const projects = hub.match(/<section\b[^>]*\bid="projetos"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
   const cardOpenings = projects.match(/cm-card cm-card--stack cm-project-card cm-reveal p-6 order-[1-4]/g) ?? [];
 
-  assert.match(hub, /\.cm-project-card\s*\{[\s\S]*min-height: 31\.75rem;/);
+  assert.match(hub, /\.cm-project-card\s*\{[\s\S]*min-height: 26rem;/);
+  assert.match(hub, /\.cm-project-card \.cm-lead--sm\s*\{[\s\S]*font-size: 1\.0625rem;/);
   assert.equal(cardOpenings.length, 4);
   assert.equal(
     (projects.match(/cm-rule cm-card__foot flex items-center justify-between gap-3/g) ?? []).length,
