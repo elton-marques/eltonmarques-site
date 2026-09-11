@@ -1569,12 +1569,11 @@
           </p>
         </div>
 
-        <!-- Card destaque em largura total + cards menores em grid, em vez
-         de caixas idênticas em grid-cols-3. Composição assimétrica dá
-         hierarquia (o Cartão Mestre é o projeto mais completo) e quebra o
-         padrão de "grade de cards" sem inventar conteúdo novo. -->
+        <!-- Quatro cards com a mesma largura: Invarly vem primeiro por ser o
+         produto principal; os demais seguem em ordem de importância. -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
         <div
-          class="cm-card cm-reveal p-6 sm:p-8 mt-10"
+          class="cm-card cm-card--stack cm-reveal p-6"
           style="animation-delay: 100ms"
         >
           <div class="cm-sheen"></div>
@@ -1614,15 +1613,16 @@
               >Dashboard</span
             >
           </div>
-          <h3 class="text-xl sm:text-2xl font-semibold mt-4">Cartão Mestre</h3>
+          <h3 class="text-lg font-semibold mt-4">Cartão Mestre</h3>
 
           <p class="cm-lead mt-4 max-w-[62ch]">
-            As liberações do cartão mestre saíam do papel e iam para um único
-            dashboard, com login, filtros e relatórios. Cada movimentação fica
-            disponível para consulta sem consolidar planilhas.
+            A portaria registrava as liberações do cartão mestre em papel, sem
+            nenhuma visão consolidada da operação. Construí um dashboard com
+            login por sessão, filtros e exportação de relatório. Hoje cada
+            liberação fica registrada em um painel, sem consolidar tudo na mão.
           </p>
 
-          <div class="cm-rule flex flex-col gap-3 mt-6 pt-5">
+          <div class="cm-rule cm-card__foot flex flex-col gap-3 mt-6 pt-5">
             <div class="flex flex-wrap items-center justify-between gap-4">
               <span class="cm-addr cm-mono">
                 <span class="cm-addr__url"
@@ -1685,7 +1685,6 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           <div
             class="cm-card cm-card--stack cm-reveal p-6"
             style="animation-delay: 140ms"
@@ -1836,7 +1835,7 @@
           </div>
 
           <div
-            class="cm-card cm-card--stack cm-reveal p-6 sm:col-span-2"
+            class="cm-card cm-card--stack cm-reveal p-6 order-first"
             style="animation-delay: 220ms"
           >
             <div class="cm-sheen"></div>

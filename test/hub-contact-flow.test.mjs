@@ -30,3 +30,13 @@ test("project section includes Invarly and omits the old OCR test report", () =>
   assert.match(hub, /https:\/\/invarly\.eltonmarques\.com/);
   assert.doesNotMatch(hub, /Em teste com 5 folhas reais/);
 });
+
+test("project cards use one equal-size four-column grid and retain the Cartão Mestre copy", () => {
+  assert.match(hub, /grid-cols-1 sm:grid-cols-2 lg:grid-cols-4/);
+  assert.doesNotMatch(hub, /sm:col-span-2/);
+  assert.match(
+    hub,
+    /A portaria registrava as liberações do cartão mestre em papel, sem/,
+  );
+  assert.match(hub, /cm-card cm-card--stack cm-reveal p-6 order-first/);
+});
