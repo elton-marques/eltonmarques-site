@@ -19,7 +19,7 @@ test("contact form clearly explains the mail client handoff", () => {
 });
 
 test("project actions identify the destination before the visitor clicks", () => {
-  assert.match(hub, /Acessar sistema restrito/);
+  assert.doesNotMatch(hub, /Acessar sistema restrito/);
   assert.match(hub, /Abrir leitor/);
   assert.match(hub, /Abrir sátira/);
 });
@@ -50,6 +50,7 @@ test("project cards keep readable equal-size tiles and prioritize Invarly", () =
     hub,
     /A portaria registrava as liberações do cartão mestre em papel, sem/,
   );
+  assert.match(projects, /Na versão real, o dashboard\s+tem login por sessão/);
   assert.match(
     projects,
     /<p class="cm-lead cm-lead--sm mt-3 max-w-\[62ch\]">\s*A portaria/,
@@ -77,7 +78,7 @@ test("project cards share one footer pattern and one desktop height", () => {
   const cartao = projects.slice(cartaoStart, cartaoEnd);
   assert.doesNotMatch(cartao, /flex flex-col/);
   assert.match(cartao, /Ver demo/);
-  assert.match(cartao, /Acessar sistema restrito/);
+  assert.doesNotMatch(cartao, /Acessar sistema restrito/);
 });
 
 test("all project cards remain inside the shared two-column grid", () => {
