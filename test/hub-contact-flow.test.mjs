@@ -34,8 +34,8 @@ test("project section includes Invarly and omits the old OCR test report", () =>
   assert.match(hub, /https:\/\/invarly\.eltonmarques\.com/);
   assert.match(hub, /assets\/invarly-app-icon\.svg/);
   assert.match(hub, /cm-tag-violet/);
-  assert.match(invarlyIcon, /fill="#17122a"/);
-  assert.match(invarlyIcon, /stroke="#c4b5fd"/);
+  assert.match(invarlyIcon, /fill="#2e1065"/);
+  assert.match(invarlyIcon, /stroke="#a78bfa"/);
   assert.doesNotMatch(hub, /Em teste com 5 folhas reais/);
 });
 
