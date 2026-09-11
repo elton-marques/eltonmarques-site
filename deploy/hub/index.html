@@ -1569,11 +1569,11 @@
           </p>
         </div>
 
-        <!-- Quatro cards com a mesma largura: Invarly vem primeiro por ser o
-         produto principal; os demais seguem em ordem de importância. -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
+        <!-- Dois cards por linha preservam a leitura das descrições. A ordem
+         visual acompanha a prioridade: Invarly, Cartão Mestre, MestreCheck e Calculadora Pro. -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
         <div
-          class="cm-card cm-card--stack cm-reveal p-6"
+          class="cm-card cm-card--stack cm-reveal p-6 order-2"
           style="animation-delay: 100ms"
         >
           <div class="cm-sheen"></div>
@@ -1686,7 +1686,7 @@
         </div>
 
           <div
-            class="cm-card cm-card--stack cm-reveal p-6"
+            class="cm-card cm-card--stack cm-reveal p-6 order-3"
             style="animation-delay: 140ms"
           >
             <div class="cm-sheen"></div>
@@ -1758,7 +1758,7 @@
           </div>
 
           <div
-            class="cm-card cm-card--stack cm-reveal p-6"
+            class="cm-card cm-card--stack cm-reveal p-6 order-4"
             style="animation-delay: 180ms"
           >
             <div class="cm-sheen"></div>
@@ -1835,7 +1835,7 @@
           </div>
 
           <div
-            class="cm-card cm-card--stack cm-reveal p-6 order-first"
+            class="cm-card cm-card--stack cm-reveal p-6 order-1"
             style="animation-delay: 220ms"
           >
             <div class="cm-sheen"></div>
