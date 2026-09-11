@@ -32,7 +32,7 @@ test("footer does not repeat the contact and social controls", () => {
 test("project section includes Invarly and omits the old OCR test report", () => {
   assert.match(hub, /Invarly/);
   assert.match(hub, /https:\/\/invarly\.eltonmarques\.com/);
-  assert.match(hub, /assets\/invarly-app-icon\.svg/);
+  assert.match(hub, /assets\/invarly-app-icon\.svg\?v=2/);
   assert.match(hub, /cm-tag-violet/);
   assert.match(invarlyIcon, /fill="#2e1065"/);
   assert.match(invarlyIcon, /stroke="#a78bfa"/);
