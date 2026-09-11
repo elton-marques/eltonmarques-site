@@ -42,8 +42,26 @@ test("project cards keep readable equal-size tiles and prioritize Invarly", () =
     /A portaria registrava as liberações do cartão mestre em papel, sem/,
   );
   assert.doesNotMatch(projects, /order-first/);
-  assert.match(projects, /cm-card cm-card--stack cm-reveal p-6 order-1/);
-  assert.match(projects, /cm-card cm-card--stack cm-reveal p-6 order-2/);
-  assert.match(projects, /cm-card cm-card--stack cm-reveal p-6 order-3/);
-  assert.match(projects, /cm-card cm-card--stack cm-reveal p-6 order-4/);
+  assert.match(projects, /cm-card cm-card--stack cm-project-card cm-reveal p-6 order-1/);
+  assert.match(projects, /cm-card cm-card--stack cm-project-card cm-reveal p-6 order-2/);
+  assert.match(projects, /cm-card cm-card--stack cm-project-card cm-reveal p-6 order-3/);
+  assert.match(projects, /cm-card cm-card--stack cm-project-card cm-reveal p-6 order-4/);
+});
+
+test("project cards share one footer pattern and one desktop height", () => {
+  const projects = hub.match(/<section\b[^>]*\bid="projetos"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+  const cardOpenings = projects.match(/cm-card cm-card--stack cm-project-card cm-reveal p-6 order-[1-4]/g) ?? [];
+
+  assert.match(hub, /\.cm-project-card\s*\{[\s\S]*min-height: 31\.75rem;/);
+  assert.equal(cardOpenings.length, 4);
+  assert.equal(
+    (projects.match(/cm-rule cm-card__foot flex items-center justify-between gap-3/g) ?? []).length,
+    4,
+  );
+  const cartaoStart = projects.indexOf('<h3 class="text-lg font-semibold mt-4">Cartão Mestre</h3>');
+  const cartaoEnd = projects.indexOf('<h3 class="text-lg font-semibold mt-4">MestreCheck</h3>');
+  const cartao = projects.slice(cartaoStart, cartaoEnd);
+  assert.doesNotMatch(cartao, /flex flex-col/);
+  assert.match(cartao, /Ver demo/);
+  assert.match(cartao, /Acessar sistema restrito/);
 });
