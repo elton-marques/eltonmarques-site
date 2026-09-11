@@ -65,3 +65,11 @@ test("project cards share one footer pattern and one desktop height", () => {
   assert.match(cartao, /Ver demo/);
   assert.match(cartao, /Acessar sistema restrito/);
 });
+
+test("all project cards remain inside the shared two-column grid", () => {
+  const projects = hub.match(/<section\b[^>]*\bid="projetos"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+  const mestreCheck = projects.indexOf('class="cm-card cm-card--stack cm-project-card cm-reveal p-6 order-3"');
+  const beforeMestreCheck = projects.slice(0, mestreCheck);
+
+  assert.doesNotMatch(beforeMestreCheck, /<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<div\s*$/);
+});
