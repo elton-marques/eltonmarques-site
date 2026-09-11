@@ -50,6 +50,10 @@ test("project cards keep readable equal-size tiles and prioritize Invarly", () =
     hub,
     /A portaria registrava as liberações do cartão mestre em papel, sem/,
   );
+  assert.match(
+    projects,
+    /<p class="cm-lead cm-lead--sm mt-3 max-w-\[62ch\]">\s*A portaria/,
+  );
   assert.doesNotMatch(projects, /order-first/);
   assert.match(projects, /cm-card cm-card--stack cm-project-card cm-reveal p-6 order-1/);
   assert.match(projects, /cm-card cm-card--stack cm-project-card cm-reveal p-6 order-2/);
