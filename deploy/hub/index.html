@@ -507,12 +507,20 @@
         border-color: var(--accent);
         background: var(--surface-3-hover);
       }
+      .cm-input:invalid:not(:placeholder-shown) {
+        border-color: #fca5a5;
+      }
       .cm-textarea {
         resize: vertical;
         min-height: 7.5rem;
       }
       .cm-form-note {
         color: var(--text-3);
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+      .cm-form-status {
+        color: var(--accent);
         font-size: 0.875rem;
         line-height: 1.6;
       }
@@ -1613,7 +1621,7 @@
             A portaria registrava as liberações do cartão mestre em papel, sem
             nenhuma visão consolidada da operação. Construí um dashboard com
             login por sessão, filtros e exportação de relatório. Hoje cada
-            liberação vira KPI e insight operacional, sem planilha manual.
+            liberação fica registrada em um painel, sem consolidar tudo na mão.
           </p>
 
           <div class="cm-rule flex flex-col gap-3 mt-6 pt-5">
@@ -1669,7 +1677,7 @@
                   </svg>
                 </a>
                 <a href="/cartaomestre/" class="cm-card__arrow">
-                  Acessar
+                  Acessar sistema restrito
                   <svg width="14" height="14" aria-hidden="true">
                     <use href="#i-arrow-right"></use>
                   </svg>
@@ -1747,7 +1755,7 @@
                   </svg>
                 </a>
                 <a href="/leitor" class="cm-card__arrow">
-                  Acessar
+                  Abrir leitor
                   <svg width="14" height="14" aria-hidden="true">
                     <use href="#i-arrow-right"></use>
                   </svg>
@@ -1825,7 +1833,7 @@
                   </svg>
                 </a>
                 <a href="/calc/" class="cm-card__arrow">
-                  Acessar
+                  Abrir sátira
                   <svg width="14" height="14" aria-hidden="true">
                     <use href="#i-arrow-right"></use>
                   </svg>
@@ -1876,8 +1884,7 @@
           <li class="cm-chip">JavaScript</li>
           <li class="cm-chip">Python</li>
           <li class="cm-chip">SQL</li>
-          <li class="cm-chip">Nginx</li>
-          <li class="cm-chip">Systemd</li>
+          <li class="cm-chip">Infraestrutura de servidor</li>
           <li class="cm-chip">Tailwind CSS</li>
         </ul>
       </div>
@@ -1937,7 +1944,7 @@
           <li class="cm-svc__item">
             <div>
               <span class="cm-svc__num cm-mono">02</span>
-              <h3 class="cm-svc__title">Dashboards e BI</h3>
+              <h3 class="cm-svc__title">Dashboards e relatórios</h3>
             </div>
             <div class="min-w-0">
               <p class="cm-svc__desc">
@@ -1961,9 +1968,8 @@
             <div class="min-w-0">
               <p class="cm-svc__desc">
                 Sistema interno, portal ou site institucional feito do zero:
-                interface, back-end e o servidor que serve tudo. Sem mensalidade
-                de plataforma e sem ficar preso ao construtor de sites de
-                alguém.
+                interface, parte que roda no servidor e infraestrutura. Quando
+                fizer sentido, pode rodar sem depender de uma plataforma paga.
               </p>
               <ul class="cm-svc__tags" aria-label="Entregas típicas">
                 <li class="cm-chip">sistemas internos</li>
@@ -2215,7 +2221,8 @@
             <div class="cm-sheen"></div>
             <p class="cm-svc__title" style="margin-top: 0">Pedir meu orçamento</p>
             <p class="cm-form-note mt-2">
-              Leva um minuto. Três campos, sem cadastro.
+              Leva um minuto. Três campos, sem cadastro. Ao continuar, seu
+              aplicativo de e-mail será aberto com a mensagem preenchida.
             </p>
             <form id="cm-contact-form" class="mt-6 text-left">
               <div class="cm-field">
@@ -2258,8 +2265,9 @@
                 <svg width="15" height="15" aria-hidden="true">
                   <use href="#i-mail"></use>
                 </svg>
-                Quero meu orçamento
+                Abrir e-mail para pedir orçamento
               </button>
+              <p id="cm-form-status" class="cm-form-status mt-4" aria-live="polite" hidden></p>
             </form>
           </div>
         </div>
@@ -2274,50 +2282,6 @@
         <p class="text-sm" style="color: var(--text-3)">
           © <span id="cm-year">2026</span> Elton Marques · eltonmarques.com
         </p>
-        <div class="flex items-center gap-2">
-          <a
-            href="https://wa.me/5587991206520?text=Ol%C3%A1!%20Vim%20pelo%20site%20eltonmarques.com%20e%20quero%20falar%20sobre%20um%20projeto."
-            target="_blank"
-            rel="noopener noreferrer"
-            class="cm-social cm-social--sm"
-            aria-label="Chamar Elton Marques no WhatsApp"
-          >
-            <svg width="14" height="14" aria-hidden="true">
-              <use href="#i-whatsapp"></use>
-            </svg>
-          </a>
-          <a
-            href="mailto:contato@eltonmarques.com"
-            class="cm-social cm-social--sm"
-            aria-label="Enviar e-mail para contato@eltonmarques.com"
-          >
-            <svg width="14" height="14" aria-hidden="true">
-              <use href="#i-mail"></use>
-            </svg>
-          </a>
-          <a
-            href="https://github.com/elton-marques"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="cm-social cm-social--sm"
-            aria-label="GitHub de Elton Marques"
-          >
-            <svg width="14" height="14" aria-hidden="true">
-              <use href="#i-github"></use>
-            </svg>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/elton-marques/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="cm-social cm-social--sm"
-            aria-label="LinkedIn de Elton Marques"
-          >
-            <svg width="14" height="14" aria-hidden="true">
-              <use href="#i-linkedin"></use>
-            </svg>
-          </a>
-        </div>
       </div>
     </footer>
 
@@ -3291,6 +3255,7 @@
     <script>
       (function () {
         var form = document.getElementById("cm-contact-form");
+        var status = document.getElementById("cm-form-status");
         if (!form) return;
 
         form.addEventListener("submit", function (e) {
@@ -3309,6 +3274,12 @@
             encodeURIComponent(subject) +
             "&body=" +
             encodeURIComponent(body);
+
+          if (status) {
+            status.hidden = false;
+            status.textContent =
+              "Revise a mensagem no seu aplicativo de e-mail e envie para concluir o pedido. Se seu aplicativo de e-mail não abrir, escreva para contato@eltonmarques.com.";
+          }
         });
       })();
 
