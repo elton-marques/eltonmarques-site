@@ -151,6 +151,7 @@
         --accent: #93c5fd;
         --accent-emerald: #059669;
         --accent-amber: #d97706;
+        --accent-violet: #c4b5fd;
 
         /* superfícies — 3 níveis. Antes existia um "vidro" só, aplicado em
          29 elementos (card, chip, badge, ícone, botão social, toggle): tudo
@@ -588,6 +589,9 @@
       }
       .cm-tag-amber {
         color: #fcd34d;
+      }
+      .cm-tag-violet {
+        color: var(--accent-violet);
       }
 
       /* --------------------------------------------------- superfícies */
@@ -1825,13 +1829,13 @@
               style="
                 background: radial-gradient(
                   circle,
-                  var(--brand-blue-hover),
+                  #7c3aed,
                   transparent 70%
                 );
               "
             ></div>
             <div class="flex items-start justify-between gap-3">
-              <span class="cm-icon cm-tag-blue">
+              <span class="cm-icon cm-tag-violet">
                 <img
                   src="assets/invarly-app-icon.svg"
                   width="36"
@@ -1841,7 +1845,7 @@
                   class="rounded-[inherit]"
                 />
               </span>
-              <span class="cm-badge cm-badge--tag cm-tag-blue shrink-0"
+              <span class="cm-badge cm-badge--tag cm-tag-violet shrink-0"
                 >App para monday.com</span
               >
             </div>

@@ -3,6 +3,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const hub = await readFile(new URL("../deploy/hub/index.html", import.meta.url), "utf8");
+const invarlyIcon = await readFile(
+  new URL("../deploy/hub/assets/invarly-app-icon.svg", import.meta.url),
+  "utf8",
+);
 
 test("contact form clearly explains the mail client handoff", () => {
   assert.match(hub, /Abrir e-mail para pedir orçamento/);
@@ -29,6 +33,9 @@ test("project section includes Invarly and omits the old OCR test report", () =>
   assert.match(hub, /Invarly/);
   assert.match(hub, /https:\/\/invarly\.eltonmarques\.com/);
   assert.match(hub, /assets\/invarly-app-icon\.svg/);
+  assert.match(hub, /cm-tag-violet/);
+  assert.match(invarlyIcon, /fill="#17122a"/);
+  assert.match(invarlyIcon, /stroke="#c4b5fd"/);
   assert.doesNotMatch(hub, /Em teste com 5 folhas reais/);
 });
 
