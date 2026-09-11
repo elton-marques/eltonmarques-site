@@ -24,3 +24,9 @@ test("footer does not repeat the contact and social controls", () => {
   const footer = hub.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
   assert.doesNotMatch(footer, /cm-social/);
 });
+
+test("project section includes Invarly and omits the old OCR test report", () => {
+  assert.match(hub, /Invarly/);
+  assert.match(hub, /https:\/\/invarly\.eltonmarques\.com/);
+  assert.doesNotMatch(hub, /Em teste com 5 folhas reais/);
+});
